@@ -1,0 +1,93 @@
+<%@ Master Language="C#" MasterPageFile="~/masters/layout.master" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Web" %>
+<script runat="server">
+	private string db;
+	private string tbl;
+
+	private DBLayer dbl = new DBLayer();
+	private DataSet records;
+	private HtmlGenericControl body;
+	
+	private void Page_Load(Object sender, EventArgs e) {
+		db = Request.QueryString["db"]; tbl = Request.QueryString["tbl"];
+		if (Request.Form.Count == 0 && (String.IsNullOrEmpty(db) || String.IsNullOrEmpty(tbl))) return;
+
+		body = (HtmlGenericControl)this.Master.FindControl("body");
+		records = dbl.getColumnInformation(db, tbl);
+
+		if (Request.Form.Count > 0) formatQuery();
+		else showSearchForm();
+	}
+
+	private void showSearchForm() {
+		if (records != null) {
+			DataTable t = records.Tables[0];
+			body.InnerHtml += "<form method=\"post\"><table><tbody><tr class=\"title\"><td>&nbsp;</td><td>Name</td><td>Type</td><td>Collation</td><td>Operation</td><td>&nbsp;</td></tr>";
+			for(int i = 0, l = t.Rows.Count; i < l; i++) {
+				body.InnerHtml += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd")  + "\">" +
+							 "<td><input type=\"checkbox\" name=\"use_" + t.Rows[i]["COLUMN_NAME"] + "\" id=\"use_" + t.Rows[i]["COLUMN_NAME"] + "\" value=\"1\" /></td>" +
+							 "<td>" +t.Rows[i]["COLUMN_NAME"] + "</td>" +
+							 "<td class=\"right\">" + t.Rows[i]["DATA_TYPE"] + ((t.Rows[i].IsNull("CHARACTER_MAXIMUM_LENGTH")) ? "" : // strings and binary
+																				 "(" + ((int.Parse(t.Rows[i]["CHARACTER_MAXIMUM_LENGTH"].ToString()) == -1) ? "MAX" :
+																				 t.Rows[i]["CHARACTER_MAXIMUM_LENGTH"]) + ")") +
+																			   ((t.Rows[i].IsNull("NUMERIC_PRECISION")) ? "" : // numbers
+																				 "(" + ((t.Rows[i]["NUMERIC_PRECISION"])) + ((t.Rows[i].IsNull("NUMERIC_SCALE")) ? "" :
+																				 ", " + t.Rows[i]["NUMERIC_SCALE"]) + ")") +
+																			   ((t.Rows[i].IsNull("DATETIME_PRECISION")) ? "" : // datetimes
+																				 "(" + t.Rows[i]["DATETIME_PRECISION"] + ")") + "</td>" +
+							 "<td class=\"right\">" + t.Rows[i]["COLLATION_NAME"].ToString().ToLower() + "</td>" +
+							 "<td class=\"right\"><select style=\"width: 110px\" name=\"op_" + t.Rows[i]["COLUMN_NAME"] + "\" id=\"op_" + t.Rows[i]["COLUMN_NAME"] + "\" onchange=\"javascript:updateForm(this)\"><option value=\"\"></option>" +
+								"<option value=\"eq\">=</option>" +
+								"<option value=\"neq\">&lt;&gt;</option>" +
+								"<option value=\"neq\">!=</option>" +
+								((!t.Rows[i].IsNull("NUMERIC_PRECISION"))  || !t.Rows[i].IsNull("DATETIME_PRECISION") ? 
+									"<option value=\"lt\">&lt;</option>" +
+									"<option value=\"lte\">&lt;=</option>" +
+									"<option value=\"lte\">!&gt;</option>" +
+									"<option value=\"gt\">&gt;</option>" +
+									"<option value=\"gte\">&gt;=</option>" +
+									"<option value=\"gte\">!&lt;</option>" : "") +
+									"<option value=\"bet\">BETWEEN</option>" +
+								((!t.Rows[i].IsNull("CHARACTER_MAXIMUM_LENGTH")) ? 
+									"<option value=\"l\">LIKE</option>" +
+									"<option value=\"nl\">NOT LIKE</option>" : "") +
+								"<option value=\"all\">ALL</option>" +
+								"<option value=\"any\">ANY</option>" +
+								"<option value=\"exi\">EXISTS</option>" +
+								"<option value=\"i\">IN</option>" +
+								"<option id=\"som\" value\"SOME\">SOME</option>" +
+								((t.Rows[i]["IS_NULLABLE"].ToString().ToLower().Trim().Equals("yes")) ? 
+									"<option value=\"isn\">IS NULL</option>" +
+									"<option value=\"inn\">IS NOT NULL</option>" : "") +
+								"</select></td>" +
+							 "<td>" + ((!t.Rows[i].IsNull("CHARACTER_MAXIMUM_LENGTH") &&
+								(t.Rows[i]["CHARACTER_MAXIMUM_LENGTH"].ToString().Trim().ToLower().Equals("max") ||
+								 int.Parse(t.Rows[i]["CHARACTER_MAXIMUM_LENGTH"].ToString()) > 256)) ?
+									"<textarea name=\"ex_" + t.Rows[i]["COLUMN_NAME"] + "\" cols=\"41\" rows=\"5\" onkeyup=\"javascript:updateForm(this)\"></textarea>" :  
+									"<input name=\"ex_" + t.Rows[i]["COLUMN_NAME"] + "\" type=\"text\" size=\"40\" maxlength=\"" + t.Rows[i]["CHARACTER_MAXIMUM_LENGTH"] + "\" onkeyup=\"javascript:updateForm(this)\" />")  + "</td></tr>";
+			}
+			body.InnerHtml += "<tr><td colspan=\"6\">Edit WHERE clause:<br /><input type=\"text\" name=\"where\" style=\"width: 100%\" /></td></tr>" +
+						 "<tr><td class=\"right\" colspan=\"6\"><input type=\"submit\" value=\"Submit\" /></td></tr></tbody></table></form>";
+		}
+	}
+
+	private void formatQuery() {
+		showSearchForm();
+		DataTable t = records.Tables[0];
+		StringBuilder qsb = new StringBuilder();
+
+		for(int i = 0, l = t.Rows.Count; i < l; i++) {
+			if (Request.Form["use_" + t.Rows[i]["COLUMN_NAME"]] == null) continue;
+
+			if (qsb.Length == 0) qsb.Append("SELECT * FROM " + tbl + " WHERE " + ((!String.IsNullOrEmpty(Request.Form["where"])) ? Request.Form["where"] : ""));
+			else qsb.Append(" AND");
+
+			qsb.Append(" "  + t.Rows[i]["COLUMN_NAME"] + " " + LookupTables.comparisonOperators(Request.Form["op_" + t.Rows[i]["COLUMN_NAME"]]) + " " + Request.Form["ex_" + t.Rows[i]["COLUMN_NAME"]]);
+		}
+
+		Response.Redirect("query.aspx?db=" + db + "&tbl=" + tbl + "&q=" + Server.UrlEncode(qsb.ToString()));
+	}
+</script>

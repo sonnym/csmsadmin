@@ -1,0 +1,76 @@
+html { font: 100% arial; }
+body { font: 0.85em arial; }
+a { color: #000000;
+	text-decoration: none;
+}
+.bold { font-weight: bold };
+a:hover { text-decoration: underline; }
+td {
+	font-size: 0.85em;
+	padding: 3px;
+	vertical-align: top;
+}
+tr.title {
+	font-weight: bold;
+	font-size: 0.9em;
+	color: #ffffff;
+	background: #000000;
+	text-align: center;
+}
+tr.even { background: #ffffff; }
+tr.odd { background: #efefef; }
+td.right { text-align: right; }
+a.nav {
+	color: #000000;
+	font-size: 0.85em;
+}
+a.nav:hover {
+	background: #efefef;
+	text-decoration: none;
+}
+img { border: none; }
+.loc {
+	font-weight: bold;
+	font-size: 110%
+}
+.toptabs { margin-bottom: 5px }
+.toptabs li {
+	float: left;
+	margin: 0 2px;
+	list-style-type: none;
+	padding: 3px;
+	font-weight: bold;
+}
+.inactive_tab { border: solid black 1px; }
+.active_tab {
+	border: solid black 1px;
+	background: #efefef;
+}
+.caution_tab { border: solid red 1px; }
+.clearfloat { clear: both; }
+.query_box {
+	width: 600px;
+	padding: 5px;
+	margin: 10px;
+	border: solid thin black;
+	background: #efefef;
+}
+.right_container {
+	width: 100%;
+	text-align: right;
+}
+input[type=submit], input[type=button] {
+	font-weight: 600;
+	border: solid black 1px;
+	background: #efefef;
+}
+#query_input {
+	width: 600px;
+	height: 150px;
+	border: solid black 1px;
+}
+#query_execute { margin-left: 520px; }
+.error {
+	font-weight: bold;
+	color: red;
+}

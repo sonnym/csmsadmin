@@ -1,0 +1,78 @@
+<%@ Master Language="C#" MasterPageFile="~/masters/layout.master" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Collections" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Import Namespace="System.Collections.Specialized" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Web" %>
+<script runat="server">
+	private DBLayer dbl = new DBLayer();
+	private NameValueCollection qs = HttpContext.Current.Request.QueryString;
+	private HtmlGenericControl body;
+	private string db, tbl;
+
+	protected override void OnLoad(EventArgs e) {
+		body = (HtmlGenericControl)this.Master.FindControl("body");
+		db = qs["db"];
+		tbl = qs["tbl"];
+
+		if (String.IsNullOrEmpty(db)) return; 
+		else if (String.IsNullOrEmpty(tbl)) db_struct();
+		else tbl_struct();
+	}
+
+	private void db_struct() {
+		ArrayList tbls = dbl.getTableNames(db);
+		if (tbls != null) {
+			body.InnerHtml += "<table><tbody><tr class=\"title\"><td>&nbsp;</td><td>Name</td><td colspan=\"6\">Actions</td><td>Rows</td><td>Size</td></tr>";
+			for (int i = 0; i < tbls.Count; i++) {
+				string tbl = tbls[i].ToString();
+				Dictionary<string, string> size = dbl.getTableSize(db, tbl);
+				body.InnerHtml += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd")  + "\">" +
+							 "<td><input type=\"checkbox\" id=\"" + db + "_" + tbl + "\"</td>" +
+							 "<td><a href=\"struct.aspx?db=" + db +  "&tbl=" + tbl + "\" target=\"con\">" + tbl + "</a></td>" +
+							 "<td><a href=\"browse.aspx?db=" + db + "&tbl=" + tbl + "\" target=\"con\"><img src=\"img/browse.png\" alt=\"Browse \"/></a></td>" +
+							 "<td><a href=\"struct.aspx?db=" + db +  "&tbl=" + tbl + "\" target=\"con\"><img src=\"img/struct.png\" alt=\"Table Structure\" /></a></td><td><img src=\"img/search.png\" /></td>" +
+							 "<td><img src=\"img/insert.png\" /></td>" +
+							 "<td><img src=\"img/drop.png\"/ ></td>" +
+							 "<td><img src=\"img/empty.png\" /></td>" +
+							 "<td class=\"right\">" + size["rows"] + "</td><td class=\"right\">" + size["reserved"] + "</td></tr>";
+			}
+			body.InnerHtml += "<tbody></table>";
+		}
+
+		Dictionary<string, string> procedures = dbl.getStoredProcedures(db);
+		if (procedures != null) {
+			body.InnerHtml += "<br /><table><tr class=\"title\"><td>Name</td><td>Type</td><td>Modify</td><td>Remove</td><td>Return Type</td></tr>";
+			foreach(KeyValuePair<string, string> kvp in procedures) body.InnerHtml +="<tr><td>" + kvp.Key + "</td><td>" + kvp.Value + "</td><td></td><td></td><td></td></tr>";
+			body.InnerHtml += "</table>";
+		}
+	}
+
+	private void tbl_struct() {
+		DataSet cols = dbl.getColumnInformation(db, tbl);
+		if (cols != null) {
+			body.InnerHtml += "<table><tbody><tr class=\"title\"><td>&nbsp;</td><td>Name</td><td>Default</td><td>Nullable</td><td>Type</td><td>Constraint</td><td>Collation</td></tr>";
+			foreach (DataTable t in cols.Tables) for (int i = 0; i < t.Rows.Count; i++) {
+				body.InnerHtml += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd")  + "\">" +
+							 "<td><input type=\"checkbox\" id=\"" + db + "_" + tbl + "_" + t.Rows[i]["COLUMN_NAME"] + "\"</td>" +
+							 "<td>" +t.Rows[i]["COLUMN_NAME"] + "</td>" +
+							 "<td class=\"right\">" + ((t.Rows[i]["COLUMN_DEFAULT"].ToString().StartsWith("(")) ?
+													    t.Rows[i]["COLUMN_DEFAULT"].ToString().Substring(1, t.Rows[i]["COLUMN_DEFAULT"].ToString().Length - 2) :
+														t.Rows[i]["COLUMN_DEFAULT"]) + "</td>" +
+							 "<td class=\"right\">" + t.Rows[i]["IS_NULLABLE"].ToString().ToLower() + "</td>" +
+							 "<td class=\"right\">" + t.Rows[i]["DATA_TYPE"] + ((t.Rows[i].IsNull("CHARACTER_MAXIMUM_LENGTH")) ? "" : // strings and binary
+																				 "(" + ((int.Parse(t.Rows[i]["CHARACTER_MAXIMUM_LENGTH"].ToString()) == -1) ? "MAX" :
+																				 t.Rows[i]["CHARACTER_MAXIMUM_LENGTH"]) + ")") +
+																			   ((t.Rows[i].IsNull("NUMERIC_PRECISION")) ? "" : // numbers
+																				 "(" + ((t.Rows[i]["NUMERIC_PRECISION"])) + ((t.Rows[i].IsNull("NUMERIC_SCALE")) ? "" :
+																				 ", " + t.Rows[i]["NUMERIC_SCALE"]) + ")") +
+																			   ((t.Rows[i].IsNull("DATETIME_PRECISION")) ? "" : // datetimes
+																				 "(" + t.Rows[i]["DATETIME_PRECISION"] + ")") + "</td>" +
+							 "<td>" + t.Rows[i]["CONSTRAINT_NAME"] + "</td>" +
+							 "<td>" + t.Rows[i]["COLLATION_NAME"].ToString().ToLower() + "</td></tr>";
+			}
+			body.InnerHtml += "</tbody></table>";
+		}
+	}
+</script>

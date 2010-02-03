@@ -1,0 +1,17 @@
+<%@ Master Language="C#" MasterPageFile="~/masters/layout.master" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Web" %>
+<script runat="server">
+	private void Page_Load(Object sender, EventArgs e) {
+		HtmlGenericControl body = (HtmlGenericControl)this.Master.FindControl("body");
+		DBLayer dbl = new DBLayer();
+
+		if (Request.Form["r_execute"] != null) body.InnerHtml = dbl.restoreDatabase(Request.Form["db"], Request.Form["r_file"]);
+
+		if (Request.QueryString["db"] == null) return;
+		string db = Request.QueryString["db"]; string tbl = Request.QueryString["tbl"];
+
+		body.InnerHtml += DisplayLayer.GetRestoreArea(db);
+	}
+</script>

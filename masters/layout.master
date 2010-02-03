@@ -1,0 +1,16 @@
+<%@ Master Language="C#" %>
+<script runat="server">
+	private NameValueCollection qs = HttpContext.Current.Request.QueryString;
+</script>
+<html>
+ <head>
+  <title><asp:Literal id="title" runat="server">C#MSAdmin 0.2.5 - The C# MSSQL Server Administration Project</asp:Literal></title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="js/lib.js"></script>
+ </head>
+ <body id="body" runat="server"></body>
+ <frameset id="frameset" cols="200,*" runat="server" visible="false">
+  <frame src="navigation.aspx?<%=qs.ToString()%>" name="nav" frameborder="0" />
+  <frame src="<%=((qs["db"] == null) ? "home.aspx" : "struct.aspx")%>?<%=qs.ToString()%>" name="con" frameborder="0" />
+ </frameset>
+</html>

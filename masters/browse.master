@@ -1,0 +1,34 @@
+<%@ Master Language="C#" MasterPageFile="~/masters/layout.master" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Data" %>
+<script runat="server">
+	protected override void OnLoad(EventArgs e) {
+		HtmlGenericControl body = (HtmlGenericControl)this.Master.FindControl("body");
+		DBLayer dbl = new DBLayer();
+
+		if (Request.QueryString["db"] == null || Request.QueryString["tbl"] == null) return;
+
+		string db = Request.QueryString["db"]; string tbl = Request.QueryString["tbl"];
+		int pg = (Request.QueryString["p"] != null) ? int.Parse(Request.QueryString["p"]) : 0;
+		int cnt = (Request.QueryString["c"] != null) ? int.Parse(Request.QueryString["c"]) : 30;
+
+		dbl.SaveLastQuery = true;
+		DataSet records = dbl.getRecordsFromTable(db, tbl, pg * cnt, cnt);
+		body.InnerHtml += "Returned " + Convert.ToString(records.Tables[0].Rows.Count) + " rows<br />";
+
+		body.InnerHtml += DisplayLayer.GetQueryBox(db, tbl, dbl.LastQuery) +
+					 DisplayLayer.GetBrowseTableNavigation(db, tbl, dbl.getRowCount(db, tbl), pg, cnt) +
+					 "<table><tbody><tr class=\"title\"><td>&nbsp;</td>";
+
+		foreach (DataColumn c in records.Tables[0].Columns) body.InnerHtml += "<td>" + c.ColumnName + "</td>";
+		body.InnerHtml += "</tr>";
+
+		for (int i = 0; i < records.Tables[0].Rows.Count; i++) {
+			DataRow r = records.Tables[0].Rows[i];
+			body.InnerHtml += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd")  + "\"><td><input type=\"checkbox\" /></td>";
+			foreach(DataColumn c in records.Tables[0].Columns) body.InnerHtml += "<td>" + ((r[c.ColumnName].GetType().Name == "DBNull") ? "NULL" : r[c.ColumnName]) + "</td>";
+			body.InnerHtml += "</tr>";
+		}
+		body.InnerHtml += "</tbody></table>";
+	}
+</script>

@@ -1,0 +1,75 @@
+using System;
+using System.Collections.Specialized;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+
+partial class Handler : System.Web.IHttpHandler {
+	private Page p;
+
+	public Handler() {
+		p = new Page();
+		p.AppRelativeVirtualPath = "~";
+		p.PreInit += this.pre;
+	}
+
+	private void pre(object sender, EventArgs e) {
+		string url = HttpContext.Current.Request.ServerVariables["URL"];
+		DBLayer dbl = new DBLayer();
+		NameValueCollection qs = HttpContext.Current.Request.QueryString;
+
+		switch(url) {
+			case "/":
+				p.MasterPageFile = "~/masters/layout.master";	
+				((HtmlGenericControl)p.Master.FindControl("body")).Visible = false;
+				((HtmlGenericControl)p.Master.FindControl("frameset")).Visible = true;
+				return;
+			case "/browse.aspx":
+				p.MasterPageFile = "~/masters/browse.master";
+				break;
+			case "/default.aspx":
+				p.MasterPageFile = "~/masters/layout.master";	
+				((HtmlGenericControl)p.Master.FindControl("body")).Visible = false;
+				((HtmlGenericControl)p.Master.FindControl("frameset")).Visible = true;
+				return;
+			case "/home.aspx":
+				p.MasterPageFile = "~/masters/home.master";
+				break;
+			case "/navigation.aspx":
+				p.MasterPageFile = "~/masters/navigation.master";
+				return;
+			case "/query.aspx":
+				p.MasterPageFile = "~/masters/query.master";
+				break;
+			case "/restore.aspx":
+				p.MasterPageFile = "~/masters/restore.master";
+				break;
+			case "/select.aspx":
+				p.MasterPageFile = "~/masters/select.master";
+				break;
+			case "/struct.aspx":
+				p.MasterPageFile = "~/masters/struct.master";
+				break;
+			default:
+				p.MasterPageFile = "~/masters/layout.master";
+				((HtmlGenericControl)p.Master.FindControl("body")).InnerHtml = DisplayLayer.GetLocation(dbl.getServerName(), qs["db"], qs["tbl"]) +
+																			   DisplayLayer.GetTopTabs(LookupTables.pages(url), qs["db"], qs["tbl"]) +
+																			   "<br />Invalid URL";
+				return;
+		}
+
+		((HtmlGenericControl)p.Master.Master.FindControl("body")).InnerHtml = DisplayLayer.GetLocation(dbl.getServerName(), qs["db"], qs["tbl"]) +
+																			  DisplayLayer.GetTopTabs(LookupTables.pages(url), qs["db"], qs["tbl"]);
+	}
+
+	public bool IsReusable {
+		get { return false; }
+	}
+	public void ProcessRequest(HttpContext c) {
+		try {
+			p.ProcessRequest(c);
+		} catch(Exception ex) {
+			HttpContext.Current.Response.Write(ex.ToString().Replace(Environment.NewLine, "<br />") + "<br />");
+		}
+	}
+}
