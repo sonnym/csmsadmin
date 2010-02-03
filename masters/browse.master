@@ -17,8 +17,8 @@
 		body.InnerHtml += "Returned " + Convert.ToString(records.Tables[0].Rows.Count) + " rows<br />";
 
 		body.InnerHtml += DisplayLayer.GetQueryBox(db, tbl, dbl.LastQuery) +
-					 DisplayLayer.GetBrowseTableNavigation(db, tbl, dbl.getRowCount(db, tbl), pg, cnt) +
-					 "<table><tbody><tr class=\"title\"><td>&nbsp;</td>";
+						  DisplayLayer.GetBrowseTableNavigation(db, tbl, dbl.getRowCount(db, tbl), pg, cnt) +
+						  "<table><tbody><tr class=\"title\"><td>&nbsp;</td>";
 
 		foreach (DataColumn c in records.Tables[0].Columns) body.InnerHtml += "<td>" + c.ColumnName + "</td>";
 		body.InnerHtml += "</tr>";
