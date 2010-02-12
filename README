@@ -1,0 +1,24 @@
+I. INTRODUCTION
+csmsadmin is a clone of the popular phpMyAdmin written in C# and designed to interact with MSSQL (primarly T-SQL syntax) databases.
+
+It borrows design tenants from phpMyAdmin and makes them available to the MSSQL administrator and .NET developer.  The primary goals of the project are to introduce an intuitive interface for management of MSSQL databases and to increase productivity by reducing the amount of time spent using remote desktop to manage MSSQL databases.
+
+The primary design philosophy of the project revolves around the ideas of simplicity and speed - simple code is faster code.  The codebase, therefore, avoids any unnecessary abstractions that will merely lead to overhead and decreased overall performance.  Ancillary, but also critical, is the fact that, by releasing this software as open source, it will benefit from the scrutiny of others and will benefit thereby.
+
+II. INSTALLATION
+csmsadmin should currently work in most sane IIS environments as its own application, a virtual application within an existing application, or even a subdirecotry within an existing application. Simply download the source and deploy it in whichever way best fits your needs.
+
+One note about security is necessary at this point: csmsadmin, at present, is not designed to be autonomously secure; the current design expects the user to place it within a secure area defined by .NET. It also allows the user to enter arbitrary queries, so access should not be given to any untrusted users.
+
+III. PROJECT STATUS
+csmsadmin is currently in its infantile stages. As such, expect to find bugs and incomplete features. If you do find any, please report them to the project bug tracker at http://github.com/sonnym/csmsadmin/issues .
+
+Currently implemented features include:
+ - browsing databases, stored procedures, and tables
+ - input of arbitrary sql queries
+ - truncating tables
+ - dropping databases and tables
+ - restoration of database from a predefined location on the server
+
+IV. FEEDBACK
+Please submit any feedback to the project creater michaud dot sonny at gmail dot com - it is much appreciated.
