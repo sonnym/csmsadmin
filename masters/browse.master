@@ -18,14 +18,14 @@
 
 		body.InnerHtml += DisplayLayer.GetQueryBox(db, tbl, dbl.LastQuery) +
 						  DisplayLayer.GetBrowseTableNavigation(db, tbl, dbl.getRowCount(db, tbl), pg, cnt) +
-						  "<table><tbody><tr class=\"title\"><td>&nbsp;</td>";
+						  "<table><tbody><tr class=\"title\"><td colspan=\"3\">&nbsp;</td>";
 
 		foreach (DataColumn c in records.Tables[0].Columns) body.InnerHtml += "<td>" + c.ColumnName + "</td>";
 		body.InnerHtml += "</tr>";
 
 		for (int i = 0; i < records.Tables[0].Rows.Count; i++) {
 			DataRow r = records.Tables[0].Rows[i];
-			body.InnerHtml += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd")  + "\"><td><input type=\"checkbox\" /></td>";
+			body.InnerHtml += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd")  + "\"><td><input type=\"checkbox\" /></td><td><img src=\"img/edit.png\" /></td><td><img src=\"img/drop.png\" /></td>";
 			foreach(DataColumn c in records.Tables[0].Columns) body.InnerHtml += "<td>" + ((r[c.ColumnName].GetType().Name == "DBNull") ? "NULL" : r[c.ColumnName]) + "</td>";
 			body.InnerHtml += "</tr>";
 		}
