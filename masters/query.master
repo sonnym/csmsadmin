@@ -20,7 +20,7 @@
 
 		body.InnerHtml += DisplayLayer.GetQueryBox(db, tbl, q);
 
-		DataSet result = dbl.ExecuteQuery(db, q);
+		DataSet result = dbl.executeQuery(db, q);
 
 		foreach (DataTable t in result.Tables) {
 			body.InnerHtml += "<table><tr class=\"title\">";

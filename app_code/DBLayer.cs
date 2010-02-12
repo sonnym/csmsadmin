@@ -178,10 +178,11 @@ public class DBLayer {
 		}
 	}
 
-	public DataSet ExecuteQuery(string db, string q) {
+	public DataSet executeQuery(string db, string q) {
 		using (con = __initConnection(false)) {
 			con.Open();
-			con.ChangeDatabase(db);
+			if (String.IsNullOrEmpty(db)) con.ChangeDatabase("master");
+			else con.ChangeDatabase(db);
 			if (this.showPlan) {
 				using (com = new SqlCommand("SET SHOWPLAN_ALL ON", con)) {
 					com.ExecuteNonQuery();
