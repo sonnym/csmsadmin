@@ -137,7 +137,9 @@ public class DBLayer {
 	public Dictionary<string, string> getTableSize(string db, string tbl) {
 		using (con = __initConnection(false)) {
 			con.Open();
-			using (com = new SqlCommand("USE " + db + "; EXEC sp_spaceused " + tbl, con)) {
+			con.ChangeDatabase(db);
+			using (com = new SqlCommand("EXEC sp_spaceused @tbl", con)) {
+				com.Parameters.AddWithValue("@tbl", tbl);
 				SqlDataReader r = com.ExecuteReader();
 				if (!r.HasRows) return null;
 
