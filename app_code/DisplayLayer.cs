@@ -10,10 +10,10 @@ public class DisplayLayer {
 
 	// Generates the bread crumb navigation for the top of the page
 	public static string GetLocation(string srv, string db, string tbl) {
-		sb = new StringBuilder("<span class=\"loc\">Server: <a href=\"default.aspx\" target=\"_parent\">" + srv + "</a>");
+		sb = new StringBuilder("<div class=\"loc\">Server: <a href=\"default.aspx\" target=\"_parent\">" + srv + "</a>");
 		if (db != null && db.Length > 0) sb.Append(" &gt; Database: <a href=\"struct.aspx?db=" + db + "\">" + db + "</a>");
 		if (tbl != null && tbl.Length > 0) sb.Append(" &gt; Table: " + tbl);
-		sb.Append("</span><br />");
+		sb.Append("</div>");
 		return sb.ToString();
 	}
 	
