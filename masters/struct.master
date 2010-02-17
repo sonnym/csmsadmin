@@ -53,7 +53,7 @@
 	private void tbl_struct() {
 		DataSet cols = dbl.getColumnInformation(db, tbl);
 		if (cols != null) {
-			body.InnerHtml += "<table><tbody><tr class=\"title\"><td>&nbsp;</td><td>Name</td><td>Default</td><td>Nullable</td><td>Type</td><td>Constraint</td><td>Collation</td></tr>";
+			body.InnerHtml += "<table><tbody><tr class=\"title\"><td /><td>Name</td><td>Default</td><td>Nullable</td><td>Type</td><td>Constraint</td><td>Collation</td><td colspan=\"3\" /></tr>";
 			foreach (DataTable t in cols.Tables) for (int i = 0; i < t.Rows.Count; i++) {
 				body.InnerHtml += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd")  + "\">" +
 							 "<td><input type=\"checkbox\" id=\"" + db + "_" + tbl + "_" + t.Rows[i]["COLUMN_NAME"] + "\"</td>" +
@@ -71,7 +71,12 @@
 																			   ((t.Rows[i].IsNull("DATETIME_PRECISION")) ? "" : // datetimes
 																				 "(" + t.Rows[i]["DATETIME_PRECISION"] + ")") + "</td>" +
 							 "<td>" + t.Rows[i]["CONSTRAINT_NAME"] + "</td>" +
-							 "<td>" + t.Rows[i]["COLLATION_NAME"].ToString().ToLower() + "</td></tr>";
+							 "<td>" + t.Rows[i]["COLLATION_NAME"].ToString().ToLower() + "</td>" +
+							 "<td><a href=\"query.aspx?db=" + db + "&tbl=" + tbl + "&q=" + HttpUtility.UrlEncode("SELECT COUNT(*) AS Cardinality, " + t.Rows[i]["COLUMN_NAME"] + 
+								" FROM " + tbl + " GROUP BY " + t.Rows[i]["COLUMN_NAME"] + " ORDER BY " + t.Rows[i]["COLUMN_NAME"]) + "\"><img src=\"img/browse.png\" /></a></td>" +
+							 "<td><img src=\"img/edit.png\" /></td>" +
+							 "<td><img src=\"img/drop.png\" /></td>" +
+							 "</tr>";
 			}
 			body.InnerHtml += "</tbody></table>";
 		}
