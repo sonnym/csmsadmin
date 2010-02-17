@@ -47,7 +47,7 @@ public class DisplayLayer {
 		sb = new StringBuilder();
 		double last = Math.Ceiling((double)(rows / count));
 		if (page > 0) sb.Append("<a href=\"browse.aspx?db=" + db + "&tbl=" + tbl + "&c=" + Convert.ToString(count) + "\">&laquo;</a> <a href=\"browse.aspx?db=" + db + "&tbl=" + tbl + "&p=" + Convert.ToString(page - 1) + "&c=" + Convert.ToString(count) + "\">&lsaquo;</a>");
-		if (rows > count * page) sb.Append("<a href=\"browse.aspx?db=" + db + "&tbl=" + tbl + "&p=" + Convert.ToString(page + 1) + "&c=" + Convert.ToString(count) + "\">&rsaquo;</a> <a href=\"browse.aspx?db=" + db + "&tbl=" + tbl + "&p=" + Convert.ToString(last) + "&c=" + Convert.ToString(count) + "\">&raquo;</a>");
+		if (rows > count * (page + 1)) sb.Append("<a href=\"browse.aspx?db=" + db + "&tbl=" + tbl + "&p=" + Convert.ToString(page + 1) + "&c=" + Convert.ToString(count) + "\">&rsaquo;</a> <a href=\"browse.aspx?db=" + db + "&tbl=" + tbl + "&p=" + Convert.ToString(last) + "&c=" + Convert.ToString(count) + "\">&raquo;</a>");
 		return sb.ToString();
 	}
 
