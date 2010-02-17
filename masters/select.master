@@ -85,7 +85,7 @@
 			if (qsb.Length == 0) qsb.Append("SELECT * FROM " + tbl + " WHERE " + ((!String.IsNullOrEmpty(Request.Form["where"])) ? Request.Form["where"] : ""));
 			else qsb.Append(" AND");
 
-			qsb.Append(" "  + t.Rows[i]["COLUMN_NAME"] + " " + LookupTables.comparisonOperators(Request.Form["op_" + t.Rows[i]["COLUMN_NAME"]]) + " " + Request.Form["ex_" + t.Rows[i]["COLUMN_NAME"]]);
+			qsb.Append(" "  + t.Rows[i]["COLUMN_NAME"] + " " + LookupTables.comparisonOperators(Request.Form["op_" + t.Rows[i]["COLUMN_NAME"]]) + " '" + Request.Form["ex_" + t.Rows[i]["COLUMN_NAME"]] + "'");
 		}
 
 		Response.Redirect("query.aspx?db=" + db + "&tbl=" + tbl + "&q=" + Server.UrlEncode(qsb.ToString()));
