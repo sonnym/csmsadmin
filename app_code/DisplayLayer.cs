@@ -37,7 +37,7 @@ public class DisplayLayer {
 
 	// Generates the box which contains a query string after execution
 	public static string GetQueryBox(string db, string tbl, string q) {
-		return "<div class=\"query_box\">" + q.Replace("FROM", "<br/>FROM").Replace("WHERE", "<br />WHERE") + "<br />" +
+		return "<div class=\"query_box\">" + q.Replace("FROM", "<br/>FROM").Replace("WHERE", "<br />WHERE").Replace("AND", "<br />AND").Replace("OR", "<br />OR") + "<br />" +
 				"<div class=\"right_container\">[ <a href=\"query.aspx?sp=1&db=" + db + "&tbl=" + tbl + "&q=" + HttpContext.Current.Server.UrlEncode(q) + "\">Show Plan</a> ]" +
 				" [ <a href=\"query.aspx?e=1&db=" + db + "&tbl=" + tbl + "&q=" + HttpContext.Current.Server.UrlEncode(q) + "\">Edit</a> ]</div></div>";
 	}
