@@ -30,13 +30,13 @@
 				Dictionary<string, string> size = dbl.getTableSize(db, tbl);
 				body.InnerHtml += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd")  + "\">" +
 							 "<td><input type=\"checkbox\" id=\"" + db + "_" + tbl + "\"</td>" +
-							 "<td><a href=\"struct.aspx?db=" + db + "&tbl=" + tbl + "\" target=\"con\">" + tbl + "</a></td>" +
-							 "<td><a href=\"browse.aspx?db=" + db + "&tbl=" + tbl + "\" target=\"con\"><img src=\"img/browse.png\" alt=\"Browse \" /></a></td>" +
-							 "<td><a href=\"struct.aspx?db=" + db + "&tbl=" + tbl + "\" target=\"con\"><img src=\"img/struct.png\" alt=\"Structure\" /></a></td>" +
-							 "<td><a href=\"select.aspx?db=" + db + "&tbl=" + tbl + "\" target=\"con\"><img src=\"img/search.png\" alt=\"Search\" /></td>" +
-							 "<td><a href=\"insert.aspx?db=" + db + "&tbl=" + tbl + "\" target=\"cont\"><img src=\"img/insert.png\" /></a></td>" +
-							 "<td><a href=\"query.aspx?db=" + db + "&tbl=" + tbl + "&q=" + HttpUtility.UrlEncode("TRUNCATE TABLE " + tbl) + "\" target=\"con\"><img src=\"img/empty.png\" alt=\"Empty\" /></td>" +
-							 "<td><a href=\"query.aspx?db=" + db + "&q=" + HttpUtility.UrlEncode("DROP TABLE " + tbl) + "\" target=\"con\"><img src=\"img/drop.png\" alt=\"Drop\" /></td>" +
+							 "<td><a href=\"struct.aspx?db=" + db + "&tbl=" + tbl + "\">" + tbl + "</a></td>" +
+							 "<td><a href=\"browse.aspx?db=" + db + "&tbl=" + tbl + "\"><img src=\"img/browse.png\" alt=\"Browse \" /></a></td>" +
+							 "<td><a href=\"struct.aspx?db=" + db + "&tbl=" + tbl + "\"><img src=\"img/struct.png\" alt=\"Structure\" /></a></td>" +
+							 "<td><a href=\"select.aspx?db=" + db + "&tbl=" + tbl + "\"><img src=\"img/search.png\" alt=\"Search\" /></td>" +
+							 "<td><a href=\"insert.aspx?db=" + db + "&tbl=" + tbl + "\"><img src=\"img/insert.png\" /></a></td>" +
+							 "<td><a href=\"query.aspx?db=" + db + "&tbl=" + tbl + "&q=" + HttpUtility.UrlEncode("TRUNCATE TABLE " + tbl) + "\"><img src=\"img/empty.png\" alt=\"Empty\" /></td>" +
+							 "<td><a href=\"query.aspx?db=" + db + "&q=" + HttpUtility.UrlEncode("DROP TABLE " + tbl) + "\"><img src=\"img/drop.png\" alt=\"Drop\" /></td>" +
 							 "<td class=\"right\">" + size["rows"] + "</td><td class=\"right\">" + size["reserved"] + "</td></tr>";
 			}
 			body.InnerHtml += "<tbody></table>";
