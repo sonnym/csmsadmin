@@ -1,9 +1,9 @@
 using System;
-using System.Web;
-using System.Data;
 using System.Collections;
-using System.Data.SqlClient;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Web;
 
 /*
 use master;
@@ -16,8 +16,8 @@ exec sys.xp_logininfo
 exec sys.sp_who
 exec sys.sp_who2
 
-USE videonote;
-DBCC SHOW_STATISTICS (N'Users', FullName)
+USE Northwind;
+DBCC SHOW_STATISTICS (N'Products', ProductName)
 
 http://www.databasejournal.com/features/mssql/article.php/2244381/Examining-SQL-Servers-IO-Statistics.htm
 exec sp_monitor

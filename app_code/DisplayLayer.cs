@@ -79,8 +79,9 @@ public class DisplayLayer {
 	*/
 	public static string GetSelect(string n, bool m, ArrayList nvs, string sel) {
 		sb = new StringBuilder();
-		sb.Append("<select name=\"" + n + "\"" + ((m) ? "multiple=\"multiple\"" : "") + ">");
-		for (int i = 0; i < nvs.Count; i++) sb.Append("<option name=\"" + nvs[i] + "\" value=\"" + nvs[i] + ((nvs[i].Equals(sel)) ? "\" selected=selected\"" : "") + "\" >" + nvs[i] + "</option>");
+		sb.Append("<select name=\"" + n + "\"" + ((m) ? "multiple=\"multiple\"" : "") + " onchange=\"checkNav(this)\" onkeyup=\"checkNav(this)\">");
+		for (int i = 0; i < nvs.Count; i++)
+			sb.Append("<option name=\"" + nvs[i] + "\" value=\"" + nvs[i] + ((nvs[i].Equals(sel)) ? "\" selected=selected\"" : "") + "\" >" + nvs[i] + "</option>");
 		sb.Append("</select");
 		return sb.ToString();
 	}

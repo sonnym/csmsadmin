@@ -28,7 +28,7 @@ partial class Handler : System.Web.IHttpHandler {
 				p.MasterPageFile = "~/masters/browse.master";
 				break;
 			case "/default.aspx":
-				p.MasterPageFile = "~/masters/layout.master";	
+				p.MasterPageFile = "~/masters/layout.master";
 				((HtmlGenericControl)p.Master.FindControl("body")).Visible = false;
 				((HtmlGenericControl)p.Master.FindControl("frameset")).Visible = true;
 				return;

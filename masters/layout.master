@@ -6,6 +6,7 @@
  <head>
   <title><asp:Literal id="title" runat="server">C#MSAdmin 0.2.5 - The C# MSSQL Server Administration Project</asp:Literal></title>
   <link href="style.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="js/querystring.js"></script>
   <script type="text/javascript" src="js/lib.js"></script>
  </head>
  <body id="body" runat="server"></body>
