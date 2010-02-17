@@ -22,8 +22,8 @@ public class DisplayLayer {
 		bool ne = String.IsNullOrEmpty(tbl);
 		sb = new StringBuilder();
 		sb.Append("<div class=\"toptabs\"><ul>");
-		if (!ne) sb.Append("<li class=\"" + ((String.Compare("Browse", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"browse.aspx?db=" + db + "&tbl=" + tbl + "\">Browse</a></li>");
 		sb.Append("<li class=\"" + ((String.Compare("Structure", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"struct.aspx?db=" + db + "&tbl=" + tbl + "\">Structure</a></li>");
+		if (!ne) sb.Append("<li class=\"" + ((String.Compare("Browse", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"browse.aspx?db=" + db + "&tbl=" + tbl + "\">Browse</a></li>");
 		sb.Append("<li class=\"" + ((String.Compare("SQL", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"query.aspx?db=" + db + "&tbl=" + tbl + "\">SQL</a></li>");
 		sb.Append("<li class=\"" + ((String.Compare("Search", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"select.aspx?db=" + db + "&tbl=" + tbl + "\">Search</a></li>");
 		if (!ne) sb.Append("<li class=\"" + ((String.Compare("Insert", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"insert.aspx?db=" + db + "&tbl=" + tbl + "\">Insert</a></li>");
