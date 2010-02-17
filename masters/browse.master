@@ -20,19 +20,20 @@
 		body.InnerHtml += DisplayLayer.GetQueryBox(db, tbl, dbl.LastQuery) +
 						  DisplayLayer.GetBrowseTableNavigation(db, tbl, dbl.getRowCount(db, tbl), pg, cnt);
 
-		string headers = String.Empty, args = String.Empty, tableBody = String.Empty;
+		string headers = String.Empty, tableBody = String.Empty;
 
 		int rows = records.Tables[0].Rows.Count;
 		for (int i = 0; i < rows; i++) {
 			DataRow r = records.Tables[0].Rows[i];
-			string rowBody = String.Empty;
+			string rowBody = String.Empty, args = String.Empty;
 
 			for (int j = 0, cols = records.Tables[0].Columns.Count; j < cols; j++) {
 				DataColumn c = records.Tables[0].Columns[j];
 
+				bool dbnull = r[c.ColumnName].GetType().Name == "DBNull";
 				if (i == 0) headers += "<td>" + c.ColumnName + "</td>";
-				rowBody += "<td>" + ((r[c.ColumnName].GetType().Name == "DBNull") ? "NULL" : r[c.ColumnName]) + "</td>";
-				args += ((j > 0) ? " AND " : "") + c.ColumnName + " = '" + r[c.ColumnName] + "'";
+				rowBody += "<td>" + ((dbnull) ? "NULL" : r[c.ColumnName]) + "</td>";
+				args += ((j > 0) ? " AND " : "") + c.ColumnName + ((dbnull) ? " IS NULL" : " = '" + r[c.ColumnName] + "'");
 			}
 			tableBody += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd")  + "\"><td><input type=\"checkbox\" /></td><td><img src=\"img/edit.png\" /></td>" +
 						 "<td><a href=\"query.aspx?db=" + db + "&tbl=" + tbl + "&q=" + HttpUtility.UrlEncode("DELETE FROM " + tbl + " WHERE " + args) + "\"><img src=\"img/drop.png\" /></a></td>" +
