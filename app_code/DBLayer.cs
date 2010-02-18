@@ -175,12 +175,15 @@ public class DBLayer {
 		}
 	}
 
-	public DataSet getCharsets() { // SELECT * FROM fn_helpcollations()
-
+	public DataSet getCharsets() {
 		return executeQuery("master", "SELECT id, name, description FROM sys.syscharsets WHERE type = 1001 ORDER BY name; " +
 										"SELECT sortorders.csid, sortorders.name, sortorders.description FROM sys.syscharsets AS sortorders " +
 										"LEFT OUTER JOIN (SELECT id, name FROM sys.syscharsets WHERE type = 1001)charsets ON sortorders.csid = charsets.id " +
 										"WHERE sortorders.type = 2001 ORDER BY charsets.name, sortorders.name");
+	}
+
+	public DataTable getCollations() {
+		return executeQuery("master", "SELECT * FROM fn_helpcollations() ORDER BY name").Tables[0];
 	}
 
 	public DataSet executeQuery(string db, string q) {
