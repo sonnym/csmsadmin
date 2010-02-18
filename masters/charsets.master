@@ -1,0 +1,28 @@
+<%@ Master Language="C#" MasterPageFile="~/masters/layout.master" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Web" %>
+<script runat="server">
+	protected override void OnLoad(EventArgs e) {
+		HtmlGenericControl body = (HtmlGenericControl)this.Master.FindControl("body");
+		DBLayer dbl = new DBLayer();
+
+		DataSet result = dbl.getCharsets();
+
+		DataTable charsets = result.Tables[0];
+		DataTable sortorders = result.Tables[1];
+		int i = 0, j = 0, curcs = -1, solen = sortorders.Rows.Count;
+
+		body.InnerHtml += "<table><tbody><tr class=\"title\"><td>Name</td><td>Description</td></tr>";
+		for (int len = charsets.Rows.Count; i < len; i++) {
+			curcs = int.Parse(charsets.Rows[i][0].ToString());
+			body.InnerHtml += "<tr class=\"bold\"><td>" + charsets.Rows[i][1].ToString() + "</td><td>" + charsets.Rows[i][2].ToString() + "</td></tr>";
+			while (j < solen && int.Parse(sortorders.Rows[j][0].ToString()) == curcs) {
+				body.InnerHtml += "<tr class=\"" + (((i + j + 1) % 2 == 0) ? "even" : "odd") + "\"><td>" + sortorders.Rows[j][1].ToString() + "</td><td>" + sortorders.Rows[j][2] + "</td></tr>";
+				j++;
+			}
+		}
+		body.InnerHtml += "</tbody></table>";
+
+	}
+</script>

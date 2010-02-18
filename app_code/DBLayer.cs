@@ -7,7 +7,6 @@ using System.Web;
 
 /*
 use master;
-SELECT * FROM sys.subsystems
 exec sys.xp_msver
 exec sys.server_info
 exec sys.sp_enum_oledb_providers
@@ -22,8 +21,6 @@ DBCC SHOW_STATISTICS (N'Products', ProductName)
 http://www.databasejournal.com/features/mssql/article.php/2244381/Examining-SQL-Servers-IO-Statistics.htm
 exec sp_monitor
 DBCC PERFMON
-
-SELECT * FROM fn_helpcollations()
 
 SELECT @@VERSION
 
@@ -178,11 +175,18 @@ public class DBLayer {
 		}
 	}
 
+	public DataSet getCharsets() { // SELECT * FROM fn_helpcollations()
+
+		return executeQuery("master", "SELECT id, name, description FROM sys.syscharsets WHERE type = 1001 ORDER BY name; " +
+										"SELECT sortorders.csid, sortorders.name, sortorders.description FROM sys.syscharsets AS sortorders " +
+										"LEFT OUTER JOIN (SELECT id, name FROM sys.syscharsets WHERE type = 1001)charsets ON sortorders.csid = charsets.id " +
+										"WHERE sortorders.type = 2001 ORDER BY charsets.name, sortorders.name");
+	}
+
 	public DataSet executeQuery(string db, string q) {
 		using (con = __initConnection(false)) {
 			con.Open();
-			if (String.IsNullOrEmpty(db)) con.ChangeDatabase("master");
-			else con.ChangeDatabase(db);
+			if (!String.IsNullOrEmpty(db)) con.ChangeDatabase(db);
 			if (this.showPlan) {
 				using (com = new SqlCommand("SET SHOWPLAN_ALL ON", con)) {
 					com.ExecuteNonQuery();

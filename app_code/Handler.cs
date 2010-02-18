@@ -24,6 +24,9 @@ partial class Handler : System.Web.IHttpHandler {
 				((HtmlGenericControl)p.Master.FindControl("body")).Visible = false;
 				((HtmlGenericControl)p.Master.FindControl("frameset")).Visible = true;
 				return;
+			case "/charsets.aspx":
+				p.MasterPageFile = "~/masters/charsets.master";
+				break;
 			case "/browse.aspx":
 				p.MasterPageFile = "~/masters/browse.master";
 				break;
