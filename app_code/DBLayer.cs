@@ -26,6 +26,21 @@ SELECT @@VERSION
 
 SELECT USER_NAME()
 SELECT * FROM sysusers
+
+server statistics
+SELECT * FROM sys.dm_exec_background_job_queue;
+SELECT * FROM sys.dm_exec_query_optimizer_info;
+SELECT * FROM sys.dm_exec_background_job_queue;
+SELECT * FROM sys.dm_exec_background_job_queue_stats;
+SELECT * FROM sys.dm_exec_query_resource_semaphores;
+SELECT * FROM sys.dm_exec_query_stats;
+SELECT * FROM sys.dm_exec_requests;
+SELECT * FROM sys.dm_exec_connections;
+SELECT * FROM sys.dm_exec_sessions;
+SELECT * FROM sys.dm_exec_procedure_stats;
+SELECT * FROM sys.dm_exec_trigger_stats;
+SELECT * FROM sys.dm_exec_query_memory_grants;
+SELECT * FROM sys.dm_exec_query_transformation_stats;
 */
 
 public class DBLayer {

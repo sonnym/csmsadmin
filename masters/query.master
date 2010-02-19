@@ -24,7 +24,7 @@
 
 		foreach (DataTable t in result.Tables) {
 			body.InnerHtml += "<table><tbody><tr class=\"title\">";
-			foreach (DataColumn c in result.Tables[0].Columns) body.InnerHtml += "<td>" + c.ColumnName + "</td>";
+			foreach (DataColumn c in t.Columns) body.InnerHtml += "<td>" + c.ColumnName + "</td>";
 			body.InnerHtml += "</tr>";
 
 			foreach (DataRow r in t.Rows) {
