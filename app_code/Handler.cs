@@ -71,8 +71,10 @@ partial class Handler : System.Web.IHttpHandler {
 	public void ProcessRequest(HttpContext c) {
 		try {
 			p.ProcessRequest(c);
-		} catch(Exception ex) {
-			HttpContext.Current.Response.Write(ex.ToString().Replace(Environment.NewLine, "<br />") + "<br />");
+		} catch(Exception ex) { // System.Web.HttpUnhandledException is predominant
+			if (ex.InnerException.GetType().ToString().Equals("System.Data.SqlClient.SqlException")) {
+				HttpContext.Current.Response.Write("SQL Error Occurred: " + ex.InnerException.Message);
+			} else HttpContext.Current.Response.Write(ex.ToString().Replace(Environment.NewLine, "<br />") + "<br />");
 		}
 	}
 }
