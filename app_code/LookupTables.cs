@@ -26,6 +26,7 @@ public class LookupTables {
 			case "/browse.aspx":     return "Browse";
 			case "/charsets.aspx":   return "Charsets";
 			case "/home.aspx":       return "Structure";
+			case "/processes.aspx":  return "Processes";
 			case "/query.aspx":      return "SQL";
 			case "/restore.aspx":    return "Restore";
 			case "/struct.aspx":     return "Structure";

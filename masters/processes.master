@@ -1,0 +1,26 @@
+<%@ Master Language="C#" MasterPageFile="~/masters/layout.master" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Web" %>
+<script runat="server">
+	protected override void OnLoad(EventArgs e) {
+		HtmlGenericControl body = (HtmlGenericControl)this.Master.FindControl("body");
+		DBLayer dbl = new DBLayer();
+
+		DataTable processes = dbl.getProcesses();
+
+
+		string headers = String.Empty, tableBody = String.Empty;
+		for (int i = 0, rows = processes.Rows.Count; i < rows; i++) {
+			DataRow r = processes.Rows[i];
+
+			tableBody += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd") + "\"><td><a href=\"query.aspx?db=&tbl=&q=" + HttpUtility.UrlEncode("KILL " + r[0].ToString()) + "\">KILL</a></td>";
+			foreach (DataColumn c in processes.Columns) {
+				if (i == 0) headers += "<td>" + c.ColumnName + "</td>";
+				tableBody += "<td>" + ((r[c.ColumnName].GetType().Name == "DBNull") ? "NULL" : r[c.ColumnName]) + "</td>";
+			}
+			tableBody += "</tr>";
+		}
+		body.InnerHtml += "<table><tbody><tr class=\"title\"><td />" + headers + "</tr>" + tableBody + "</tbody></table>";
+	}
+</script>

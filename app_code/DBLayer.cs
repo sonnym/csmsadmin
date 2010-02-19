@@ -186,6 +186,11 @@ public class DBLayer {
 		return executeQuery("master", "SELECT * FROM fn_helpcollations() ORDER BY name").Tables[0];
 	}
 
+	public DataTable getProcesses() {
+		return executeQuery("master", "SELECT spid, waittime, hostname, dbs.name AS db, procs.loginame, procs.status, cmd FROM sys.sysprocesses AS procs " +
+										"LEFT OUTER JOIN sys.sysdatabases AS dbs ON procs.dbid = dbs.dbid").Tables[0];
+	}
+
 	public DataSet executeQuery(string db, string q) {
 		using (con = __initConnection(false)) {
 			con.Open();

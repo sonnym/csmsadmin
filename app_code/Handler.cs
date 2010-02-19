@@ -41,6 +41,9 @@ partial class Handler : System.Web.IHttpHandler {
 			case "/navigation.aspx":
 				p.MasterPageFile = "~/masters/navigation.master";
 				return;
+			case "/processes.aspx":
+				p.MasterPageFile = "~/masters/processes.master";
+				break;
 			case "/query.aspx":
 				p.MasterPageFile = "~/masters/query.master";
 				break;
@@ -72,7 +75,7 @@ partial class Handler : System.Web.IHttpHandler {
 		try {
 			p.ProcessRequest(c);
 		} catch(Exception ex) { // System.Web.HttpUnhandledException is predominant
-			if (ex.InnerException.GetType().ToString().Equals("System.Data.SqlClient.SqlException")) {
+			if (ex.InnerException != null && ex.InnerException.GetType().ToString().Equals("System.Data.SqlClient.SqlException")) {
 				HttpContext.Current.Response.Write("SQL Error Occurred: " + ex.InnerException.Message);
 			} else HttpContext.Current.Response.Write(ex.ToString().Replace(Environment.NewLine, "<br />") + "<br />");
 		}

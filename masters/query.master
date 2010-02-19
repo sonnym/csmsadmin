@@ -23,7 +23,7 @@
 		DataSet result = dbl.executeQuery(db, q);
 
 		foreach (DataTable t in result.Tables) {
-			body.InnerHtml += "<table><tr class=\"title\">";
+			body.InnerHtml += "<table><tbody><tr class=\"title\">";
 			foreach (DataColumn c in result.Tables[0].Columns) body.InnerHtml += "<td>" + c.ColumnName + "</td>";
 			body.InnerHtml += "</tr>";
 
@@ -32,7 +32,7 @@
 				foreach(DataColumn c in t.Columns) body.InnerHtml += "<td>" + ((r[c.ColumnName].GetType().Name == "DBNull") ? "NULL" : r[c.ColumnName]) + "</td>";
 				body.InnerHtml += "</tr>";
 			}
-			body.InnerHtml += "</table><br />";
+			body.InnerHtml += "</tbody></table><br />";
 		}
 	}
 </script>
