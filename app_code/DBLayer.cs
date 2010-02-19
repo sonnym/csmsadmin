@@ -10,7 +10,6 @@ use master;
 exec sys.xp_msver
 exec sys.server_info
 exec sys.sp_enum_oledb_providers
-exec sys.sp_configure
 exec sys.xp_logininfo
 exec sys.sp_who
 exec sys.sp_who2
@@ -131,7 +130,7 @@ public class DBLayer {
 		}
 	}
 
-	public Dictionary<string, string> getStoredProcedures(string db) {
+	public DataTable getStoredProcedures(string db) {
 		using (con = __initConnection(false)) {
 			con.Open();
 			con.ChangeDatabase(db);
@@ -139,9 +138,8 @@ public class DBLayer {
 				SqlDataReader r = com.ExecuteReader();
 				if (!r.HasRows) return null;
 
-				Dictionary<string, string> d = new Dictionary<string, string>();
-				while (r.Read()) d.Add(r["name"].ToString(), r["type"].ToString());
-				return d;
+				DataSet ds = __sqlDataReaderToDataSet(ref r, 1);
+				return ds.Tables[0];
 			}
 		}
 	}
@@ -188,6 +186,10 @@ public class DBLayer {
 				return __sqlDataReaderToDataSet(ref r, 1);
 			}
 		}
+	}
+
+	public DataTable getConfiguration() {
+		return executeQuery("master", "SELECT name, value, value_in_use, minimum, maximum, description FROM sys.configurations ORDER BY name").Tables[0];
 	}
 
 	public DataSet getCharsets() {

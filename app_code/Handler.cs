@@ -27,6 +27,9 @@ partial class Handler : System.Web.IHttpHandler {
 			case "/charsets.aspx":
 				p.MasterPageFile = "~/masters/charsets.master";
 				break;
+			case "/configuration.aspx":
+				p.MasterPageFile = "~/masters/configuration.master";
+				break;
 			case "/browse.aspx":
 				p.MasterPageFile = "~/masters/browse.master";
 				break;

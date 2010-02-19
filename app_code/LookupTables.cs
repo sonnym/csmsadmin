@@ -23,15 +23,16 @@ public class LookupTables {
 
 	public static string pages(string s) {
 		switch(s) {
-			case "/browse.aspx":     return "Browse";
-			case "/charsets.aspx":   return "Charsets";
-			case "/home.aspx":       return "Structure";
-			case "/processes.aspx":  return "Processes";
-			case "/query.aspx":      return "SQL";
-			case "/restore.aspx":    return "Restore";
-			case "/struct.aspx":     return "Structure";
-			case "/select.aspx":     return "Search";
-			default:                 return null;
+			case "/browse.aspx":         return "Browse";
+			case "/charsets.aspx":       return "Charsets";
+			case "/configuration.aspx":  return "Configuration";
+			case "/home.aspx":           return "Structure";
+			case "/processes.aspx":      return "Processes";
+			case "/query.aspx":          return "SQL";
+			case "/restore.aspx":        return "Restore";
+			case "/struct.aspx":         return "Structure";
+			case "/select.aspx":         return "Search";
+			default:                     return null; //default.aspx, navigation.aspx
 		}
 	}
 }
