@@ -17,6 +17,7 @@ tr.title {
 	background: #000000;
 	text-align: center;
 }
+tr.title a { color: #ffffff; }
 tr.even { background: #ffffff; }
 tr.odd { background: #efefef; }
 td.right { text-align: right; }

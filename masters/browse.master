@@ -31,7 +31,7 @@
 				DataColumn c = records.Tables[0].Columns[j];
 
 				bool dbnull = r[c.ColumnName].GetType().Name == "DBNull";
-				if (i == 0) headers += "<td>" + c.ColumnName + "</td>";
+				if (i == 0) headers += "<td><a href=\"query.aspx?db=" + db + "&tbl=" + tbl + "&q=" + HttpUtility.UrlEncode("SELECT TOP 30 * FROM " + tbl + " ORDER BY " + c.ColumnName) + "\">" + c.ColumnName + "</a></td>";
 				rowBody += "<td>" + ((dbnull) ? "NULL" : r[c.ColumnName]) + "</td>";
 				args += ((j > 0) ? " AND " : "") + c.ColumnName + ((dbnull) ? " IS NULL" : " = '" + r[c.ColumnName] + "'");
 			}
