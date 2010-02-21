@@ -20,6 +20,7 @@ DBCC SHOW_STATISTICS (N'Products', ProductName)
 http://www.databasejournal.com/features/mssql/article.php/2244381/Examining-SQL-Servers-IO-Statistics.htm
 exec sp_monitor
 DBCC PERFMON
+DBCC SHRINKDATABASE
 
 SELECT @@VERSION
 
@@ -284,6 +285,22 @@ public class DBLayer {
 			con.Open();
 			con.ChangeDatabase("master");
 			using (com = new SqlCommand("CREATE DATABASE " + n, con)) { // cannot parameterize without getting a syntax error => need to find where sanitization happens internally
+				try {
+					com.ExecuteNonQuery();
+					return true;
+				} catch (Exception ex) {
+					HttpContext.Current.Response.Write(ex.ToString());
+					return false;
+				}
+			}
+		}
+	}
+
+	public bool createTable(string db, string n) {
+		using (con = __initConnection(false)) {
+			con.Open();
+			con.ChangeDatabase(db);
+			using (com = new SqlCommand("CREATE TABLE " + n + "()", con)) {
 				try {
 					com.ExecuteNonQuery();
 					return true;

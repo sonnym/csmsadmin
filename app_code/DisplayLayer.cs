@@ -32,6 +32,7 @@ public class DisplayLayer {
 			sb.Append("<li class=\"" + ((String.Compare("Charsets", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"charsets.aspx\">Charsets</a></li>");
 			sb.Append("<li class=\"" + ((String.Compare("Processes", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"processes.aspx\">Processes</a></li>");
 		}
+		if (notbl) sb.Append("<li class=\"" + ((String.Compare("Operations", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"operations.aspx?db=" + db + "&tbl=" + tbl + "\">Operations</a></li>");
 		sb.Append("<li class=\"" + ((String.Compare("Backup", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"backup.aspx?db=" + db + "&tbl=" + tbl + "\">Backup</a></li>");
 		sb.Append("<li class=\"" + ((String.Compare("Restore", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"restore.aspx?db=" + db + "&tbl=" + tbl + "\">Restore</a></li>");
 		if (!notbl) sb.Append("<li class=\"caution_tab\"><a href=\"query.aspx?db=" + db + "&tbl=" + tbl + "&q=" + HttpUtility.UrlEncode("TRUNCATE TABLE " + tbl) + "\">Empty</a></li>");
@@ -70,7 +71,11 @@ public class DisplayLayer {
 	}
 
 	public static string GetCreateNewDatabase() {
-		return "<form action=\"home.aspx\" method=\"post\">Name: <input type=\"text\" name=\"new_db_name\" /><input type=\"submit\" name=\"create_new_db\" value=\"Create\" /></form>";
+		return "<form action=\"operations.aspx\" method=\"post\">Name: <input type=\"text\" name=\"new_db_name\" /><input type=\"submit\" name=\"create_new_db\" value=\"Create\" /></form>";
+	}
+
+	public static string GetCreateNewTable(string db) {
+		return "<form action=\"insert.aspx\" method=\"post\"><input type=\"hidden\" name=\"db\" value=\"" + db + "\" />Name: <input type=\"text\" name=\"new_tbl_name\" /><input type=\"submit\" name=\"create_new_tbl\" value=\"Create\" /></form>";
 	}
 
 	/*

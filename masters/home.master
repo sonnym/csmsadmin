@@ -13,27 +13,10 @@
 	protected override void OnLoad(EventArgs e) {
 		body = (HtmlGenericControl)this.Master.FindControl("body");
 
-		if (post["create_new_db"] != null) {
-			_createDB();
-			return;
-		}
-
 		body.InnerHtml += "MSSQL Server Version: " + dbl.getServerVersion() + "<br />Identity: " + System.Security.Principal.WindowsIdentity.GetCurrent().Name + "<hr style=\"width: 95%\" />";
 		/*
 		DataSet srv = dbl.getServerInformation();
 		foreach (DataTable t in srv.Tables) foreach(DataRow r in t.Rows) foreach(DataColumn c in t.Columns) body.InnerHtml += c.ColumnName + ": " + r[c.ColumnName] + "<br />";
 		*/
-
-		body.InnerHtml += DisplayLayer.GetCreateNewDatabase();
-	}
-
-	private void _createDB() {
-		if (post["new_db_name"].Equals("")) {
-			body.InnerHtml += "<span class=\"error\">You must supply a name for the new database.</span><br />" + DisplayLayer.GetCreateNewDatabase();
-			return;
-		}
-		bool created = dbl.createDatabase(post["new_db_name"]);
-		if (created) Response.Redirect("db_struct.aspx?db=" + HttpUtility.UrlEncode(post["new_db_name"]));
-		else body.InnerHtml += "<span class=\"error\">Something failed</span>";
 	}
 </script>
