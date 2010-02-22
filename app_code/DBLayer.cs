@@ -209,6 +209,10 @@ public class DBLayer {
 										"LEFT OUTER JOIN sys.sysdatabases AS dbs ON procs.dbid = dbs.dbid").Tables[0];
 	}
 
+	public DataRowCollection getTypes() {
+		return executeQuery("master", "SELECT name FROM sys.systypes").Tables[0].Rows;
+	}
+
 	public DataSet executeQuery(string db, string q) {
 		using (con = __initConnection(false)) {
 			con.Open();
@@ -333,7 +337,8 @@ public class DBLayer {
 	private string __getFirstColumn(string db, string tbl) {
 		using (con = __initConnection(false)) {
 			con.Open();
-			using (com = new SqlCommand("USE " + db + "; SELECT TOP 1 COLUMN_NAME FROM information_schema.columns WHERE TABLE_NAME = @tbl ORDER BY ORDINAL_POSITION", con)) {
+			con.ChangeDatabase(db);
+			using (com = new SqlCommand("SELECT TOP 1 COLUMN_NAME FROM information_schema.columns WHERE TABLE_NAME = @tbl ORDER BY ORDINAL_POSITION", con)) {
 				com.Parameters.AddWithValue("@tbl", tbl);
 				return com.ExecuteScalar().ToString();
 			}

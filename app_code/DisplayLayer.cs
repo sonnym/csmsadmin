@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Data;
 using System.Text;
 using System.Web;
 
@@ -78,20 +79,30 @@ public class DisplayLayer {
 		return "<form method=\"post\"><input type=\"hidden\" name=\"db\" value=\"" + db + "\" />Name: <input type=\"text\" name=\"name\" />&nbsp;# of Fields: <input type=\"text\" name=\"fields\" size=\"2\" />&nbsp;<input type=\"submit\" name=\"create_tbl\" value=\"Create\" /></form>";
 	}
 
-	/*
-	public static string GetSelect(string n, bool m, string[][] nvpairs) {
+	public static string GetTypeSelect(string n, DataRowCollection names) {
 		sb = new StringBuilder();
-		sb.Append("<select name=\"" + n + "\"" + ((m) ? "multiple=\"multiple\"" : "") + ">");
-		for (int i = 0; i < nvpairs.Length; i++) sb.Append("<option name=\"" + nvpairs[i][0]  + "\" value=\"" + nvpairs[i][1] + "\">" + nvpairs[i][0] + "</option>");
+		sb.Append("<select name=\"" + n + "\">");
+		for (int i = 0, l = names.Count; i < l; i++)
+			sb.Append("<option value=\"" + names[i][0] + "\" >" + names[i][0] + "</option>");
 		sb.Append("</select");
 		return sb.ToString();
 	}
-	*/
-	public static string GetSelect(string n, bool m, ArrayList nvs, string sel) {
+
+	public static string GetCollationSelect(string n, DataRowCollection collations) {
 		sb = new StringBuilder();
-		sb.Append("<select name=\"" + n + "\"" + ((m) ? "multiple=\"multiple\"" : "") + " onchange=\"checkNav(this)\" onkeyup=\"checkNav(this)\">");
-		for (int i = 0; i < nvs.Count; i++)
-			sb.Append("<option name=\"" + nvs[i] + "\" value=\"" + nvs[i] + ((nvs[i].Equals(sel)) ? "\" selected=selected\"" : "") + "\" >" + nvs[i] + "</option>");
+		sb.Append("<select name=\"" + n + "\"><option />");
+		for (int i = 0, l = collations.Count; i < l; i++)
+			sb.Append("<option value=\"" + collations[i][0] + "\" >" + collations[i][0] + "</option>");
+		sb.Append("</select");
+		return sb.ToString();
+	}
+
+	public static string GetNavigationSelect(string n, ArrayList nvs, string sel) {
+		sb = new StringBuilder();
+		sb.Append("<select name=\"" + n + "\" onchange=\"checkNav(this)\" onkeyup=\"checkNav(this)\">");
+		if (String.IsNullOrEmpty(sel)) sb.Append("<option />");
+		for (int i = 0, l = nvs.Count; i < l; i++)
+			sb.Append("<option name=\"" + nvs[i] + "\"" + ((nvs[i].Equals(sel)) ? " selected=\"selected\"" : "") + ">" + nvs[i] + "</option>");
 		sb.Append("</select");
 		return sb.ToString();
 	}

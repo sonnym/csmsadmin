@@ -20,6 +20,11 @@ tr.title {
 tr.title a { color: #ffffff; }
 tr.even { background: #ffffff; }
 tr.odd { background: #efefef; }
+td.title {
+	font-weight: bold;
+	font-size: 0.9em;
+	vertical-align: middle;
+}
 td.right { text-align: right; }
 a.nav {
 	color: #000000;
@@ -30,8 +35,10 @@ a.nav:hover {
 	text-decoration: none;
 }
 select {
+	margin-bottom: 2px;
 	font-size: 0.8em;
 }
+input[type=text] { font-size: 0.8em; }
 img { border: none; }
 .loc {
 	font-weight: bold;
@@ -82,3 +89,4 @@ input[type=submit], input[type=button] {
 	font-weight: bold;
 	color: red;
 }
+.center { text-align: center; }

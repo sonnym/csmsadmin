@@ -13,8 +13,9 @@
 		db = HttpContext.Current.Request.QueryString["db"];
 		tbl = HttpContext.Current.Request.QueryString["tbl"];
 
-		if (String.IsNullOrEmpty(db)) return; 
-		else if (!String.IsNullOrEmpty(Request.QueryString["fn"]) && Request.QueryString["fn"].Equals("create")) tbl_create();
+		if (!String.IsNullOrEmpty(Request.Form["create_tbl"])) tbl_create();
+		else if (String.IsNullOrEmpty(db)) return; 
+		else if (!String.IsNullOrEmpty(Request.QueryString["fn"]) && Request.QueryString["fn"].Equals("create")) col_struct();
 		else if (String.IsNullOrEmpty(tbl)) db_struct();
 		else tbl_struct();
 	}
@@ -81,6 +82,68 @@
 		}
 	}
 
+	private void col_struct() {
+		int fields = 1;
+		if (!String.IsNullOrEmpty(Request.QueryString["fields"])) int.TryParse(Request.QueryString["fields"], out fields);
+
+		DataRowCollection types = dbl.getTypes();
+		DataRowCollection collations = dbl.getCollations().Rows;
+
+		body.InnerHtml += "<form method=\"post\">";
+		if (fields < 4) {  // vertical arrangement
+			string fieldsrow = String.Empty, typesrow = String.Empty, lengthsrow = String.Empty, defaultsrow = String.Empty, collationsrow = String.Empty, nullsrow = String.Empty, identityrow = String.Empty;
+			for (int i = 0; i < fields; i++) {
+				string n = Convert.ToString(i);
+				fieldsrow += "<td><input type=\"text\" name=\"" + n + "_name\" /></td>";
+				typesrow += "<td>" + DisplayLayer.GetTypeSelect(n + "_type", types) + "</td>";
+				lengthsrow += "<td><input type=\"text\" size=\"5\" name=\"" + n + "_length\" /></td>";
+				defaultsrow += "<td><select name=\"" + n + "_default\">" +
+										"<option value=\"none\">None</option>" +
+										"<option value=\"null\">NULL</option>" +
+										"<option value=\"getdate\">getdate()</option>" +
+										"<option value=\"defined\">As Defined:</option>" +
+									"</select><br /><input type=\"text\" size=\"15\" name=\"" + n + "_default_value\" /></td>";
+				collationsrow += "<td>" + DisplayLayer.GetCollationSelect(n + "_collation", collations) + "</td>";
+				nullsrow += "<td><input type=\"checkbox\" name=\"" + n + "_null\" /></td>";
+				identityrow += "<td><input type=\"checkbox\" name=\"" + n + "_identity\" /><br />" +
+									"Seed: <input type=\"text\" size=\"2\" name=\"" + n + "_identity_seed\" /> Inc: <input type=\"text\" size=\"2\" name=\"" + n + "_identity_inc\" /><br />" +
+									"Not for replication: <input type=\"checkbox\" name=\"" + n + "_identity_nfr\" /></td>";
+			}
+			body.InnerHtml += "<table><tbody>" +
+								"<tr class=\"even\"><td class=\"title\">Field</td>" + fieldsrow + "</tr>" +
+								"<tr class=\"odd\"><td class=\"title\">Type</td>" + typesrow + "</tr>" +
+								"<tr class=\"even\"><td class=\"title\">Length(, Precision)</td>" + lengthsrow + "</tr>" +
+								"<tr class=\"odd\"><td class=\"title\">Default</td>" + defaultsrow + "</tr>" +
+								"<tr class=\"even\"><td class=\"title\">Collation</td>" + collationsrow + "</tr>" +
+								"<tr class=\"odd\"><td class=\"title\">Null</td>" + nullsrow + "</tr>" +
+								"<tr class=\"even\"><td class=\"title\">Identity</td>" + identityrow + "</tr>" +
+							  "</tbody></table>";
+		} else { // horizontal arrangement
+			body.InnerHtml += "<table><tbody><tr class=\"title\"><td>Field</td><td>Type</td><td>Length(, Precision)</td><td>Default</td><td>Collation</td><td>Null</td><td>Identity</td></tr>";
+			for (int i = 0; i < fields; i++) {
+				string n = Convert.ToString(i);
+				body.InnerHtml += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd") + "\"><td><input type=\"text\" name=\"" + n + "_name\" /></td>" +
+									"<td>" + DisplayLayer.GetTypeSelect(n + "_type", types) + "</td>" +
+									"<td><input type=\"text\" size=\"5\" name=\"" + n + "_length\" /></td>" +
+									"<td><select name=\"" + n + "_default\">" +
+											"<option value=\"none\">None</option>" +
+											"<option value=\"null\">NULL</option>" +
+											"<option value=\"getdate\">getdate()</option>" +
+											"<option value=\"defined\">As Defined:</option>" +
+										"</select><br /><input type=\"text\" size=\"15\" name=\"" + n + "_default_value\" /></td>" +
+									"<td>" + DisplayLayer.GetCollationSelect(n + "_collation", collations) + "</td>" +
+									"<td><input type=\"checkbox\" name=\"" + n + "_null\" /></td>" +
+									"<td class=\"center\"><input type=\"checkbox\" name=\"" + n + "_identity\" /><br />" +
+										"Seed: <input type=\"text\" size=\"2\" name=\"" + n + "_identity_seed\" /> Inc: <input type=\"text\" size=\"2\" name=\"" + n + "_identity_inc\" /><br />" +
+										"Not for replication: <input type=\"checkbox\" name=\"" + n + "_identity_nfr\" /></td>" +
+								  "</tr>";
+			}
+			body.InnerHtml += "</tbody></table>";
+		}
+		body.InnerHtml += "<input type=\"submit\" name=\"create_tbl\" value=\"Submit\" /></form>";
+	}
+
 	private void tbl_create() {
+		
 	}
 </script>

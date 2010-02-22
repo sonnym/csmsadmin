@@ -26,7 +26,7 @@
 	}
 
 	private void _createDB() {
-		if (post["new_db_name"].Equals("")) {
+		if (post["name"].Equals("")) {
 			body.InnerHtml += "<span class=\"error\">You must supply a name for the new database.</span><br />" + DisplayLayer.GetCreateNewDatabase();
 			return;
 		}
@@ -36,7 +36,7 @@
 	}
 
 	private void _createTable() {
-		if (post["new_tbl_name"].Equals("")) {
+		if (post["name"].Equals("")) {
 			body.InnerHtml += "<span class=\"error\">You must supply a name for the new table.</span><br />" + DisplayLayer.GetCreateNewTable(post["db"]);
 			return;
 		}

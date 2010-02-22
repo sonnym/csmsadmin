@@ -2,8 +2,10 @@ function checkNav(sel) {
 	var qs = new Querystring();
 	if (qs.contains('q')) qs.remove('q');
 
-	if (sel.name == "db") qs.set('db', getSelectedValue(sel));
-	else if (sel.name == "tbl") qs.set('tbl', getSelectedValue(sel));
+	if (sel.name == "db") {
+		if (qs.contains('tbl')) qs.remove('tbl');
+		qs.set('db', getSelectedValue(sel));
+	} else if (sel.name == "tbl") qs.set('tbl', getSelectedValue(sel));
 
 	window.parent.location = "default.aspx?" + qs.toString();
 }
