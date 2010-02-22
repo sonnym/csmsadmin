@@ -13,10 +13,10 @@
 	protected override void OnLoad(EventArgs e) {
 		body = (HtmlGenericControl)this.Master.FindControl("body");
 
-		if (post["create_new_db"] != null) {
+		if (post["create_db"] != null) {
 			_createDB();
 			return;
-		} else if (post["create_new_tbl"] != null) {
+		} else if (post["create_tbl"] != null) {
 			_createTable();
 			return;
 		}
@@ -30,18 +30,16 @@
 			body.InnerHtml += "<span class=\"error\">You must supply a name for the new database.</span><br />" + DisplayLayer.GetCreateNewDatabase();
 			return;
 		}
-		bool created = dbl.createDatabase(post["new_db_name"]);
-		if (created) Response.Redirect("struct.aspx?db=" + HttpUtility.UrlEncode(post["new_db_name"]) + "&tbl=");
+		bool created = dbl.createDatabase(post["name"]);
+		if (created) Response.Redirect("struct.aspx?db=" + HttpUtility.UrlEncode(post["name"]) + "&tbl=");
 		else body.InnerHtml += "<span class=\"error\">Something failed</span>";
 	}
 
 	private void _createTable() {
 		if (post["new_tbl_name"].Equals("")) {
-			body.InnerHtml += "<span class=\"error\">You must supply a name for the new database.</span><br />" + DisplayLayer.GetCreateNewTable(post["db"]);
+			body.InnerHtml += "<span class=\"error\">You must supply a name for the new table.</span><br />" + DisplayLayer.GetCreateNewTable(post["db"]);
 			return;
 		}
-		bool created = dbl.createTable(post["db"], post["new_tbl_name"]);
-		if (created) Response.Redirect("struct.aspx?db=" + post["db"] + "&tbl=" + HttpUtility.UrlEncode(post["new_tbl_name"]));
-		else body.InnerHtml += "<span class=\"error\">Something failed</span>";
+		Response.Redirect("struct.aspx?db=" + post["db"] + "&tbl=" + HttpUtility.UrlEncode(post["name"]) + "&fn=create&fields=" + post["fields"]);
 	}
 </script>

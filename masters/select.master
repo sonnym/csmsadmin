@@ -25,7 +25,7 @@
 	private void showSearchForm() {
 		if (records != null) {
 			DataTable t = records.Tables[0];
-			body.InnerHtml += "<form method=\"post\"><table><tbody><tr class=\"title\"><td>&nbsp;</td><td>Name</td><td>Type</td><td>Collation</td><td>Operation</td><td>&nbsp;</td></tr>";
+			body.InnerHtml += "<form method=\"post\"><table><tbody><tr class=\"title\"><td /><td>Name</td><td>Type</td><td>Collation</td><td>Operator</td><td>&nbsp;</td></tr>";
 			for(int i = 0, l = t.Rows.Count; i < l; i++) {
 				body.InnerHtml += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd")  + "\">" +
 							 "<td><input type=\"checkbox\" name=\"use_" + t.Rows[i]["COLUMN_NAME"] + "\" id=\"use_" + t.Rows[i]["COLUMN_NAME"] + "\" value=\"1\" /></td>" +
@@ -66,8 +66,8 @@
 							 "<td>" + ((!t.Rows[i].IsNull("CHARACTER_MAXIMUM_LENGTH") &&
 								(t.Rows[i]["CHARACTER_MAXIMUM_LENGTH"].ToString().Trim().ToLower().Equals("max") ||
 								 int.Parse(t.Rows[i]["CHARACTER_MAXIMUM_LENGTH"].ToString()) > 256)) ?
-									"<textarea name=\"ex_" + t.Rows[i]["COLUMN_NAME"] + "\" cols=\"41\" rows=\"5\" onkeyup=\"javascript:updateForm(this)\"></textarea>" :  
-									"<input name=\"ex_" + t.Rows[i]["COLUMN_NAME"] + "\" type=\"text\" size=\"40\" maxlength=\"" + t.Rows[i]["CHARACTER_MAXIMUM_LENGTH"] + "\" onkeyup=\"javascript:updateForm(this)\" />")  + "</td></tr>";
+									"<textarea name=\"ex_" + t.Rows[i]["COLUMN_NAME"] + "\" cols=\"41\" rows=\"5\" onkeyup=\"updateSelectForm(this)\"></textarea>" :  
+									"<input name=\"ex_" + t.Rows[i]["COLUMN_NAME"] + "\" type=\"text\" size=\"40\" maxlength=\"" + t.Rows[i]["CHARACTER_MAXIMUM_LENGTH"] + "\" onkeyup=\"updateSelectForm(this)\" />") + "</td></tr>";
 			}
 			body.InnerHtml += "<tr><td colspan=\"6\">Edit WHERE clause:<br /><input type=\"text\" name=\"where\" style=\"width: 100%\" /></td></tr>" +
 						 "<tr><td class=\"right\" colspan=\"6\"><input type=\"submit\" value=\"Submit\" /></td></tr></tbody></table></form>";
@@ -75,14 +75,13 @@
 	}
 
 	private void formatQuery() {
-		showSearchForm();
 		DataTable t = records.Tables[0];
 		StringBuilder qsb = new StringBuilder();
 
-		for(int i = 0, l = t.Rows.Count; i < l; i++) {
+		for (int i = 0, l = t.Rows.Count; i < l; i++) {
 			if (Request.Form["use_" + t.Rows[i]["COLUMN_NAME"]] == null) continue;
 
-			if (qsb.Length == 0) qsb.Append("SELECT * FROM " + tbl + " WHERE " + ((!String.IsNullOrEmpty(Request.Form["where"])) ? Request.Form["where"] : ""));
+			if (qsb.Length == 0) qsb.Append("SELECT * FROM " + tbl + " WHERE " + ((!String.IsNullOrEmpty(Request.Form["where"])) ? Request.Form["where"] + " AND" : ""));
 			else qsb.Append(" AND");
 
 			qsb.Append(" "  + t.Rows[i]["COLUMN_NAME"] + " " + LookupTables.comparisonOperators(Request.Form["op_" + t.Rows[i]["COLUMN_NAME"]]) + " '" + Request.Form["ex_" + t.Rows[i]["COLUMN_NAME"]] + "'");

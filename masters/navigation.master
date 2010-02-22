@@ -9,10 +9,10 @@
 		
 	protected override void OnLoad(EventArgs e) {
 		HtmlGenericControl body = (HtmlGenericControl)this.Master.FindControl("body");
-		if (qs.ToString().Length == 0) { 
-			ArrayList dbs = dbl.getDatabaseNames();
-			if (dbs == null) return;
+		ArrayList dbs = dbl.getDatabaseNames();
+		if (dbs == null) return;
 
+		if (qs.ToString().Length == 0) { 
 			body.InnerHtml += DisplayLayer.GetSelect("db", false, dbs, qs["db"]) + "<br /><br />";
 			foreach (string s in dbs) body.InnerHtml += "<a href=\"default.aspx?db=" + s + "\" class=\"nav\" target=\"_parent\">" + s + "</a><br />";
 			return;
@@ -23,7 +23,7 @@
 		ArrayList tbls = dbl.getTableNames(db);
 		if (tbls == null) return;
 
-		body.InnerHtml += DisplayLayer.GetSelect("tbl", false, tbls, qs["tbl"]) + "<br /><br />";
+		body.InnerHtml += DisplayLayer.GetSelect("db", false, dbs, qs["db"]) + "<br />" + DisplayLayer.GetSelect("tbl", false, tbls, qs["tbl"]) + "<br /><br />";
 		foreach (string tbl in tbls) body.InnerHtml += "<a href=\"struct.aspx?db=" + db +  "&tbl=" + tbl + "\" class=\"nav\" target=\"con\">" + tbl + "</a><br />";
 	}
 </script>

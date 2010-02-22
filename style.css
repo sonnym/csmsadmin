@@ -3,7 +3,7 @@ body { font: 0.85em arial; }
 a { color: #000000;
 	text-decoration: none;
 }
-.bold { font-weight: bold };
+.bold { font-weight: bold; }
 a:hover { text-decoration: underline; }
 td {
 	font-size: 0.85em;
@@ -28,6 +28,9 @@ a.nav {
 a.nav:hover {
 	background: #efefef;
 	text-decoration: none;
+}
+select {
+	font-size: 0.8em;
 }
 img { border: none; }
 .loc {

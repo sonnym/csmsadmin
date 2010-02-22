@@ -14,6 +14,7 @@
 		tbl = HttpContext.Current.Request.QueryString["tbl"];
 
 		if (String.IsNullOrEmpty(db)) return; 
+		else if (!String.IsNullOrEmpty(Request.QueryString["fn"]) && Request.QueryString["fn"].Equals("create")) tbl_create();
 		else if (String.IsNullOrEmpty(tbl)) db_struct();
 		else tbl_struct();
 	}
@@ -44,7 +45,6 @@
 			body.InnerHtml += "<br /><table><tr class=\"title\"><td>Name</td><td>Type</td><td>Modify</td><td>Remove</td><td>Return Type</td></tr>";
 			for (int i = 0, len = procedures.Rows.Count; i < len; i++)
 				body.InnerHtml +="<tr class=\"" + ((i % 2 == 0) ? "even" : "odd") + "\"><td>" + procedures.Rows[i][0] + "</td><td>" + procedures.Rows[i][1] + "</td><td></td><td></td><td></td></tr>";
-				//			KeyValuePair<string, string> kvp in procedures) 
 			body.InnerHtml += "</table>";
 		}
 	}
@@ -79,5 +79,8 @@
 			}
 			body.InnerHtml += "</tbody></table>";
 		}
+	}
+
+	private void tbl_create() {
 	}
 </script>

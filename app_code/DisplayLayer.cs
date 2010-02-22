@@ -71,11 +71,11 @@ public class DisplayLayer {
 	}
 
 	public static string GetCreateNewDatabase() {
-		return "<form action=\"operations.aspx\" method=\"post\">Name: <input type=\"text\" name=\"new_db_name\" /><input type=\"submit\" name=\"create_new_db\" value=\"Create\" /></form>";
+		return "<form method=\"post\">Name: <input type=\"text\" name=\"name\" />&nbsp;<input type=\"submit\" name=\"create_db\" value=\"Create\" /></form>";
 	}
 
 	public static string GetCreateNewTable(string db) {
-		return "<form action=\"insert.aspx\" method=\"post\"><input type=\"hidden\" name=\"db\" value=\"" + db + "\" />Name: <input type=\"text\" name=\"new_tbl_name\" /><input type=\"submit\" name=\"create_new_tbl\" value=\"Create\" /></form>";
+		return "<form method=\"post\"><input type=\"hidden\" name=\"db\" value=\"" + db + "\" />Name: <input type=\"text\" name=\"name\" />&nbsp;# of Fields: <input type=\"text\" name=\"fields\" size=\"2\" />&nbsp;<input type=\"submit\" name=\"create_tbl\" value=\"Create\" /></form>";
 	}
 
 	/*
