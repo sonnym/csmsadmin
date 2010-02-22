@@ -30,6 +30,7 @@ public class LookupTables {
 			case "/insert.aspx":         return "Insert";
 			case "/operations.aspx":     return "Operations";
 			case "/processes.aspx":      return "Processes";
+			case "/providers.aspx":      return "Providers";
 			case "/query.aspx":          return "SQL";
 			case "/restore.aspx":        return "Restore";
 			case "/struct.aspx":         return "Structure";

@@ -30,6 +30,7 @@ public class DisplayLayer {
 		if (!notbl) sb.Append("<li class=\"" + ((String.Compare("Insert", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"insert.aspx?db=" + db + "&tbl=" + tbl + "\">Insert</a></li>");
 		if (nodb) {
 			sb.Append("<li class=\"" + ((String.Compare("Configuration", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"configuration.aspx\">Configuration</a></li>");
+			sb.Append("<li class=\"" + ((String.Compare("Providers", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"providers.aspx\">Providers</a></li>");
 			sb.Append("<li class=\"" + ((String.Compare("Charsets", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"charsets.aspx\">Charsets</a></li>");
 			sb.Append("<li class=\"" + ((String.Compare("Processes", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"processes.aspx\">Processes</a></li>");
 		}

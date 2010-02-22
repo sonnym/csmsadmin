@@ -8,8 +8,6 @@ using System.Web;
 /*
 use master;
 exec sys.xp_msver
-exec sys.server_info
-exec sys.sp_enum_oledb_providers
 exec sys.xp_logininfo
 exec sys.sp_who
 exec sys.sp_who2
@@ -24,8 +22,11 @@ DBCC SHRINKDATABASE
 
 SELECT @@VERSION
 
-SELECT USER_NAME()
+sp_estimate_data_compression_savings
+
 SELECT * FROM sysusers
+
+SELECT TOP 25 * from sys.database_permissions AS permissions LEFT JOIN sys.database_principals AS principals ON permissions.grantee_principal_id = principals.principal_id
 
 server statistics
 SELECT * FROM sys.dm_exec_background_job_queue;
@@ -187,6 +188,19 @@ public class DBLayer {
 				return __sqlDataReaderToDataSet(ref r, 1);
 			}
 		}
+	}
+
+	public string getUsername() {
+		return executeQuery("master", "SELECT USER_NAME()").Tables[0].Rows[0][0].ToString();
+	}
+
+	public DataTable getProviders() {
+		return executeQuery("master", "EXEC sys.sp_enum_oledb_providers").Tables[0];
+	}
+
+	public DataTable getServerPermissions() {
+		return executeQuery("master", "SELECT permission_name, state_desc, name, type_desc, is_disabled from sys.server_permissions AS permissions " +
+										"LEFT JOIN sys.server_principals AS principals ON permissions.grantee_principal_id = principals.principal_id").Tables[0];
 	}
 
 	public DataTable getConfiguration() {
