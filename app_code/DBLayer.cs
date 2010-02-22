@@ -308,9 +308,7 @@ public class DBLayer {
 				try {
 					com.ExecuteNonQuery();
 					return true;
-				} catch (Exception ex) {
-					return false;
-				}
+				} catch { return false; }
 			}
 		}
 	}
