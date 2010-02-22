@@ -64,6 +64,7 @@ partial class Handler : System.Web.IHttpHandler {
 				break;
 			case "/struct.aspx":
 				p.MasterPageFile = "~/masters/struct.master";
+				if (!String.IsNullOrEmpty(qs["fn"]) && qs["fn"].Equals("create")) return;
 				break;
 			default:
 				p.MasterPageFile = "~/masters/layout.master";
