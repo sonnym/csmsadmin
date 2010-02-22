@@ -300,16 +300,15 @@ public class DBLayer {
 		}
 	}
 
-	public bool createTable(string db, string n) {
+	public bool createTable(string db, string tbl, string cols) {
 		using (con = __initConnection(false)) {
 			con.Open();
 			con.ChangeDatabase(db);
-			using (com = new SqlCommand("CREATE TABLE " + n + "()", con)) {
+			using (com = new SqlCommand("CREATE TABLE " + tbl + "(" + cols + ")", con)) {
 				try {
 					com.ExecuteNonQuery();
 					return true;
 				} catch (Exception ex) {
-					HttpContext.Current.Response.Write(ex.ToString());
 					return false;
 				}
 			}

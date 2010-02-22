@@ -104,10 +104,10 @@
 										"<option value=\"defined\">As Defined:</option>" +
 									"</select><br /><input type=\"text\" size=\"15\" name=\"" + n + "_default_value\" /></td>";
 				collationsrow += "<td>" + DisplayLayer.GetCollationSelect(n + "_collation", collations) + "</td>";
-				nullsrow += "<td><input type=\"checkbox\" name=\"" + n + "_null\" /></td>";
-				identityrow += "<td><input type=\"checkbox\" name=\"" + n + "_identity\" /><br />" +
+				nullsrow += "<td><input type=\"checkbox\" name=\"" + n + "_null\" value=\"1\" /></td>";
+				identityrow += "<td><input type=\"checkbox\" name=\"" + n + "_identity\" value=\"1\" /><br />" +
 									"Seed: <input type=\"text\" size=\"2\" name=\"" + n + "_identity_seed\" /> Inc: <input type=\"text\" size=\"2\" name=\"" + n + "_identity_inc\" /><br />" +
-									"Not for replication: <input type=\"checkbox\" name=\"" + n + "_identity_nfr\" /></td>";
+									"Not for replication: <input type=\"checkbox\" name=\"" + n + "_identity_nfr\" value=\"1\" /></td>";
 			}
 			body.InnerHtml += "<table><tbody>" +
 								"<tr class=\"even\"><td class=\"title\">Field</td>" + fieldsrow + "</tr>" +
@@ -128,14 +128,13 @@
 									"<td><select name=\"" + n + "_default\">" +
 											"<option value=\"none\">None</option>" +
 											"<option value=\"null\">NULL</option>" +
-											"<option value=\"getdate\">getdate()</option>" +
 											"<option value=\"defined\">As Defined:</option>" +
 										"</select><br /><input type=\"text\" size=\"15\" name=\"" + n + "_default_value\" /></td>" +
 									"<td>" + DisplayLayer.GetCollationSelect(n + "_collation", collations) + "</td>" +
-									"<td><input type=\"checkbox\" name=\"" + n + "_null\" /></td>" +
-									"<td class=\"center\"><input type=\"checkbox\" name=\"" + n + "_identity\" /><br />" +
+									"<td><input type=\"checkbox\" name=\"" + n + "_null\" value=\"1\" /></td>" +
+									"<td class=\"center\"><input type=\"checkbox\" name=\"" + n + "_identity\" value=\"1\"/><br />" +
 										"Seed: <input type=\"text\" size=\"2\" name=\"" + n + "_identity_seed\" /> Inc: <input type=\"text\" size=\"2\" name=\"" + n + "_identity_inc\" /><br />" +
-										"Not for replication: <input type=\"checkbox\" name=\"" + n + "_identity_nfr\" /></td>" +
+										"Not for replication: <input type=\"checkbox\" name=\"" + n + "_identity_nfr\" value=\"1\"/></td>" +
 								  "</tr>";
 			}
 			body.InnerHtml += "</tbody></table>";
@@ -144,6 +143,34 @@
 	}
 
 	private void tbl_create() {
+		NameValueCollection post = Request.Form;
+		int fields = 1;
+		if (!String.IsNullOrEmpty(Request.QueryString["fields"])) int.TryParse(Request.QueryString["fields"], out fields);
 		
+		ArrayList definitions = new ArrayList();
+
+		for (int i = 0; i < fields; i++) {
+			string n = Convert.ToString(i);
+			if (String.IsNullOrEmpty(post[n + "_name"]) && !post[n + "_type"].Equals("timestamp")) continue; // timestamp datatype can be entered without a name
+
+			string definition = post[n + "_name"] + " " + post[n + "_type"] + ((!String.IsNullOrEmpty(post[n + "_length"])) ? "(" + post[n + "_length"] + ")" : "");
+			if (!String.IsNullOrEmpty(post[n + "_collation"])) definition += " COLLATE " + post[n + "_collation"];
+			if (!String.IsNullOrEmpty(post[n + "_default"])) {
+				if (post[n + "_default"].Equals("null")) definition += " DEFAULT NULL";
+				if (post[n + "_default"].Equals("defined")) definition += " DEFAULT " + post[n + "_default_value"];
+			}
+			if (!String.IsNullOrEmpty(post[n + "_identity"]) && post[n + "_identity"].Equals("1")) {
+				definition += " IDENTITY " + ((!String.IsNullOrEmpty(post[n + "_identity_seed"]) && !String.IsNullOrEmpty(post[n + "_identity_inc"])) ?
+												"(" + post[n + "_identity_seed"] + "," + post[n + "_identity_inc"] + ")" : "") +
+											 ((!String.IsNullOrEmpty(post[n + "_identity_nfr"]) && post[n + "_identity_nfr"].Equals("1")) ? " NOT FOR REPLICATION" : "");
+			}
+			if (!String.IsNullOrEmpty(post[n + "_null"]) && post[n + "_null"].Equals("1")) definition += " NULL";
+			else definition += " NOT NULL";
+
+			definitions.Add(definition);
+		}
+
+		if (dbl.createTable(db, tbl, string.Join(",", definitions.ToArray(typeof(string)) as string[]))) Response.Redirect("struct.aspx?db=" + db + "&tbl=" + tbl);
+		//else Response.Redirect("query.aspx?db=" + db + "&tbl=&q=" + HttpUtility.UrlEncode(dbl.LastQuery));
 	}
 </script>

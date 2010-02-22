@@ -15,6 +15,9 @@ csmsadmin is currently in its infantile stages. As such, expect to find bugs and
 
 Currently implemented features include:
  - browsing databases, stored procedures, and tables
+ - ability to edit single rows of a table
+ - add new databases and tables
+ - insert values into tables
  - input of arbitrary sql queries
  - truncating tables
  - dropping databases and tables
