@@ -89,7 +89,7 @@
 		DataRowCollection types = dbl.getTypes();
 		DataRowCollection collations = dbl.getCollations().Rows;
 
-		body.InnerHtml += "<form method=\"post\">";
+		body.InnerHtml += "Creating table: " + Request.QueryString["tbl"] + "<br /><form method=\"post\">";
 		if (fields < 4) {  // vertical arrangement
 			string fieldsrow = String.Empty, typesrow = String.Empty, lengthsrow = String.Empty, defaultsrow = String.Empty, collationsrow = String.Empty, nullsrow = String.Empty, identityrow = String.Empty;
 			for (int i = 0; i < fields; i++) {
