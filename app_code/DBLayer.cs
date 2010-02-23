@@ -6,42 +6,15 @@ using System.Data.SqlClient;
 using System.Web;
 
 /*
-use master;
-exec sys.xp_msver
-exec sys.xp_logininfo
-exec sys.sp_who
-exec sys.sp_who2
-
-USE Northwind;
-DBCC SHOW_STATISTICS (N'Products', ProductName)
-
-http://www.databasejournal.com/features/mssql/article.php/2244381/Examining-SQL-Servers-IO-Statistics.htm
 exec sp_monitor
 DBCC PERFMON
+
 DBCC SHRINKDATABASE
-
-SELECT @@VERSION
-
 sp_estimate_data_compression_savings
 
-SELECT * FROM sysusers
-
-SELECT TOP 25 * from sys.database_permissions AS permissions LEFT JOIN sys.database_principals AS principals ON permissions.grantee_principal_id = principals.principal_id
-
 server statistics
-SELECT * FROM sys.dm_exec_background_job_queue;
+sys.dm_exec_sql_text
 SELECT * FROM sys.dm_exec_query_optimizer_info;
-SELECT * FROM sys.dm_exec_background_job_queue;
-SELECT * FROM sys.dm_exec_background_job_queue_stats;
-SELECT * FROM sys.dm_exec_query_resource_semaphores;
-SELECT * FROM sys.dm_exec_query_stats;
-SELECT * FROM sys.dm_exec_requests;
-SELECT * FROM sys.dm_exec_connections;
-SELECT * FROM sys.dm_exec_sessions;
-SELECT * FROM sys.dm_exec_procedure_stats;
-SELECT * FROM sys.dm_exec_trigger_stats;
-SELECT * FROM sys.dm_exec_query_memory_grants;
-SELECT * FROM sys.dm_exec_query_transformation_stats;
 */
 
 public class DBLayer {
@@ -82,7 +55,7 @@ public class DBLayer {
 	  ////////////////////
 	 // Public methods //
 	////////////////////
-	public string getServerVersion() {
+	public string getServerVersion() { // alternatively: SELECT @@VERSION
 		using (con = __initConnection(false)) {
 			con.Open();
 			return con.ServerVersion;
@@ -199,8 +172,16 @@ public class DBLayer {
 	}
 
 	public DataTable getServerPermissions() {
-		return executeQuery("master", "SELECT permission_name, state_desc, name, type_desc, is_disabled from sys.server_permissions AS permissions " +
+		return executeQuery("master", "SELECT state_desc, permission_name, name, type_desc, is_disabled from sys.server_permissions AS permissions " +
 										"LEFT JOIN sys.server_principals AS principals ON permissions.grantee_principal_id = principals.principal_id").Tables[0];
+	}
+
+	public DataTable getDatabasePermissions(string db) {
+		return executeQuery(db, " SELECT permissions.state_desc, permission_name, schemas.name AS [schema], objects.name AS object, principals.name AS principal " +
+									"FROM sys.database_permissions AS permissions " +
+									"JOIN sys.objects AS objects ON permissions.major_id = objects.object_id " +
+									"JOIN sys.schemas AS schemas ON objects.schema_id = schemas.schema_id " +
+									"JOIN sys.database_principals AS principals ON permissions.grantee_principal_id = principals.principal_id").Tables[0];
 	}
 
 	public DataTable getConfiguration() {

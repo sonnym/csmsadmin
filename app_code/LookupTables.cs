@@ -29,12 +29,14 @@ public class LookupTables {
 			case "/home.aspx":           return "Structure";
 			case "/insert.aspx":         return "Insert";
 			case "/operations.aspx":     return "Operations";
+			case "/permissions.aspx":    return "Permissions";
 			case "/processes.aspx":      return "Processes";
 			case "/providers.aspx":      return "Providers";
 			case "/query.aspx":          return "SQL";
 			case "/restore.aspx":        return "Restore";
-			case "/struct.aspx":         return "Structure";
 			case "/select.aspx":         return "Search";
+			case "/status.aspx":         return "Status";
+			case "/struct.aspx":         return "Structure";
 			default:                     return null; //default.aspx, navigation.aspx
 		}
 	}

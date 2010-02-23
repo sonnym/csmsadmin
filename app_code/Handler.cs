@@ -50,6 +50,9 @@ partial class Handler : System.Web.IHttpHandler {
 			case "/operations.aspx":
 				p.MasterPageFile = "~/masters/operations.master";
 				break;
+			case "/permissions.aspx":
+				p.MasterPageFile = "~/masters/permissions.master";
+				break;
 			case "/processes.aspx":
 				p.MasterPageFile = "~/masters/processes.master";
 				break;
@@ -64,6 +67,9 @@ partial class Handler : System.Web.IHttpHandler {
 				break;
 			case "/select.aspx":
 				p.MasterPageFile = "~/masters/select.master";
+				break;
+			case "/status.aspx":
+				p.MasterPageFile = "~/masters/status.master";
 				break;
 			case "/struct.aspx":
 				p.MasterPageFile = "~/masters/struct.master";
