@@ -12,22 +12,45 @@
   <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js" type="text/javascript"></script>
   <script type="text/javascript">
     $(document).ready(function() {
-      $('#navigation').css("min-width", $('#navigation').css("width"));
-      $('#navigation').resizable({ handles: 'e' });
+      var magicnumber = 20;
+      var lastwidth = 0;
+  
+      $('#navigation').resizable({ handles: 'e', start: function(event, ui) {
+        $(this).css({ 'border-right-width': '1px', 'padding-right': '5px'});
+      }, resize: function() {
+        $('.content').css('width', ($('body').width() - $('#navigation').width() - magicnumber) + "px");
+      }});
+
+      $('.ui-resizable-handle').dblclick(function() {
+        $(this).parent().css('width', function() {
+          if ($(this).css('width') == '0px') {
+            $('.content').css('width', ($('body').width() - $('#navigation').width() - magicnumber) + "px");
+            $(this).css({ 'width': lastwidth, 'border-right-width': '1px', 'padding-right': '5px'});
+          }
+          else {
+            lastwidth = $(this).css('width');
+            $(this).css({ 'width': '0px', 'border-right-width': '3px', 'padding-right': '1px'});
+            $('.content').css('width', ($('body').width() - $('#navigation').width() - magicnumber) + "px");
+          }
+        });
+      });
+
+      $('.content').css('width', ($('body').width() - $('#navigation').width() - magicnumber) + "px");
     });
   </script>
  </head>
  <body>
   <div id="navigation">
+   <h3>C&#9839MSAdmin</h3>
    <%=navigation%>
   </div>
-  <div id="body" runat="server" style="float: left" />
+  <div id="body" class="content" runat="server" />
  </body>
 </html>
 <script runat="server">
 	private DBLayer dbl = new DBLayer();
 	private NameValueCollection qs = HttpContext.Current.Request.QueryString;
-	public string navigation = String.Empty;
+	private string navigation = String.Empty;
 		
 	protected override void OnLoad(EventArgs e) {
 		string db = qs["db"];
@@ -35,7 +58,6 @@
 		ArrayList dbs = dbl.getDatabaseNames();
 		if (dbs == null) return;
 
-		navigation += "<h3>C&#9839MSAdmin</h3>";
 		navigation += DisplayLayer.GetNavigationSelect("db", dbs, qs["db"]) + "<br />";
 
 		if (String.IsNullOrEmpty(db)) foreach (string s in dbs) navigation += "<a href=\"default.aspx?db=" + s + "\" class=\"nav\">" + s + "</a><br />";
