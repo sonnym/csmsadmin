@@ -38,9 +38,11 @@ public class DisplayLayer {
 		if (notbl) {
 			sb.Append("<li class=\"" + ((String.Compare("Permissions", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"permissions.aspx?db=" + db + "&tbl=" + tbl + "\">Permissions</a></li>");
 			sb.Append("<li class=\"" + ((String.Compare("Operations", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"operations.aspx?db=" + db + "&tbl=" + tbl + "\">Operations</a></li>");
+			if (!nodb) {
+				sb.Append("<li class=\"" + ((String.Compare("Backup", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"backup.aspx?db=" + db + "&tbl=" + tbl + "\">Backup</a></li>");
+				sb.Append("<li class=\"" + ((String.Compare("Restore", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"restore.aspx?db=" + db + "&tbl=" + tbl + "\">Restore</a></li>");
+			}
 		}
-		sb.Append("<li class=\"" + ((String.Compare("Backup", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"backup.aspx?db=" + db + "&tbl=" + tbl + "\">Backup</a></li>");
-		sb.Append("<li class=\"" + ((String.Compare("Restore", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"restore.aspx?db=" + db + "&tbl=" + tbl + "\">Restore</a></li>");
 		if (!notbl) sb.Append("<li class=\"caution_tab\"><a href=\"query.aspx?db=" + db + "&tbl=" + tbl + "&q=" + HttpUtility.UrlEncode("TRUNCATE TABLE " + tbl) + "\">Empty</a></li>");
 		if (!String.IsNullOrEmpty(db)) sb.Append("<li class=\"caution_tab\"><a href=\"query.aspx?db=&tbl=&q=" + HttpUtility.UrlEncode("DROP " + ((notbl) ? "DATABASE " + db : "TABLE " + tbl)) + "\">Drop</a></li></ul>");
 		sb.Append("<div class=\"clearfloat\"></div></div>");

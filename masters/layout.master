@@ -26,8 +26,7 @@
           if ($(this).width() == 0) {
             $(this).css({ 'width': lastwidth, 'border-right-width': '1px', 'padding-right': '5px'});
             $('.content').css('width', ($('body').width() - $('#navigation').width() - magicnumber) + 'px');
-          }
-          else {
+          } else {
             lastwidth = $(this).css('width');
             $(this).css({ 'width': '0px', 'border-right-width': '3px', 'padding-right': '1px'});
             $('.content').css('width', ($('body').width() - $('#navigation').width() - magicnumber) + 'px');

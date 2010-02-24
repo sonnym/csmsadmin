@@ -13,10 +13,7 @@ div#navigation {
 	border-right: solid #afafaf 1px;
 	overflow: hidden;
 }
-div.content {
-	float: left;
-	overflow: auto;
-}
+div.content { float: left; }
 td {
 	font-size: 0.85em;
 	padding: 3px;
