@@ -13,7 +13,7 @@
   <script type="text/javascript">
     $(document).ready(function() {
       var magicnumber = 15; // accounts for scrollbar with some padding
-      var lastwidth = 0;
+      var maxwidth = $('#navigation').css('width');
   
       $('#navigation').resizable({ handles: 'e', start: function(event, ui) {
         $(this).css({ 'border-right-width': '1px', 'padding-right': '5px'});
@@ -23,18 +23,16 @@
 
       $('.ui-resizable-handle').dblclick(function() {
         $(this).parent().css('width', function() {
-          if ($(this).width() == 0) {
-            $(this).css({ 'width': lastwidth, 'border-right-width': '1px', 'padding-right': '5px'});
-            $('.content').css('width', ($('body').width() - $('#navigation').width() - magicnumber) + 'px');
-          } else {
-            lastwidth = $(this).css('width');
+          if ($(this).width() == 0 || $(this).css('width') != $(this).css('maxWidth'))  $(this).css({ 'width': maxwidth, 'border-right-width': '1px', 'padding-right': '5px'});
+          else {
+            maxwidth = $(this).css('width');
             $(this).css({ 'width': '0px', 'border-right-width': '3px', 'padding-right': '1px'});
-            $('.content').css('width', ($('body').width() - $('#navigation').width() - magicnumber) + 'px');
           }
+          $('.content').css('width', ($('body').width() - $('#navigation').width() - magicnumber) + 'px');
         });
       });
 
-	  $('#navigation').css('maxWidth', $('#navigation').width() + 'px');
+      $('#navigation').css('maxWidth', maxwidth);
       $('.content').css('width', ($('body').width() - $('#navigation').width() - magicnumber) + 'px');
     });
   </script>
