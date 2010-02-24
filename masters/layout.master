@@ -30,19 +30,17 @@
 	public string navigation = String.Empty;
 		
 	protected override void OnLoad(EventArgs e) {
+		string db = qs["db"];
+
 		ArrayList dbs = dbl.getDatabaseNames();
 		if (dbs == null) return;
 
 		navigation += "<h3>C&#9839MSAdmin</h3>";
 		navigation += DisplayLayer.GetNavigationSelect("db", dbs, qs["db"]) + "<br />";
 
-		string db = qs["db"];
-		if (String.IsNullOrEmpty(db)) return;
-
-		ArrayList tbls = dbl.getTableNames(db);
-
-		if (tbls == null) foreach (string s in dbs) navigation += "<a href=\"default.aspx?db=" + s + "\" class=\"nav\">" + s + "</a><br />";
+		if (String.IsNullOrEmpty(db)) foreach (string s in dbs) navigation += "<a href=\"default.aspx?db=" + s + "\" class=\"nav\">" + s + "</a><br />";
 		else {
+			ArrayList tbls = dbl.getTableNames(db);
 			navigation += DisplayLayer.GetNavigationSelect("tbl", tbls, qs["tbl"]) + "<br />";
 			foreach (string tbl in tbls) navigation += "<a href=\"struct.aspx?db=" + db +  "&tbl=" + tbl + "\" class=\"nav\">" + tbl + "</a><br />";
 		}
