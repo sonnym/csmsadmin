@@ -20,10 +20,8 @@ partial class Handler : System.Web.IHttpHandler {
 
 		switch(url) {
 			case "/":
-				p.MasterPageFile = "~/masters/layout.master";	
-				((HtmlGenericControl)p.Master.FindControl("body")).Visible = false;
-				((HtmlGenericControl)p.Master.FindControl("frameset")).Visible = true;
-				return;
+				p.MasterPageFile = "~/masters/struct.master";	
+				break;
 			case "/charsets.aspx":
 				p.MasterPageFile = "~/masters/charsets.master";
 				break;
@@ -34,12 +32,7 @@ partial class Handler : System.Web.IHttpHandler {
 				p.MasterPageFile = "~/masters/browse.master";
 				break;
 			case "/default.aspx":
-				p.MasterPageFile = "~/masters/layout.master";
-				((HtmlGenericControl)p.Master.FindControl("body")).Visible = false;
-				((HtmlGenericControl)p.Master.FindControl("frameset")).Visible = true;
-				return;
-			case "/home.aspx":
-				p.MasterPageFile = "~/masters/home.master";
+				p.MasterPageFile = "~/masters/struct.master";
 				break;
 			case "/insert.aspx":
 				p.MasterPageFile = "~/masters/insert.master";

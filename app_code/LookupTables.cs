@@ -26,7 +26,6 @@ public class LookupTables {
 			case "/browse.aspx":         return "Browse";
 			case "/charsets.aspx":       return "Charsets";
 			case "/configuration.aspx":  return "Configuration";
-			case "/home.aspx":           return "Structure";
 			case "/insert.aspx":         return "Insert";
 			case "/operations.aspx":     return "Operations";
 			case "/permissions.aspx":    return "Permissions";
@@ -37,7 +36,7 @@ public class LookupTables {
 			case "/select.aspx":         return "Search";
 			case "/status.aspx":         return "Status";
 			case "/struct.aspx":         return "Structure";
-			default:                     return null; //default.aspx, navigation.aspx
+			default:                     return "Structure"; // default.aspx, /
 		}
 	}
 }
