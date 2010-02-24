@@ -5,6 +5,13 @@ using System.Web;
 public class FileSystemLayer {
 	public FileSystemLayer() { }
 
+	public static string[] GetThemes() {
+		DirectoryInfo[] dirs = new DirectoryInfo(Path.Combine(HttpContext.Current.Server.MapPath("~"), "themes")).GetDirectories();
+		string[] themes = new string[dirs.Length];
+		for (int i = 0, l = dirs.Length; i < l; i++) themes[i] = dirs[i].Name;
+		return themes;
+	}
+
 	public static string GetFolderContents(string dir) {
 		DirectoryInfo d_info = new DirectoryInfo(dir);
 		if (!d_info.Exists) d_info = new DirectoryInfo(HttpContext.Current.Server.MapPath("~"));

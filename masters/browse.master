@@ -32,7 +32,7 @@
 
 				bool dbnull = r[c.ColumnName].GetType().Name == "DBNull";
 				if (i == 0) headers += "<td><a href=\"query.aspx?db=" + db + "&tbl=" + tbl + "&q=" + HttpUtility.UrlEncode("SELECT TOP 30 * FROM " + tbl + " ORDER BY " + c.ColumnName) + "\">" + c.ColumnName + "</a></td>";
-				rowBody += "<td>" + ((dbnull) ? "NULL" : r[c.ColumnName]) + "</td>";
+				rowBody += "<td>" + ((dbnull) ? "NULL" : HttpUtility.HtmlEncode(r[c.ColumnName].ToString())) + "</td>";
 				args += ((j > 0) ? " AND " : "") + c.ColumnName + ((dbnull) ? " IS NULL" : " = '" + r[c.ColumnName] + "'");
 			}
 			tableBody += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd")  + "\"><td><input type=\"checkbox\" /></td><td><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/edit.png\" /></td>" +

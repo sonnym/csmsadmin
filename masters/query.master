@@ -29,7 +29,7 @@
 
 			foreach (DataRow r in t.Rows) {
 				body.InnerHtml += "<tr>";
-				foreach(DataColumn c in t.Columns) body.InnerHtml += "<td>" + ((r[c.ColumnName].GetType().Name == "DBNull") ? "NULL" : r[c.ColumnName]) + "</td>";
+				foreach(DataColumn c in t.Columns) body.InnerHtml += "<td>" + ((r[c.ColumnName].GetType().Name == "DBNull") ? "NULL" : HttpUtility.HtmlEncode(r[c.ColumnName].ToString())) + "</td>";
 				body.InnerHtml += "</tr>";
 			}
 			body.InnerHtml += "</tbody></table><br />";

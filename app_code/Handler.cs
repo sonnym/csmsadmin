@@ -19,6 +19,7 @@ partial class Handler : IHttpHandler, IRequiresSessionState {
 		if (context.Session["theme"] == null) {
 			context.Session.Add("theme", Settings.DefaultTheme);
 		}
+		if (!String.IsNullOrEmpty(context.Request.Form["theme"])) context.Session.Add("theme", context.Request.Form["theme"]);
 
 		string url = context.Request.ServerVariables["URL"];
 		DBLayer dbl = new DBLayer();

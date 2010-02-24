@@ -91,16 +91,15 @@ public class DisplayLayer {
 		sb.Append("<select name=\"" + n + "\">");
 		for (int i = 0, l = names.Count; i < l; i++)
 			sb.Append("<option value=\"" + names[i][0] + "\" >" + names[i][0] + "</option>");
-		sb.Append("</select");
+		sb.Append("</select>");
 		return sb.ToString();
 	}
 
 	public static string GetCollationSelect(string n, DataRowCollection collations) {
 		sb = new StringBuilder();
 		sb.Append("<select name=\"" + n + "\"><option />");
-		for (int i = 0, l = collations.Count; i < l; i++)
-			sb.Append("<option value=\"" + collations[i][0] + "\" >" + collations[i][0] + "</option>");
-		sb.Append("</select");
+		for (int i = 0, l = collations.Count; i < l; i++) sb.Append("<option value=\"" + collations[i][0] + "\">" + collations[i][0] + "</option>");
+		sb.Append("</select>");
 		return sb.ToString();
 	}
 
@@ -110,7 +109,17 @@ public class DisplayLayer {
 		if (String.IsNullOrEmpty(sel)) sb.Append("<option />");
 		for (int i = 0, l = nvs.Count; i < l; i++)
 			sb.Append("<option name=\"" + nvs[i] + "\"" + ((nvs[i].Equals(sel)) ? " selected=\"selected\"" : "") + ">" + nvs[i] + "</option>");
-		sb.Append("</select");
+		sb.Append("</select>");
+		return sb.ToString();
+	}
+
+	public static string GetThemeSelect() {
+		string[] themes = FileSystemLayer.GetThemes();
+		sb = new StringBuilder();
+		sb.Append("<form name=\"theme\" method=\"post\"><select name=\"theme\" onchange=\"switchTheme()\" onkeyup=\"switchTheme()\">");
+		for (int i = 0, l = themes.Length; i < l; i++)
+			sb.Append("<option value=\"" + themes[i] + "\"" + ((themes[i].Equals(HttpContext.Current.Session["theme"].ToString())) ? " selected=\"selected\"" : "") + ">" + themes[i] + "</option>");
+		sb.Append("</select></form>");
 		return sb.ToString();
 	}
 }

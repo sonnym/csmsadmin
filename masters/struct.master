@@ -21,8 +21,10 @@
 	}
 
 	private void srv_struct() {
-		body.InnerHtml += "MSSQL Server Version: " + dbl.getServerVersion() + "<br />Identity: " + System.Security.Principal.WindowsIdentity.GetCurrent().Name +
-							"<br />SQL User: " + dbl.getUsername() + "<hr style=\"width: 95%\" />";
+		body.InnerHtml += "MSSQL Version: " + dbl.getServerVersion() + "<br />SQL User: " + dbl.getUsername() + "<br /><br />" +
+							"Web Server: " + HttpContext.Current.Request.ServerVariables["SERVER_SOFTWARE"] + "<br />" +
+							"Identity: " + System.Security.Principal.WindowsIdentity.GetCurrent().Name + "<br /><br />" +
+							"Theme: " + DisplayLayer.GetThemeSelect();
 	}
 
 	private void db_struct() {
