@@ -4,7 +4,7 @@
  <head>
   <meta charset="utf-8">
   <title><asp:Literal id="title" runat="server">C&#9839MSAdmin 0.2.5 - The C&#9839 MSSQL Server Administration Project</asp:Literal></title>
-  <link rel="stylesheet" href="style.css" type="text/css" media="all" />
+  <link rel="stylesheet" href="themes/<%=HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString())%>/style.css" type="text/css" media="all" />
   <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" />
   <script type="text/javascript" src="js/querystring.js"></script>
   <script type="text/javascript" src="js/lib.js"></script>
@@ -12,30 +12,31 @@
   <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js" type="text/javascript"></script>
   <script type="text/javascript">
     $(document).ready(function() {
-      var magicnumber = 20;
+      var magicnumber = 15; // accounts for scrollbar with some padding
       var lastwidth = 0;
   
       $('#navigation').resizable({ handles: 'e', start: function(event, ui) {
         $(this).css({ 'border-right-width': '1px', 'padding-right': '5px'});
       }, resize: function() {
-        $('.content').css('width', ($('body').width() - $('#navigation').width() - magicnumber) + "px");
+        $('.content').css('width', ($('body').width() - $('#navigation').width() - magicnumber) + 'px');
       }});
 
       $('.ui-resizable-handle').dblclick(function() {
         $(this).parent().css('width', function() {
-          if ($(this).css('width') == '0px') {
-            $('.content').css('width', ($('body').width() - $('#navigation').width() - magicnumber) + "px");
+          if ($(this).width() == 0) {
             $(this).css({ 'width': lastwidth, 'border-right-width': '1px', 'padding-right': '5px'});
+            $('.content').css('width', ($('body').width() - $('#navigation').width() - magicnumber) + 'px');
           }
           else {
             lastwidth = $(this).css('width');
             $(this).css({ 'width': '0px', 'border-right-width': '3px', 'padding-right': '1px'});
-            $('.content').css('width', ($('body').width() - $('#navigation').width() - magicnumber) + "px");
+            $('.content').css('width', ($('body').width() - $('#navigation').width() - magicnumber) + 'px');
           }
         });
       });
 
-      $('.content').css('width', ($('body').width() - $('#navigation').width() - magicnumber) + "px");
+	  $('#navigation').css('maxWidth', $('#navigation').width() + 'px');
+      $('.content').css('width', ($('body').width() - $('#navigation').width() - magicnumber) + 'px');
     });
   </script>
  </head>

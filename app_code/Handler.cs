@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Specialized;
 using System.Web;
+using System.Web.SessionState;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 
-partial class Handler : System.Web.IHttpHandler {
+partial class Handler : IHttpHandler, IRequiresSessionState {
 	private Page p;
+	private HttpContext context = HttpContext.Current;
 
 	public Handler() {
 		p = new Page();
@@ -14,9 +16,13 @@ partial class Handler : System.Web.IHttpHandler {
 	}
 
 	private void pre(object sender, EventArgs e) {
-		string url = HttpContext.Current.Request.ServerVariables["URL"];
+		if (context.Session["theme"] == null) {
+			context.Session.Add("theme", Settings.DefaultTheme);
+		}
+
+		string url = context.Request.ServerVariables["URL"];
 		DBLayer dbl = new DBLayer();
-		NameValueCollection qs = HttpContext.Current.Request.QueryString;
+		NameValueCollection qs = context.Request.QueryString;
 
 		switch(url) {
 			case "/":
@@ -88,8 +94,8 @@ partial class Handler : System.Web.IHttpHandler {
 			p.ProcessRequest(c);
 		} catch(Exception ex) { // System.Web.HttpUnhandledException is predominant
 			if (ex.InnerException != null && ex.InnerException.GetType().ToString().Equals("System.Data.SqlClient.SqlException")) {
-				HttpContext.Current.Response.Write("SQL Error Occurred: " + ex.InnerException.Message);
-			} else HttpContext.Current.Response.Write(ex.ToString().Replace(Environment.NewLine, "<br />") + "<br />");
+				context.Response.Write("SQL Error Occurred: " + ex.InnerException.Message);
+			} else context.Response.Write(ex.ToString().Replace(Environment.NewLine, "<br />") + "<br />");
 		}
 	}
 }

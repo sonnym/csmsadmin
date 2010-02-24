@@ -35,8 +35,8 @@
 				rowBody += "<td>" + ((dbnull) ? "NULL" : r[c.ColumnName]) + "</td>";
 				args += ((j > 0) ? " AND " : "") + c.ColumnName + ((dbnull) ? " IS NULL" : " = '" + r[c.ColumnName] + "'");
 			}
-			tableBody += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd")  + "\"><td><input type=\"checkbox\" /></td><td><img src=\"img/edit.png\" /></td>" +
-						 "<td><a href=\"query.aspx?db=" + db + "&tbl=" + tbl + "&q=" + HttpUtility.UrlEncode("DELETE FROM " + tbl + " WHERE " + args) + "\"><img src=\"img/drop.png\" /></a></td>" +
+			tableBody += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd")  + "\"><td><input type=\"checkbox\" /></td><td><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/edit.png\" /></td>" +
+						 "<td><a href=\"query.aspx?db=" + db + "&tbl=" + tbl + "&q=" + HttpUtility.UrlEncode("DELETE FROM " + tbl + " WHERE " + args) + "\"><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/drop.png\" /></a></td>" +
 						 rowBody + "</tr>";
 		}
 
