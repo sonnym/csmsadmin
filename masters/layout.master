@@ -34,16 +34,17 @@
 		if (dbs == null) return;
 
 		navigation += "<h3>C&#9839MSAdmin</h3>";
-		navigation += DisplayLayer.GetNavigationSelect("db", dbs, qs["db"]) + "<br /><br />";
-		foreach (string s in dbs) navigation += "<a href=\"default.aspx?db=" + s + "\" class=\"nav\">" + s + "</a><br />";
+		navigation += DisplayLayer.GetNavigationSelect("db", dbs, qs["db"]) + "<br />";
 
 		string db = qs["db"];
 		if (String.IsNullOrEmpty(db)) return;
 
 		ArrayList tbls = dbl.getTableNames(db);
-		if (tbls == null) return;
 
-		navigation += DisplayLayer.GetNavigationSelect("db", dbs, db) + "<br />" + DisplayLayer.GetNavigationSelect("tbl", tbls, qs["tbl"]) + "<br /><br />";
-		foreach (string tbl in tbls) navigation += "<a href=\"struct.aspx?db=" + db +  "&tbl=" + tbl + "\" class=\"nav\" target=\"con\">" + tbl + "</a><br />";
+		if (tbls == null) foreach (string s in dbs) navigation += "<a href=\"default.aspx?db=" + s + "\" class=\"nav\">" + s + "</a><br />";
+		else {
+			navigation += DisplayLayer.GetNavigationSelect("tbl", tbls, qs["tbl"]) + "<br />";
+			foreach (string tbl in tbls) navigation += "<a href=\"struct.aspx?db=" + db +  "&tbl=" + tbl + "\" class=\"nav\">" + tbl + "</a><br />";
+		}
 	}
 </script>
