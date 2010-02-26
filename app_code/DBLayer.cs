@@ -12,9 +12,7 @@ DBCC PERFMON
 DBCC SHRINKDATABASE
 sp_estimate_data_compression_savings
 
-server statistics
 sys.dm_exec_sql_text
-SELECT * FROM sys.dm_exec_query_optimizer_info;
 */
 
 public class DBLayer {

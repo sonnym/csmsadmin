@@ -50,10 +50,15 @@
 
 		DataTable procedures = dbl.getStoredProcedures(db);
 		if (procedures != null) {
-			body.InnerHtml += "<br /><table><tr class=\"title\"><td>Name</td><td>Type</td><td>Modify</td><td>Remove</td><td>Return Type</td></tr>";
+			body.InnerHtml += "<br /><table><tbody><tr class=\"title\"><td /><td>Name</td><td>Type</td><td>Return Type</td><td colspan=\"2\" /></tr>";
 			for (int i = 0, len = procedures.Rows.Count; i < len; i++)
-				body.InnerHtml +="<tr class=\"" + ((i % 2 == 0) ? "even" : "odd") + "\"><td>" + procedures.Rows[i][0] + "</td><td>" + procedures.Rows[i][1] + "</td><td></td><td></td><td></td></tr>";
-			body.InnerHtml += "</table>";
+				body.InnerHtml += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd") + "\">" +
+									"<td><input type=\"checkbox\" id=\"" + db + "_" + HttpUtility.HtmlEncode(procedures.Rows[i][0].ToString()) + "\"</td>" +
+									"<td>" + procedures.Rows[i][0] + "</td><td>" + procedures.Rows[i][1] + "</td>" +
+									"<td />" +
+									"<td><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/edit.png\" /></td>" +
+									"<td><a href=\"query.aspx?db=" + db + "&q=" + HttpUtility.UrlEncode("DROP PROCEDURE " + procedures.Rows[i][0]) + "\"<img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/drop.png\" /></td></tr>";
+			body.InnerHtml += "</tbody></table>";
 		}
 	}
 
@@ -178,6 +183,6 @@
 		}
 
 		if (dbl.createTable(db, tbl, string.Join(",", definitions.ToArray(typeof(string)) as string[]))) Response.Redirect("struct.aspx?db=" + db + "&tbl=" + tbl);
-		//else Response.Redirect("query.aspx?db=" + db + "&tbl=&q=" + HttpUtility.UrlEncode(dbl.LastQuery));
+		//else Response.Redirect("query.aspx?db=" + db + "&q=" + HttpUtility.UrlEncode(dbl.LastQuery));
 	}
 </script>

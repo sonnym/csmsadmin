@@ -9,8 +9,6 @@
 		HtmlGenericControl body = (HtmlGenericControl)this.Master.FindControl("body");
 		DBLayer dbl = show_plan ? new DBLayer(true) : new DBLayer();
 
-		if (Request.QueryString["db"] == null || Request.QueryString["tbl"] == null) return;
-
 		string db = Request.QueryString["db"]; string tbl = Request.QueryString["tbl"];
 		string q = Server.UrlDecode(Request.QueryString["q"]);
 
