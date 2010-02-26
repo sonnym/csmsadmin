@@ -27,7 +27,7 @@ partial class Handler : IHttpHandler, IRequiresSessionState {
 
 		switch(url) {
 			case "/":
-				p.MasterPageFile = "~/masters/struct.master";	
+				p.MasterPageFile = "~/masters/struct.master";
 				break;
 			case "/charsets.aspx":
 				p.MasterPageFile = "~/masters/charsets.master";
