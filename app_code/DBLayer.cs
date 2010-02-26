@@ -9,6 +9,8 @@ using System.Web;
 exec sp_monitor
 DBCC PERFMON
 
+sys.all_parameters
+
 DBCC SHRINKDATABASE
 sp_estimate_data_compression_savings
 
@@ -92,7 +94,8 @@ public class DBLayer {
 	public ArrayList getTableNames(string db) {
 		using (con = __initConnection(false)) {
 			con.Open();
-			using (com = new SqlCommand("USE " + db + "; EXEC sp_tables @table_type = \"'table'\"", con)) {
+			con.ChangeDatabase(db);
+			using (com = new SqlCommand("EXEC sp_tables @table_type = \"'table'\"", con)) {
 				SqlDataReader r = com.ExecuteReader();
 				if (!r.HasRows) return null;
 
@@ -104,17 +107,9 @@ public class DBLayer {
 	}
 
 	public DataTable getStoredProcedures(string db) {
-		using (con = __initConnection(false)) {
-			con.Open();
-			con.ChangeDatabase(db);
-			using (com = new SqlCommand("SELECT name, type FROM sys.objects WHERE (type = 'P' OR type = 'FN') AND is_ms_shipped = 0", con)) { // will not return anything for master db
-				SqlDataReader r = com.ExecuteReader();
-				if (!r.HasRows) return null;
-
-				DataSet ds = __sqlDataReaderToDataSet(ref r, 1);
-				return ds.Tables[0];
-			}
-		}
+		return executeQuery(db, "SELECT objects.name, objects.type, routines.DATA_TYPE, routines.CHARACTER_MAXIMUM_LENGTH, routines.NUMERIC_PRECISION, routines.NUMERIC_SCALE, routines.DATETIME_PRECISION " +
+								"FROM sys.objects AS objects LEFT OUTER JOIN information_schema.routines AS routines ON objects.name = routines.specific_name " +
+								"WHERE objects.type IN ('P', 'FN') AND objects.is_ms_shipped = 0").Tables[0];
 	}
 
 	public Dictionary<string, string> getTableSize(string db, string tbl) {

@@ -122,4 +122,18 @@ public class DisplayLayer {
 		sb.Append("</select></form>");
 		return sb.ToString();
 	}
+
+	  /////////
+	 // etc //
+	/////////
+	public static string GetDataType(object name, object charmaxlen, object numprecision, object numscale, object datetimeprecision) {
+		if (String.IsNullOrEmpty(name.ToString())) return "NULL";
+
+		return name.ToString() + ((charmaxlen == DBNull.Value) ? "" : // strings and binary
+									"(" + ((int.Parse(charmaxlen.ToString()) == -1) ? "MAX" : charmaxlen.ToString()) + ")") +
+								  ((numprecision == DBNull.Value) ? "" : // numbers
+									"(" + numprecision.ToString() + ((numscale == DBNull.Value || int.Parse(numscale.ToString()) == 0) ? "" : ", " + numscale.ToString()) + ")") +
+								  ((datetimeprecision == DBNull.Value) ? "" : // datetimes
+									"(" + datetimeprecision + ")");
+	}
 }

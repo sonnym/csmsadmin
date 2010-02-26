@@ -49,13 +49,14 @@
 		}
 
 		DataTable procedures = dbl.getStoredProcedures(db);
-		if (procedures != null) {
+		if (procedures.Rows.Count > 0) {
 			body.InnerHtml += "<br /><table><tbody><tr class=\"title\"><td /><td>Name</td><td>Type</td><td>Return Type</td><td colspan=\"2\" /></tr>";
 			for (int i = 0, len = procedures.Rows.Count; i < len; i++)
 				body.InnerHtml += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd") + "\">" +
 									"<td><input type=\"checkbox\" id=\"" + db + "_" + HttpUtility.HtmlEncode(procedures.Rows[i][0].ToString()) + "\"</td>" +
 									"<td>" + procedures.Rows[i][0] + "</td><td>" + procedures.Rows[i][1] + "</td>" +
-									"<td />" +
+									"<td class=\"right\">" + DisplayLayer.GetDataType(procedures.Rows[i]["DATA_TYPE"], procedures.Rows[i]["CHARACTER_MAXIMUM_LENGTH"], procedures.Rows[i]["NUMERIC_PRECISION"],
+																						procedures.Rows[i]["NUMERIC_SCALE"], procedures.Rows[i]["DATETIME_PRECISION"]) + "</td>" +
 									"<td><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/edit.png\" /></td>" +
 									"<td><a href=\"query.aspx?db=" + db + "&q=" + HttpUtility.UrlEncode("DROP PROCEDURE " + procedures.Rows[i][0]) + "\"<img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/drop.png\" /></td></tr>";
 			body.InnerHtml += "</tbody></table>";
@@ -74,14 +75,8 @@
 													    t.Rows[i]["COLUMN_DEFAULT"].ToString().Substring(1, t.Rows[i]["COLUMN_DEFAULT"].ToString().Length - 2) :
 														t.Rows[i]["COLUMN_DEFAULT"]) + "</td>" +
 							 "<td class=\"right\">" + t.Rows[i]["IS_NULLABLE"].ToString().ToLower() + "</td>" +
-							 "<td class=\"right\">" + t.Rows[i]["DATA_TYPE"] + ((t.Rows[i].IsNull("CHARACTER_MAXIMUM_LENGTH")) ? "" : // strings and binary
-																				 "(" + ((int.Parse(t.Rows[i]["CHARACTER_MAXIMUM_LENGTH"].ToString()) == -1) ? "MAX" :
-																				 t.Rows[i]["CHARACTER_MAXIMUM_LENGTH"]) + ")") +
-																			   ((t.Rows[i].IsNull("NUMERIC_PRECISION")) ? "" : // numbers
-																				 "(" + ((t.Rows[i]["NUMERIC_PRECISION"])) + ((t.Rows[i].IsNull("NUMERIC_SCALE")) ? "" :
-																				 ", " + t.Rows[i]["NUMERIC_SCALE"]) + ")") +
-																			   ((t.Rows[i].IsNull("DATETIME_PRECISION")) ? "" : // datetimes
-																				 "(" + t.Rows[i]["DATETIME_PRECISION"] + ")") + "</td>" +
+							 "<td class=\"right\">" + DisplayLayer.GetDataType(t.Rows[i]["DATA_TYPE"], t.Rows[i]["CHARACTER_MAXIMUM_LENGTH"], t.Rows[i]["NUMERIC_PRECISION"],
+																				t.Rows[i]["NUMERIC_SCALE"], t.Rows[i]["DATETIME_PRECISION"]) + "</td>" +
 							 "<td>" + t.Rows[i]["CONSTRAINT_NAME"] + "</td>" +
 							 "<td>" + t.Rows[i]["COLLATION_NAME"].ToString().ToLower() + "</td>" +
 							 "<td><a href=\"query.aspx?db=" + db + "&tbl=" + tbl + "&q=" + HttpUtility.UrlEncode("SELECT COUNT(*) AS Cardinality, " + t.Rows[i]["COLUMN_NAME"] + 

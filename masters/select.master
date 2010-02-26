@@ -30,14 +30,8 @@
 				body.InnerHtml += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd")  + "\">" +
 							 "<td><input type=\"checkbox\" name=\"use_" + t.Rows[i]["COLUMN_NAME"] + "\" id=\"use_" + t.Rows[i]["COLUMN_NAME"] + "\" value=\"1\" /></td>" +
 							 "<td>" +t.Rows[i]["COLUMN_NAME"] + "</td>" +
-							 "<td class=\"right\">" + t.Rows[i]["DATA_TYPE"] + ((t.Rows[i].IsNull("CHARACTER_MAXIMUM_LENGTH")) ? "" : // strings and binary
-																				 "(" + ((int.Parse(t.Rows[i]["CHARACTER_MAXIMUM_LENGTH"].ToString()) == -1) ? "MAX" :
-																				 t.Rows[i]["CHARACTER_MAXIMUM_LENGTH"]) + ")") +
-																			   ((t.Rows[i].IsNull("NUMERIC_PRECISION")) ? "" : // numbers
-																				 "(" + ((t.Rows[i]["NUMERIC_PRECISION"])) + ((t.Rows[i].IsNull("NUMERIC_SCALE")) ? "" :
-																				 ", " + t.Rows[i]["NUMERIC_SCALE"]) + ")") +
-																			   ((t.Rows[i].IsNull("DATETIME_PRECISION")) ? "" : // datetimes
-																				 "(" + t.Rows[i]["DATETIME_PRECISION"] + ")") + "</td>" +
+							 "<td class=\"right\">" + DisplayLayer.GetDataType(t.Rows[i]["DATA_TYPE"], t.Rows[i]["CHARACTER_MAXIMUM_LENGTH"], t.Rows[i]["NUMERIC_PRECISION"],
+																				t.Rows[i]["NUMERIC_SCALE"], t.Rows[i]["DATETIME_PRECISION"]) + "</td>" +
 							 "<td class=\"right\">" + t.Rows[i]["COLLATION_NAME"].ToString().ToLower() + "</td>" +
 							 "<td class=\"right\"><select style=\"width: 110px\" name=\"op_" + t.Rows[i]["COLUMN_NAME"] + "\" id=\"op_" + t.Rows[i]["COLUMN_NAME"] + "\" onchange=\"javascript:updateForm(this)\"><option value=\"\"></option>" +
 								"<option value=\"eq\">=</option>" +
