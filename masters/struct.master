@@ -82,7 +82,7 @@
 							 "<td><a href=\"query.aspx?a=" + Session.SessionID + "&db=" + db + "&tbl=" + tbl + "&q=" + HttpUtility.UrlEncode("SELECT COUNT(*) AS Cardinality, " + t.Rows[i]["COLUMN_NAME"] + 
 								" FROM " + tbl + " GROUP BY " + t.Rows[i]["COLUMN_NAME"] + " ORDER BY " + t.Rows[i]["COLUMN_NAME"]) + "\"><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/browse.png\" /></a></td>" +
 							 "<td><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/edit.png\" /></td>" +
-							 "<td><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/drop.png\" /></td>" +
+							 "<td><a href=\"query.aspx?a=" + Session.SessionID + "&db=" + db + "&tbl=" + tbl + "&q=" + HttpUtility.UrlEncode("ALTER TABLE " + tbl + " DROP COLUMN " + t.Rows[i]["COLUMN_NAME"]) + "\"><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/drop.png\" /></a></td>" +
 							 "</tr>";
 			}
 			body.InnerHtml += "</tbody></table>";
