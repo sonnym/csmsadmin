@@ -13,7 +13,8 @@
 		db = HttpContext.Current.Request.QueryString["db"];
 		tbl = HttpContext.Current.Request.QueryString["tbl"];
 
-		if (!String.IsNullOrEmpty(Request.Form["create_tbl"])) tbl_create();
+		if (!String.IsNullOrEmpty(Request.Form["theme"])) Session.Add("theme", Request.Form["theme"]);
+		else if (!String.IsNullOrEmpty(Request.Form["create_tbl"])) tbl_create();
 		else if (!String.IsNullOrEmpty(Request.QueryString["fn"]) && Request.QueryString["fn"].Equals("create")) col_struct();
 		else if (String.IsNullOrEmpty(db)) srv_struct();
 		else if (String.IsNullOrEmpty(tbl)) db_struct();

@@ -18,11 +18,16 @@ partial class Handler : IHttpHandler, IRequiresSessionState {
 	private void pre(object sender, EventArgs e) {
 		if (context.Response.Cookies.Count > 0) context.Response.Cookies[0].HttpOnly = true; // only cookie is for session and is present at this point only if no session exists
 
-		//if (context.Session.SessionID != context.Request.QueryString("a")) return;
-		if (context.Session["theme"] == null) {
-			context.Session.Add("theme", Settings.DefaultTheme);
+		if (context.Session["cs"] == null || context.Session.SessionID != context.Request.QueryString["a"]) {
+			if (Settings.DisableLoginPage) context.Session["cs"] = Settings.ConnectionString;
+			else {
+				p.MasterPageFile = "~/masters/login.master";
+				context.Session.Abandon();
+				return;
+			}
 		}
-		if (!String.IsNullOrEmpty(context.Request.Form["theme"])) context.Session.Add("theme", context.Request.Form["theme"]);
+
+		if (context.Session["theme"] == null) context.Session.Add("theme", Settings.DefaultTheme);
 
 		string url = context.Request.ServerVariables["URL"];
 		DBLayer dbl = new DBLayer();

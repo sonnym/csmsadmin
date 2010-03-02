@@ -18,7 +18,7 @@ sys.dm_exec_sql_text
 */
 
 public class DBLayer {
-	private string cs = Settings.ConnectionString;
+	private string cs = HttpContext.Current.Session["cs"].ToString();
 	private SqlConnection con;
 	private SqlCommand com;
 
