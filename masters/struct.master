@@ -36,13 +36,13 @@
 				Dictionary<string, string> size = dbl.getTableSize(db, tbl);
 				body.InnerHtml += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd")  + "\">" +
 							 "<td><input type=\"checkbox\" id=\"" + db + "_" + tbl + "\"</td>" +
-							 "<td><a href=\"struct.aspx?db=" + db + "&tbl=" + tbl + "\">" + tbl + "</a></td>" +
-							 "<td><a href=\"browse.aspx?db=" + db + "&tbl=" + tbl + "\"><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/browse.png\" alt=\"Browse \" /></a></td>" +
-							 "<td><a href=\"struct.aspx?db=" + db + "&tbl=" + tbl + "\"><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/struct.png\" alt=\"Structure\" /></a></td>" +
-							 "<td><a href=\"select.aspx?db=" + db + "&tbl=" + tbl + "\"><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/search.png\" alt=\"Search\" /></td>" +
-							 "<td><a href=\"insert.aspx?db=" + db + "&tbl=" + tbl + "\"><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/insert.png\" /></a></td>" +
-							 "<td><a href=\"query.aspx?db=" + db + "&tbl=" + tbl + "&q=" + HttpUtility.UrlEncode("TRUNCATE TABLE " + tbl) + "\"><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/empty.png\" alt=\"Empty\" /></td>" +
-							 "<td><a href=\"query.aspx?db=" + db + "&q=" + HttpUtility.UrlEncode("DROP TABLE " + tbl) + "\"><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/drop.png\" alt=\"Drop\" /></td>" +
+							 "<td><a href=\"struct.aspx?a=" + Session.SessionID + "&db=" + db + "&tbl=" + tbl + "\">" + tbl + "</a></td>" +
+							 "<td><a href=\"browse.aspx?a=" + Session.SessionID + "&db=" + db + "&tbl=" + tbl + "\"><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/browse.png\" alt=\"Browse \" /></a></td>" +
+							 "<td><a href=\"struct.aspx?a=" + Session.SessionID + "&db=" + db + "&tbl=" + tbl + "\"><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/struct.png\" alt=\"Structure\" /></a></td>" +
+							 "<td><a href=\"select.aspx?a=" + Session.SessionID + "&db=" + db + "&tbl=" + tbl + "\"><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/search.png\" alt=\"Search\" /></td>" +
+							 "<td><a href=\"insert.aspx?a=" + Session.SessionID + "&db=" + db + "&tbl=" + tbl + "\"><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/insert.png\" /></a></td>" +
+							 "<td><a href=\"query.aspx?a=" + Session.SessionID + "&db=" + db + "&tbl=" + tbl + "&q=" + HttpUtility.UrlEncode("TRUNCATE TABLE " + tbl) + "\"><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/empty.png\" alt=\"Empty\" /></td>" +
+							 "<td><a href=\"query.aspx?a=" + Session.SessionID + "&db=" + db + "&q=" + HttpUtility.UrlEncode("DROP TABLE " + tbl) + "\"><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/drop.png\" alt=\"Drop\" /></td>" +
 							 "<td class=\"right\">" + size["rows"] + "</td><td class=\"right\">" + size["reserved"] + "</td></tr>";
 			}
 			body.InnerHtml += "<tbody></table>";
@@ -58,7 +58,7 @@
 									"<td class=\"right\">" + DisplayLayer.GetDataType(procedures.Rows[i]["DATA_TYPE"], procedures.Rows[i]["CHARACTER_MAXIMUM_LENGTH"], procedures.Rows[i]["NUMERIC_PRECISION"],
 																						procedures.Rows[i]["NUMERIC_SCALE"], procedures.Rows[i]["DATETIME_PRECISION"]) + "</td>" +
 									"<td><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/edit.png\" /></td>" +
-									"<td><a href=\"query.aspx?db=" + db + "&q=" + HttpUtility.UrlEncode("DROP PROCEDURE " + procedures.Rows[i][0]) + "\"<img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/drop.png\" /></td></tr>";
+									"<td><a href=\"query.aspx?a=" + Session.SessionID + "&db=" + db + "&q=" + HttpUtility.UrlEncode("DROP PROCEDURE " + procedures.Rows[i][0]) + "\"<img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/drop.png\" /></td></tr>";
 			body.InnerHtml += "</tbody></table>";
 		}
 	}
@@ -79,7 +79,7 @@
 																				t.Rows[i]["NUMERIC_SCALE"], t.Rows[i]["DATETIME_PRECISION"]) + "</td>" +
 							 "<td>" + t.Rows[i]["CONSTRAINT_NAME"] + "</td>" +
 							 "<td>" + t.Rows[i]["COLLATION_NAME"].ToString().ToLower() + "</td>" +
-							 "<td><a href=\"query.aspx?db=" + db + "&tbl=" + tbl + "&q=" + HttpUtility.UrlEncode("SELECT COUNT(*) AS Cardinality, " + t.Rows[i]["COLUMN_NAME"] + 
+							 "<td><a href=\"query.aspx?a=" + Session.SessionID + "&db=" + db + "&tbl=" + tbl + "&q=" + HttpUtility.UrlEncode("SELECT COUNT(*) AS Cardinality, " + t.Rows[i]["COLUMN_NAME"] + 
 								" FROM " + tbl + " GROUP BY " + t.Rows[i]["COLUMN_NAME"] + " ORDER BY " + t.Rows[i]["COLUMN_NAME"]) + "\"><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/browse.png\" /></a></td>" +
 							 "<td><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/edit.png\" /></td>" +
 							 "<td><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/drop.png\" /></td>" +

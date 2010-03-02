@@ -3,7 +3,7 @@
 <html>
  <head>
   <meta charset="utf-8">
-  <title><asp:Literal id="title" runat="server">C&#9839MSAdmin 0.2.5 - The C&#9839 MSSQL Server Administration Project</asp:Literal></title>
+  <title>C&#9839MSAdmin 0.4.0 - The C&#9839 MSSQL Server Administration Project</title>
   <link rel="stylesheet" href="themes/<%=HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString())%>/style.css" type="text/css" media="all" />
   <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" />
   <script type="text/javascript" src="js/querystring.js"></script>
@@ -66,11 +66,11 @@
 
 		navigation += DisplayLayer.GetNavigationSelect("db", dbs, qs["db"]) + "<br />";
 
-		if (String.IsNullOrEmpty(db)) foreach (string s in dbs) navigation += "<a href=\"default.aspx?db=" + s + "\" class=\"nav\">" + s + "</a><br />";
+		if (String.IsNullOrEmpty(db)) foreach (string s in dbs) navigation += "<a href=\"default.aspx?a=" + Session.SessionID + "&db=" + s + "\" class=\"nav\">" + s + "</a><br />";
 		else {
 			ArrayList tbls = dbl.getTableNames(db);
 			navigation += DisplayLayer.GetNavigationSelect("tbl", tbls, qs["tbl"]) + "<br />";
-			foreach (string tbl in tbls) navigation += "<a href=\"struct.aspx?db=" + db +  "&tbl=" + tbl + "\" class=\"nav\">" + tbl + "</a><br />";
+			foreach (string tbl in tbls) navigation += "<a href=\"struct.aspx?a=" + Session.SessionID + "&db=" + db +  "&tbl=" + tbl + "\" class=\"nav\">" + tbl + "</a><br />";
 		}
 	}
 </script>

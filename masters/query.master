@@ -22,7 +22,7 @@
 
 		foreach (DataTable t in result.Tables) {
 			body.InnerHtml += "<table><tbody><tr class=\"title\">";
-			foreach (DataColumn c in t.Columns) body.InnerHtml += "<td><a href=\"query.aspx?db=" + db + "&tbl=" + tbl + "&q=" + HttpUtility.UrlEncode("SELECT TOP 30 * FROM " + tbl + " ORDER BY " + c.ColumnName) + "\">" + c.ColumnName + "</a></td>";
+			foreach (DataColumn c in t.Columns) body.InnerHtml += "<td><a href=\"query.aspx?a=" + Session.SessionID + "&db=" + db + "&tbl=" + tbl + "&q=" + HttpUtility.UrlEncode("SELECT TOP 30 * FROM " + tbl + " ORDER BY " + c.ColumnName) + "\">" + c.ColumnName + "</a></td>";
 			body.InnerHtml += "</tr>";
 
 			foreach (DataRow r in t.Rows) {

@@ -16,6 +16,9 @@ partial class Handler : IHttpHandler, IRequiresSessionState {
 	}
 
 	private void pre(object sender, EventArgs e) {
+		if (context.Response.Cookies.Count > 0) context.Response.Cookies[0].HttpOnly = true; // only cookie is for session and is present at this point only if no session exists
+
+		//if (context.Session.SessionID != context.Request.QueryString("a")) return;
 		if (context.Session["theme"] == null) {
 			context.Session.Add("theme", Settings.DefaultTheme);
 		}

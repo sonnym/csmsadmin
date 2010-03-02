@@ -13,7 +13,7 @@
 		for (int i = 0, rows = processes.Rows.Count; i < rows; i++) {
 			DataRow r = processes.Rows[i];
 
-			tableBody += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd") + "\"><td><a href=\"query.aspx?db=&tbl=&q=" + HttpUtility.UrlEncode("KILL " + r[0].ToString()) + "\">KILL</a></td>";
+			tableBody += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd") + "\"><td><a href=\"query.aspx?a=" + Session.SessionID + "&db=&tbl=&q=" + HttpUtility.UrlEncode("KILL " + r[0].ToString()) + "\">KILL</a></td>";
 			foreach (DataColumn c in processes.Columns) {
 				if (i == 0) headers += "<td>" + c.ColumnName + "</td>";
 				tableBody += "<td>" + ((r[c.ColumnName].GetType().Name == "DBNull") ? "NULL" : r[c.ColumnName]) + "</td>";
