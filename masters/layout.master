@@ -23,7 +23,7 @@
   </script>
   <script type="text/javascript">
     $(document).ready(function() {
-<% if (!qs["n"].Equals("0")) { %>
+<% if (String.IsNullOrEmpty(qs["n"]) || !qs["n"].Equals("0")) { %>
       var magicnumber = 15; // accounts for scrollbar with some padding
       var maxwidth = $('#navigation').css('width');
   
@@ -47,14 +47,14 @@
       $('#navigation').css('maxWidth', maxwidth);
       $('.content').css('width', ($('body').width() - $('#navigation').width() - magicnumber) + 'px');
 <% } %>
-<% if (qs["n"].Equals("1")) { %>
+<% if (!String.IsNullOrEmpty(qs["n"]) && qs["n"].Equals("1")) { %>
       $('.ui-resizable-handle').dblclick();
 <% } %>
     });
   </script>
  </head>
  <body>
-<% if (!qs["n"].Equals("0")) { %>
+<% if (String.IsNullOrEmpty(qs["n"]) || !qs["n"].Equals("0")) { %>
   <div id="navigation">
    <h3>C&#9839MSAdmin</h3>
 <%
