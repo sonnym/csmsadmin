@@ -106,6 +106,8 @@ public class DisplayLayer {
 	}
 
 	public static string GetNavigationSelect(string n, ArrayList nvs, string sel) {
+		if (nvs == null) return "";
+
 		sb = new StringBuilder();
 		sb.Append("<select name=\"" + n + "\" onchange=\"checkNav(this)\" onkeyup=\"checkNav(this)\">");
 		if (String.IsNullOrEmpty(sel)) sb.Append("<option />");

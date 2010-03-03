@@ -69,7 +69,8 @@
 		else {
 			ArrayList tbls = dbl.getTableNames(db);
 			Response.Write(DisplayLayer.GetNavigationSelect("tbl", tbls, qs["tbl"]) + "<br />");
-			foreach (string tbl in tbls) Response.Write("<a href=\"struct.aspx?a=" + Session.SessionID + "&db=" + db +  "&tbl=" + tbl + "\" class=\"nav\">" + tbl + "</a><br />");
+			if (tbls != null) foreach (string tbl in tbls) Response.Write("<a href=\"struct.aspx?a=" + Session.SessionID + "&db=" + db +  "&tbl=" + tbl + "\" class=\"nav\">" + tbl + "</a><br />");
+			else Response.Write("<a href=\"operations.aspx?a=" + Session.SessionID + "&db=" + qs["db"] + "\">No tables</a>");
 		}
 %>
   </div>
