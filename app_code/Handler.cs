@@ -29,7 +29,7 @@ partial class Handler : IHttpHandler, IRequiresSessionState {
 
 		if (context.Session["theme"] == null) context.Session.Add("theme", Settings.DefaultTheme);
 
-		string url = context.Request.ServerVariables["URL"];
+		string url = context.Request.ServerVariables["URL"].ToLower();
 		DBLayer dbl = new DBLayer();
 		NameValueCollection qs = context.Request.QueryString;
 
