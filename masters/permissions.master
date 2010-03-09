@@ -41,7 +41,7 @@
 
 			foreach (DataRow r in principals.Rows) {
 				body.InnerHtml += "<tr>";
-				foreach(DataColumn c in principals.Columns) body.InnerHtml += "<td>" + ((r[c.ColumnName].GetType().Name == "DBNull") ? "NULL" : HttpUtility.HtmlEncode(r[c.ColumnName].ToString()).Replace(Environment.NewLine, "<br />")) + "</td>";
+				foreach (DataColumn c in principals.Columns) body.InnerHtml += "<td>" + r[c.ColumnName] + "</td>";
 				body.InnerHtml += "</tr>";
 			}
 			body.InnerHtml += "</tbody></table>";

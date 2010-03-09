@@ -1,8 +1,6 @@
 html { font: 100% arial; }
 body { font: 0.85em arial; }
-a { color: #000000;
-	text-decoration: none;
-}
+a { color: #000000; }
 h3 { margin: 0; }
 .bold { font-weight: bold; }
 a:hover { text-decoration: underline; }
