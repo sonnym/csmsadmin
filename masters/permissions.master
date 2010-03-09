@@ -1,1 +1,50 @@
 <%@ Master Language="C#" MasterPageFile="~/masters/layout.master" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Web" %>
+<script runat="server">
+	private DBLayer dbl = new DBLayer();
+	private HtmlGenericControl body;
+
+	protected override void OnLoad(EventArgs e) {
+		body = (HtmlGenericControl)this.Master.FindControl("body");
+
+		if (String.IsNullOrEmpty(Request.QueryString["db"]) && (!String.IsNullOrEmpty(Request.QueryString["t"]) || !String.IsNullOrEmpty(Request.QueryString["l"]))) srv_principals_drilldown();
+		else if (String.IsNullOrEmpty(Request.QueryString["db"])) srv_principals_summary();
+	}
+
+	private void srv_principals_summary() {
+		DataTable types = dbl.getServerPrincipalTypes();
+		DataTable principals = dbl.getServerPrincipals();
+
+		int k = 0; 
+
+		for (int i = 0, len = types.Rows.Count; i < len; i++) {
+			body.InnerHtml += "<b>" + LookupTables.principalType(types.Rows[i]["type"].ToString()) + ":</b> (<a href=\"permissions.aspx?t=" + types.Rows[i]["type"].ToString() + "&l=\">all</a>) <br />";
+			for (int j = 97; j <= 122; j++) {
+				if (k < principals.Rows.Count && principals.Rows[k]["type"].Equals(types.Rows[i]["type"]) && principals.Rows[k]["first"].ToString().ToLower().ToCharArray()[0] == (char)j) {
+					body.InnerHtml += "<a href=\"permissions.aspx?t=" + types.Rows[i]["type"].ToString() + "&l=" + (char)j + "\">" + (char)j + "</a>&nbsp;&nbsp;";
+					k++;
+				} else body.InnerHtml += ((char)j).ToString() + "&nbsp;&nbsp;";
+			}
+			body.InnerHtml += "<br /><br />";
+		}
+	}
+
+	private void srv_principals_drilldown() {
+		DataTable principals = dbl.getServerPrincipals(Request.QueryString["t"], Request.QueryString["l"]);
+
+		if (principals.Rows.Count > 0) {
+			body.InnerHtml += "<table><tbody><tr class=\"title\">";
+			foreach (DataColumn c in principals.Columns) body.InnerHtml += "<td>" + c.ColumnName + "</td>";
+			body.InnerHtml += "</tr>";
+
+			foreach (DataRow r in principals.Rows) {
+				body.InnerHtml += "<tr>";
+				foreach(DataColumn c in principals.Columns) body.InnerHtml += "<td>" + ((r[c.ColumnName].GetType().Name == "DBNull") ? "NULL" : HttpUtility.HtmlEncode(r[c.ColumnName].ToString()).Replace(Environment.NewLine, "<br />")) + "</td>";
+				body.InnerHtml += "</tr>";
+			}
+			body.InnerHtml += "</tbody></table>";
+		} else body.InnerHtml += "<span>No principals found for this query.</span>";
+	}
+</script>

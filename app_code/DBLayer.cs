@@ -164,6 +164,25 @@ public class DBLayer {
 		return executeQuery("master", "EXEC sys.sp_enum_oledb_providers").Tables[0];
 	}
 
+	public DataTable getServerPrincipalTypes() {
+		return executeQuery("master", "SELECT DISTINCT(type) FROM sys.server_principals WHERE type != 'C' ORDER BY type ASC").Tables[0];
+	}
+
+	public DataTable getServerPrincipals() { // case insensitive under current configuration - perhaps should include a collation here
+		return executeQuery("master", "SELECT type, SUBSTRING(name, 1, 1) AS first, COUNT(SUBSTRING(name, 1, 1)) AS count " +
+										"FROM sys.server_principals WHERE type != 'C' GROUP BY SUBSTRING(name, 1, 1), type ORDER BY type ASC, first ASC").Tables[0];
+	}
+
+	public DataTable getServerPrincipals(string type, string letter) {
+		string where = String.Empty;
+		if (!String.IsNullOrEmpty(type)) where += "WHERE type = '" + type + "' ";
+		if (!String.IsNullOrEmpty(letter)) where += (String.IsNullOrEmpty(where) ? "WHERE " : "AND ") + "SUBSTRING(name, 1, 1) = '" + letter + "' ";
+
+		return executeQuery("master", "SELECT principal_id, name, is_disabled, create_date, modify_date, default_database_name " +
+										"FROM sys.server_principals " + where + " ORDER BY name ASC").Tables[0];
+	}
+
+	/*
 	public DataTable getServerPermissions() {
 		return executeQuery("master", "SELECT state_desc, permission_name, name, type_desc, is_disabled from sys.server_permissions AS permissions " +
 										"LEFT JOIN sys.server_principals AS principals ON permissions.grantee_principal_id = principals.principal_id").Tables[0];
@@ -176,6 +195,7 @@ public class DBLayer {
 									"JOIN sys.schemas AS schemas ON objects.schema_id = schemas.schema_id " +
 									"JOIN sys.database_principals AS principals ON permissions.grantee_principal_id = principals.principal_id").Tables[0];
 	}
+	*/
 
 	public DataTable getConfiguration() {
 		return executeQuery("master", "SELECT name, value, value_in_use, minimum, maximum, description FROM sys.configurations ORDER BY name").Tables[0];

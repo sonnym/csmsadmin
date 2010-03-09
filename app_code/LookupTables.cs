@@ -39,4 +39,16 @@ public class LookupTables {
 			default:                     return "Structure"; // default.aspx, /
 		}
 	}
+
+	public static string principalType(string s) {
+		switch(s.ToCharArray()[0]) {
+			case 'S': return "SQL Login";
+			case 'U': return "Windows login";
+			case 'G': return "Windows group";
+			case 'R': return "Server role";
+			case 'C': return "Login mapped to a certificate";
+			case 'K': return "Login mapped to an asymmetric key";
+			default:  return null;
+		}
+	}
 }
