@@ -12,11 +12,11 @@
 		string db = Request.QueryString["db"]; string tbl = Request.QueryString["tbl"];
 		string q = Server.UrlDecode(Request.QueryString["q"]);
 
-		body.InnerHtml += DisplayLayer.GetQueryInput(db, tbl, q);
+		body.InnerHtml += DisplayLayer.getQueryInput(db, tbl, q);
 		   
 		if (Request.QueryString["q"] == null || Request.QueryString["q"].Length == 0) return;
 
-		body.InnerHtml += DisplayLayer.GetQueryBox(db, tbl, q);
+		body.InnerHtml += DisplayLayer.getQueryBox(db, tbl, q);
 
 		DataSet result = dbl.executeQuery(db, q);
 

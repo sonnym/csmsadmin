@@ -29,7 +29,7 @@
 			for(int i = 0, l = t.Rows.Count; i < l; i++) {
 				body.InnerHtml += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd")  + "\">" +
 							 "<td>" +t.Rows[i]["COLUMN_NAME"] + "</td>" +
-							 "<td class=\"right\">" + DisplayLayer.GetDataType(t.Rows[i]["DATA_TYPE"], t.Rows[i]["CHARACTER_MAXIMUM_LENGTH"], t.Rows[i]["NUMERIC_PRECISION"],
+							 "<td class=\"right\">" + DisplayLayer.getDataType(t.Rows[i]["DATA_TYPE"], t.Rows[i]["CHARACTER_MAXIMUM_LENGTH"], t.Rows[i]["NUMERIC_PRECISION"],
 																				t.Rows[i]["NUMERIC_SCALE"], t.Rows[i]["DATETIME_PRECISION"]) + "</td>" +
 							 "<td class=\"right\">" + t.Rows[i]["COLLATION_NAME"].ToString().ToLower() + "</td>" +
 							 "<td class=\"right\">" + ((t.Rows[i]["IS_NULLABLE"].ToString().ToLower().Trim().Equals("yes")) ?

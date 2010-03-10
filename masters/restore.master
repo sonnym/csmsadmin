@@ -12,6 +12,6 @@
 		if (Request.QueryString["db"] == null) return;
 		string db = Request.QueryString["db"]; string tbl = Request.QueryString["tbl"];
 
-		body.InnerHtml += DisplayLayer.GetRestoreArea(db);
+		body.InnerHtml += DisplayLayer.getRestoreArea(db);
 	}
 </script>

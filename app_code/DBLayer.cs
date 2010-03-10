@@ -131,7 +131,8 @@ public class DBLayer {
 	public string getTableReservedSize(string db, string tbl) {
 		using (con = __initConnection(false)) {
 			con.Open();
-			using (com = new SqlCommand("USE " + db + "; EXEC sp_spaceused " + tbl, con)) {
+			con.ChangeDatabase(db);
+			using (com = new SqlCommand("EXEC sp_spaceused " + tbl, con)) {
 				SqlDataReader r = com.ExecuteReader();
 				if (!r.HasRows) return null;
 
@@ -175,11 +176,19 @@ public class DBLayer {
 
 	public DataTable getServerPrincipals(string type, string letter) {
 		string where = String.Empty;
-		if (!String.IsNullOrEmpty(type)) where += "WHERE type = '" + type + "' ";
-		if (!String.IsNullOrEmpty(letter)) where += (String.IsNullOrEmpty(where) ? "WHERE " : "AND ") + "SUBSTRING(name, 1, 1) = '" + letter + "' ";
+		SqlParameterCollection p = __getEmptyParameterCollection();
+
+		if (!String.IsNullOrEmpty(type)) {
+			where += "WHERE type = @type ";
+			p.AddWithValue("@type", type);
+		}
+		if (!String.IsNullOrEmpty(letter)) {
+			where += (String.IsNullOrEmpty(where) ? "WHERE " : "AND ") + "SUBSTRING(name, 1, 1) = @letter ";
+			p.AddWithValue("@letter", letter);
+		}
 
 		return executeQuery("master", "SELECT principal_id, name, is_disabled, create_date, modify_date, default_database_name " +
-										"FROM sys.server_principals " + where + " ORDER BY name ASC").Tables[0];
+										"FROM sys.server_principals " + where + " ORDER BY name ASC", p).Tables[0];
 	}
 
 	/*
@@ -226,6 +235,9 @@ public class DBLayer {
 	}
 
 	public DataSet executeQuery(string db, string q) {
+		return executeQuery(db, q, null);
+	}
+	public DataSet executeQuery(string db, string q, SqlParameterCollection p) {
 		using (con = __initConnection(false)) {
 			con.Open();
 			if (!String.IsNullOrEmpty(db)) con.ChangeDatabase(db);
@@ -235,6 +247,7 @@ public class DBLayer {
 				}
 			}
 			using (com = new SqlCommand(q, con)) {
+				if (p != null) for (int i = 0, l = p.Count; i < l; i++) com.Parameters.AddWithValue(p[i].ParameterName, p[i].Value);
 				SqlDataReader r = com.ExecuteReader();
 				return __sqlDataReaderToDataSet(ref r, q.TrimEnd(new char[] {';'}).Split(new char[] {';'}).Length);
 			}
@@ -328,33 +341,6 @@ public class DBLayer {
 	  /////////////////////
 	 // Private methods //
 	/////////////////////
-	private string __getPrimaryKey(string db, string tbl) {
-		using (con = __initConnection(false)) {
-			con.Open();
-			// http://blogs.x2line.com/al/articles/175.aspx
-			using (com = new SqlCommand("USE " + db + "; SELECT name FROM syscolumns WHERE id IN (SELECT [id] FROM sysobjects WHERE [name] = @tbl) AND colid IN (SELECT sysindexkeys.colid FROM sysindexkeys JOIN sysobjects ON sysindexkeys.id = sysobjects.id WHERE sysindexkeys.indid = 1 AND sysobjects.name = @tbl)", con)) {
-				com.Parameters.AddWithValue("@tbl", tbl);
-				SqlDataReader r = com.ExecuteReader();
-				if (r.HasRows) {
-					r.Read();
-					return r[0].ToString();
-				} else return null;
-			}
-		}	
-	}
-
-	private string __getFirstColumn(string db, string tbl) {
-		using (con = __initConnection(false)) {
-			con.Open();
-			con.ChangeDatabase(db);
-			using (com = new SqlCommand("SELECT TOP 1 COLUMN_NAME FROM information_schema.columns WHERE TABLE_NAME = @tbl ORDER BY ORDINAL_POSITION", con)) {
-				com.Parameters.AddWithValue("@tbl", tbl);
-				return com.ExecuteScalar().ToString();
-			}
-		}
-
-	}
-
 	private SqlConnection __initConnection(bool stats) {
 		SqlConnection c = new SqlConnection(cs);
 		c.StatisticsEnabled = stats;
@@ -376,8 +362,40 @@ public class DBLayer {
 		return ds;
 	}
 
+	private SqlParameterCollection __getEmptyParameterCollection() {
+		return new SqlCommand().Parameters;
+	}
+
 	private void __storeLastQuery() {
 		// expand for parameterization?
 		this.lastQuery = com.CommandText;
+	}
+
+	private string __getPrimaryKey(string db, string tbl) {
+		using (con = __initConnection(false)) {
+			con.Open();
+			// http://blogs.x2line.com/al/articles/175.aspx
+			con.ChangeDatabase(db);
+			using (com = new SqlCommand("SELECT name FROM syscolumns WHERE id IN (SELECT [id] FROM sysobjects WHERE [name] = @tbl) AND colid IN (SELECT sysindexkeys.colid FROM sysindexkeys JOIN sysobjects ON sysindexkeys.id = sysobjects.id WHERE sysindexkeys.indid = 1 AND sysobjects.name = @tbl)", con)) {
+				com.Parameters.AddWithValue("@tbl", tbl);
+				SqlDataReader r = com.ExecuteReader();
+				if (r.HasRows) {
+					r.Read();
+					return r[0].ToString();
+				} else return null;
+			}
+		}	
+	}
+
+	private string __getFirstColumn(string db, string tbl) {
+		using (con = __initConnection(false)) {
+			con.Open();
+			con.ChangeDatabase(db);
+			using (com = new SqlCommand("SELECT TOP 1 COLUMN_NAME FROM information_schema.columns WHERE TABLE_NAME = @tbl ORDER BY ORDINAL_POSITION", con)) {
+				com.Parameters.AddWithValue("@tbl", tbl);
+				return com.ExecuteScalar().ToString();
+			}
+		}
+
 	}
 }

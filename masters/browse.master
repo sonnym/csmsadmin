@@ -17,8 +17,8 @@
 		DataSet records = dbl.getRecordsFromTable(db, tbl, pg * cnt, cnt);
 		body.InnerHtml += "Returned " + Convert.ToString(records.Tables[0].Rows.Count) + " rows<br />";
 
-		body.InnerHtml += DisplayLayer.GetQueryBox(db, tbl, dbl.LastQuery) +
-						  DisplayLayer.GetBrowseTableNavigation(db, tbl, dbl.getRowCount(db, tbl), pg, cnt);
+		body.InnerHtml += DisplayLayer.getQueryBox(db, tbl, dbl.LastQuery) +
+						  DisplayLayer.getBrowseTableNavigation(db, tbl, dbl.getRowCount(db, tbl), pg, cnt);
 
 		string headers = String.Empty, tableBody = String.Empty;
 

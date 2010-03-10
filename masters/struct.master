@@ -25,7 +25,7 @@
 		body.InnerHtml += "MSSQL Version: " + dbl.getServerVersion() + "<br />SQL User: " + dbl.getUsername() + "<br /><br />" +
 							"Web Server: " + HttpContext.Current.Request.ServerVariables["SERVER_SOFTWARE"] + "<br />" +
 							"Identity: " + System.Security.Principal.WindowsIdentity.GetCurrent().Name + "<br /><br />" +
-							"Theme: " + DisplayLayer.GetThemeSelect();
+							"Theme: " + DisplayLayer.getThemeSelect();
 	}
 
 	private void db_struct() {
@@ -56,7 +56,7 @@
 				body.InnerHtml += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd") + "\">" +
 									"<td><input type=\"checkbox\" id=\"" + db + "_" + HttpUtility.HtmlEncode(procedures.Rows[i][0].ToString()) + "\"</td>" +
 									"<td>" + procedures.Rows[i][0] + "</td><td>" + procedures.Rows[i][1] + "</td>" +
-									"<td class=\"right\">" + DisplayLayer.GetDataType(procedures.Rows[i]["DATA_TYPE"], procedures.Rows[i]["CHARACTER_MAXIMUM_LENGTH"], procedures.Rows[i]["NUMERIC_PRECISION"],
+									"<td class=\"right\">" + DisplayLayer.getDataType(procedures.Rows[i]["DATA_TYPE"], procedures.Rows[i]["CHARACTER_MAXIMUM_LENGTH"], procedures.Rows[i]["NUMERIC_PRECISION"],
 																						procedures.Rows[i]["NUMERIC_SCALE"], procedures.Rows[i]["DATETIME_PRECISION"]) + "</td>" +
 									"<td><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/edit.png\" /></td>" +
 									"<td><a href=\"query.aspx?a=" + Session.SessionID + "&db=" + db + "&q=" + HttpUtility.UrlEncode("DROP PROCEDURE " + procedures.Rows[i][0]) + "\"<img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/drop.png\" /></td></tr>";
@@ -76,7 +76,7 @@
 													    t.Rows[i]["COLUMN_DEFAULT"].ToString().Substring(1, t.Rows[i]["COLUMN_DEFAULT"].ToString().Length - 2) :
 														t.Rows[i]["COLUMN_DEFAULT"]) + "</td>" +
 							 "<td class=\"right\">" + t.Rows[i]["IS_NULLABLE"].ToString().ToLower() + "</td>" +
-							 "<td class=\"right\">" + DisplayLayer.GetDataType(t.Rows[i]["DATA_TYPE"], t.Rows[i]["CHARACTER_MAXIMUM_LENGTH"], t.Rows[i]["NUMERIC_PRECISION"],
+							 "<td class=\"right\">" + DisplayLayer.getDataType(t.Rows[i]["DATA_TYPE"], t.Rows[i]["CHARACTER_MAXIMUM_LENGTH"], t.Rows[i]["NUMERIC_PRECISION"],
 																				t.Rows[i]["NUMERIC_SCALE"], t.Rows[i]["DATETIME_PRECISION"]) + "</td>" +
 							 "<td>" + t.Rows[i]["CONSTRAINT_NAME"] + "</td>" +
 							 "<td>" + t.Rows[i]["COLLATION_NAME"].ToString().ToLower() + "</td>" +
@@ -103,7 +103,7 @@
 			for (int i = 0; i < fields; i++) {
 				string n = Convert.ToString(i);
 				fieldsrow += "<td><input type=\"text\" name=\"" + n + "_name\" /></td>";
-				typesrow += "<td>" + DisplayLayer.GetTypeSelect(n + "_type", types) + "</td>";
+				typesrow += "<td>" + DisplayLayer.getTypeSelect(n + "_type", types) + "</td>";
 				lengthsrow += "<td><input type=\"text\" size=\"5\" name=\"" + n + "_length\" /></td>";
 				defaultsrow += "<td><select name=\"" + n + "_default\">" +
 										"<option value=\"none\">None</option>" +
@@ -111,7 +111,7 @@
 										"<option value=\"getdate\">getdate()</option>" +
 										"<option value=\"defined\">As Defined:</option>" +
 									"</select><br /><input type=\"text\" size=\"15\" name=\"" + n + "_default_value\" /></td>";
-				collationsrow += "<td>" + DisplayLayer.GetCollationSelect(n + "_collation", collations) + "</td>";
+				collationsrow += "<td>" + DisplayLayer.getCollationSelect(n + "_collation", collations) + "</td>";
 				nullsrow += "<td><input type=\"checkbox\" name=\"" + n + "_null\" value=\"1\" /></td>";
 				identityrow += "<td><input type=\"checkbox\" name=\"" + n + "_identity\" value=\"1\" /><br />" +
 									"Seed: <input type=\"text\" size=\"2\" name=\"" + n + "_identity_seed\" /> Inc: <input type=\"text\" size=\"2\" name=\"" + n + "_identity_inc\" /><br />" +
@@ -131,14 +131,14 @@
 			for (int i = 0; i < fields; i++) {
 				string n = Convert.ToString(i);
 				body.InnerHtml += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd") + "\"><td><input type=\"text\" name=\"" + n + "_name\" /></td>" +
-									"<td>" + DisplayLayer.GetTypeSelect(n + "_type", types) + "</td>" +
+									"<td>" + DisplayLayer.getTypeSelect(n + "_type", types) + "</td>" +
 									"<td><input type=\"text\" size=\"5\" name=\"" + n + "_length\" /></td>" +
 									"<td><select name=\"" + n + "_default\">" +
 											"<option value=\"none\">None</option>" +
 											"<option value=\"null\">NULL</option>" +
 											"<option value=\"defined\">As Defined:</option>" +
 										"</select><br /><input type=\"text\" size=\"15\" name=\"" + n + "_default_value\" /></td>" +
-									"<td>" + DisplayLayer.GetCollationSelect(n + "_collation", collations) + "</td>" +
+									"<td>" + DisplayLayer.getCollationSelect(n + "_collation", collations) + "</td>" +
 									"<td><input type=\"checkbox\" name=\"" + n + "_null\" value=\"1\" /></td>" +
 									"<td class=\"center\"><input type=\"checkbox\" name=\"" + n + "_identity\" value=\"1\"/><br />" +
 										"Seed: <input type=\"text\" size=\"2\" name=\"" + n + "_identity_seed\" /> Inc: <input type=\"text\" size=\"2\" name=\"" + n + "_identity_inc\" /><br />" +

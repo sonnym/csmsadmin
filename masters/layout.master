@@ -63,12 +63,12 @@
 		ArrayList dbs = dbl.getDatabaseNames();
 		if (dbs == null) return;
 
-		Response.Write(DisplayLayer.GetNavigationSelect("db", dbs, qs["db"]) + "<br />");
+		Response.Write(DisplayLayer.getNavigationSelect("db", dbs, qs["db"]) + "<br />");
 
 		if (String.IsNullOrEmpty(db)) foreach (string s in dbs) Response.Write("<a href=\"default.aspx?a=" + Session.SessionID + "&db=" + s + "\" class=\"nav\">" + s + "</a><br />");
 		else {
 			ArrayList tbls = dbl.getTableNames(db);
-			Response.Write(DisplayLayer.GetNavigationSelect("tbl", tbls, qs["tbl"]) + "<br />");
+			Response.Write(DisplayLayer.getNavigationSelect("tbl", tbls, qs["tbl"]) + "<br />");
 			if (tbls != null) foreach (string tbl in tbls) Response.Write("<a href=\"struct.aspx?a=" + Session.SessionID + "&db=" + db +  "&tbl=" + tbl + "\" class=\"nav\">" + tbl + "</a><br />");
 			else Response.Write("<a href=\"operations.aspx?a=" + Session.SessionID + "&db=" + qs["db"] + "\">No tables</a>");
 		}

@@ -85,14 +85,14 @@ partial class Handler : IHttpHandler, IRequiresSessionState {
 				break;
 			default:
 				p.MasterPageFile = "~/masters/layout.master";
-				((HtmlGenericControl)p.Master.FindControl("body")).InnerHtml = DisplayLayer.GetLocation(dbl.getServerName(), qs["db"], qs["tbl"]) +
-																			   DisplayLayer.GetTopTabs(LookupTables.pages(url), qs["db"], qs["tbl"]) +
+				((HtmlGenericControl)p.Master.FindControl("body")).InnerHtml = DisplayLayer.getLocation(dbl.getServerName(), qs["db"], qs["tbl"]) +
+																			   DisplayLayer.getTopTabs(LookupTables.pages(url), qs["db"], qs["tbl"]) +
 																			   "<br />Invalid URL";
 				return;
 		}
 
-		((HtmlGenericControl)p.Master.Master.FindControl("body")).InnerHtml = DisplayLayer.GetLocation(dbl.getServerName(), qs["db"], qs["tbl"]) +
-																			  DisplayLayer.GetTopTabs(LookupTables.pages(url), qs["db"], qs["tbl"]);
+		((HtmlGenericControl)p.Master.Master.FindControl("body")).InnerHtml = DisplayLayer.getLocation(dbl.getServerName(), qs["db"], qs["tbl"]) +
+																			  DisplayLayer.getTopTabs(LookupTables.pages(url), qs["db"], qs["tbl"]);
 	}
 
 	public bool IsReusable {
