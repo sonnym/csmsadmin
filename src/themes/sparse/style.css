@@ -91,6 +91,7 @@ input[type=submit], input[type=button] {
 	border: solid black 1px;
 }
 #query_execute { margin-left: 520px; }
+#filewrapper { display: none; }
 .error {
 	font-weight: bold;
 	color: red;

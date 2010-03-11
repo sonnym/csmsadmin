@@ -7,12 +7,15 @@
 		HtmlGenericControl body = (HtmlGenericControl)this.Master.FindControl("body");
 		DBLayer dbl = new DBLayer();
 
-		if (Request.Form["r_execute"] != null) body.InnerHtml = dbl.restoreDatabase(Request.Form["db"], Request.Form["r_file"]);
+		if (!String.IsNullOrEmpty(Request.Form["init"])) {
+			// get information regarting backup set
+			//if (Request.Form["r_execute"] != null) body.InnerHtml = dbl.restoreDatabase(Request.Form["db"], Request.Form["r_file"]);
+			return;
+		}
 
-		if (Request.QueryString["db"] == null) return;
-		string db = Request.QueryString["db"]; string tbl = Request.QueryString["tbl"];
-
-		body.InnerHtml += DisplayLayer.getRestoreArea(db) +
-						  "<input type=\"hidden\" value=\"\" id=\"test\" />";
+		body.InnerHtml += "<input type=\"button\" value=\"Select a File\" onclick=\"openFileBrowser()\" /><br /><br />" +
+						   "<div id=\"filewrapper\"><span class=\"bold\">Currently selected file: </span><span id=\"filedisp\"></span><br /><br />" +
+						   "<form method=\"post\"><input type=\"hidden\" id=\"file\" name=\"file\" value=\"\" />" +
+						   "<input type=\"submit\" name=\"init\" value=\"Continue\" /></form></div>";
 	}
 </script>

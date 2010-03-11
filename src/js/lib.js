@@ -31,7 +31,7 @@ var fbwin;
 function openFileBrowser() {
 	var qs = new Querystring();
 	if (!fbwin || fbwin.closed) {
-		fbwin = window.open("browse_srv.aspx?a=" + qs.get("a") + "&n=0", "_blank", "location=0,scrollbars=0,status=0,toolbar=0,left=0,top=0,width=600,height=400");
+		fbwin = window.open("browse_srv.aspx?a=" + qs.get("a") + "&n=0", "_blank", "location=0,scrollbars=0,status=0,toolbar=0,left=0,top=0,width=400,height=400");
 	} else fbwin.focus();
 }
 function updateRestorePath(val) {
@@ -45,12 +45,14 @@ function updateRestorePath(val) {
 				for (var i = 0, l = data.payload.length; i < l; i++) {
 					var folder = data.payload[i].t == 0;
 					$('#files > tbody:last').append('<tr class="' + ((i % 2 == 0) ? 'even' : 'odd') + ' pointer" onclick="' + ((folder) ? 'update' : 'set') + 'RestorePath(\'' + data.payload[i].fn  + '\')">' +
-														'<td><img src="themes/sparse/img/' + ((folder) ? 'folder' : 'file') + '.png" /></td><td>' + data.payload[i].dn + '</td></tr>');
+														'<td><img src="themes/' + $('#h_theme').val() + '/img/' + ((folder) ? 'folder' : 'file') + '.png" />' + data.payload[i].dn + '</td></tr>');
 				}
 			}
 	});
 }
-function setRestorePath(val) {
-	window.opener.$('#file').value = val;
+function setRestorePath(v) {
+	window.opener.$('#file').val(v);
+	window.opener.$('#filedisp').text(v);
+	window.opener.$('#filewrapper').css('display', 'block');
 	window.close();
 }
