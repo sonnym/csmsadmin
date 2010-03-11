@@ -46,15 +46,15 @@ partial class Handler : IHttpHandler, IRequiresSessionState {
 			case "/browse.aspx":
 				p.MasterPageFile = "~/masters/browse.master";
 				break;
+			case "/browse_srv.aspx":
+				p.MasterPageFile = "~/masters/browse_srv.master";
+				return;
 			case "/default.aspx":
 				p.MasterPageFile = "~/masters/struct.master";
 				break;
 			case "/insert.aspx":
 				p.MasterPageFile = "~/masters/insert.master";
 				break;
-			case "/navigation.aspx":
-				p.MasterPageFile = "~/masters/navigation.master";
-				return;
 			case "/operations.aspx":
 				p.MasterPageFile = "~/masters/operations.master";
 				break;

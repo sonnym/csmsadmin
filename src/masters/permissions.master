@@ -20,7 +20,7 @@
 		int k = 0; 
 
 		for (int i = 0, len = types.Rows.Count; i < len; i++) {
-			body.InnerHtml += "<b>" + LookupTables.principalType(types.Rows[i]["type"].ToString()) + ":</b> (<a href=\"permissions.aspx?t=" + types.Rows[i]["type"].ToString() + "&l=\">all</a>) <br />";
+			body.InnerHtml += "<b>" + LookupTables.principalType(types.Rows[i]["type"].ToString()) + "s:</b> (<a href=\"permissions.aspx?t=" + types.Rows[i]["type"].ToString() + "&l=\">all</a>) <br />";
 			for (int j = 97; j <= 122; j++) {
 				if (k < principals.Rows.Count && principals.Rows[k]["type"].Equals(types.Rows[i]["type"]) && principals.Rows[k]["first"].ToString().ToLower().ToCharArray()[0] == (char)j) {
 					body.InnerHtml += "<a href=\"permissions.aspx?t=" + types.Rows[i]["type"].ToString() + "&l=" + (char)j + "\">" + (char)j + "</a>&nbsp;&nbsp;";

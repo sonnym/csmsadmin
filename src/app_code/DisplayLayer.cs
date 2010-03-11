@@ -40,10 +40,8 @@ public class DisplayLayer {
 		if (notbl) {
 			sb.Append("<li class=\"" + ((String.Compare("Permissions", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"permissions.aspx?a=" + session.SessionID + "&db=" + db + "&tbl=" + tbl + "\">Permissions</a></li>");
 			sb.Append("<li class=\"" + ((String.Compare("Operations", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"operations.aspx?a=" + session.SessionID + "&db=" + db + "&tbl=" + tbl + "\">Operations</a></li>");
-			if (!nodb) {
-				sb.Append("<li class=\"" + ((String.Compare("Backup", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"backup.aspx?a=" + session.SessionID + "&db=" + db + "&tbl=" + tbl + "\">Backup</a></li>");
-				sb.Append("<li class=\"" + ((String.Compare("Restore", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"restore.aspx?a=" + session.SessionID + "&db=" + db + "&tbl=" + tbl + "\">Restore</a></li>");
-			}
+			sb.Append("<li class=\"" + ((String.Compare("Backup", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"backup.aspx?a=" + session.SessionID + "&db=" + db + "&tbl=" + tbl + "\">Backup</a></li>");
+			sb.Append("<li class=\"" + ((String.Compare("Restore", selected) == 0) ? "active_tab" : "inactive_tab") + "\"><a href=\"restore.aspx?a=" + session.SessionID + "&db=" + db + "&tbl=" + tbl + "\">Restore</a></li>");
 		}
 		if (!notbl) sb.Append("<li class=\"caution_tab\"><a href=\"query.aspx?a=" + session.SessionID + "&db=" + db + "&tbl=" + tbl + "&q=" + HttpUtility.UrlEncode("TRUNCATE TABLE " + tbl) + "\">Empty</a></li>");
 		if (!String.IsNullOrEmpty(db)) sb.Append("<li class=\"caution_tab\"><a href=\"query.aspx?a=" + session.SessionID + "&db=&tbl=&q=" + HttpUtility.UrlEncode("DROP " + ((notbl) ? "DATABASE " + db : "TABLE " + tbl)) + "\">Drop</a></li></ul>");
@@ -74,7 +72,7 @@ public class DisplayLayer {
 
 	// Generates the entire form for the file selection and restore process
 	public static string getRestoreArea(string db) {
-		return "<input type=\"button\" value=\"Select a File\" onclick=\"window.open('server_browser.aspx', '_blank', 'location=0,scrollbars=0,status=0,toolbar=0,left=0,top=0,width=600,height=400')\" /><br />" +
+		return "<input type=\"button\" value=\"Select a File\" onclick=\"openFileBrowser()\" /><br />" +
 			   "<span class=\"bold\">Currently selected file: </span><span id=\"cur_disp\">C:\\Users\\Administrator\\share\\vn\\db\\production.bak</span><br /><br />" +
 			   "<form method=\"post\" action=\"restore.aspx\"><input type=\"hidden\" id=\"r_file\" name=\"r_file\" value=\"C:\\Users\\Administrator\\share\\vn\\db\\production.bak\" /><input type=\"hidden\" name=\"db\" value=\"" + db + "\" />" +
 			   "<input type=\"submit\" name=\"r_execute\" value=\"Restore Database\" /></form>";
@@ -118,7 +116,7 @@ public class DisplayLayer {
 	}
 
 	public static string getThemeSelect() {
-		string[] themes = FileSystemLayer.GetThemes();
+		string[] themes = FileSystemLayer.getThemes();
 		sb = new StringBuilder();
 		sb.Append("<form name=\"theme\" method=\"post\"><select name=\"theme\" onchange=\"switchTheme()\" onkeyup=\"switchTheme()\">");
 		for (int i = 0, l = themes.Length; i < l; i++)

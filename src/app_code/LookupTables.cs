@@ -42,7 +42,7 @@ public class LookupTables {
 
 	public static string principalType(string s) {
 		switch(s.ToCharArray()[0]) {
-			case 'S': return "SQL Login";
+			case 'S': return "SQL login";
 			case 'U': return "Windows login";
 			case 'G': return "Windows group";
 			case 'R': return "Server role";
