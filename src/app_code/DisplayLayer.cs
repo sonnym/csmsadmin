@@ -81,6 +81,18 @@ public class DisplayLayer {
 	 // form selects //
 	//////////////////
 
+	public static string getServerSelect(string n) {
+		StringBuilder sb = new StringBuilder();
+		DBLayer dbl = new DBLayer();
+		DataRowCollection servers = dbl.getServers();
+
+		sb.Append("<select name=\"" + n + "\">");
+		for (int i = 0, l = servers.Count; i < l; i++)
+			sb.Append("<option value=\"" + servers[i][0] + "\" >" + servers[i][1] + "</option>");
+		sb.Append("</select>");
+		return sb.ToString();
+	}
+
 	public static string getTypeSelect(string n, DataRowCollection names) {
 		sb = new StringBuilder();
 		sb.Append("<select name=\"" + n + "\">");

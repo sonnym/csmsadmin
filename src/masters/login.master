@@ -3,8 +3,48 @@
 <html>
  <head>
   <meta charset="utf-8">
-  <title>C&#9839MSAdmin 0.4.0 - The C&#9839 MSSQL Server Administration Project</title>
+  <link rel="stylesheet" href="themes/<%=Settings.DefaultTheme%>/style.css" type="text/css" media="all" />
+  <title>C&#9839MSAdmin <%=Settings.Version%> - The C&#9839 MSSQL Server Administration Project</title>
  </head>
  <body>
+  <div id="login">
+   <h3>C&#9839MSAdmin Login</h3><br />
+   <form method="post">
+    <table>
+     <tbody>
+      <tr>
+       <td>
+	    <span>Server:</span>
+       </td>
+       <td>
+        <%=DisplayLayer.getServerSelect("server")%>
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Login:
+       </td>
+       <td>
+        <input type="text" name="user" value="" />
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Password: 
+       </td>
+       <td>
+        <input type="password" name="password" value="" /><br />
+       </td>
+      </tr>
+      <tr>
+       <td colspan="2">
+        <br />
+        <input type="submit" name="login" value="Login" />
+       </td>
+      </tr>
+     </tbody>
+    </table>
+   </form>
+  </div>
  </body>
 </html>

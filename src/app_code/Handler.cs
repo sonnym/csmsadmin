@@ -17,6 +17,9 @@ partial class Handler : IHttpHandler, IRequiresSessionState {
 
 	private void pre(object sender, EventArgs e) {
 		if (context.Response.Cookies.Count > 0) context.Response.Cookies[0].HttpOnly = true; // only cookie is for session and is present at this point only if no session exists
+		string url = context.Request.ServerVariables["URL"].ToLower();
+
+		if (!String.IsNullOrEmpty(context.Request.Form["login"])) login();
 
 		if (context.Session["cs"] == null || context.Session.SessionID != context.Request.QueryString["a"]) {
 			if (Settings.DisableLoginPage) context.Session["cs"] = Settings.ConnectionString;
@@ -29,7 +32,6 @@ partial class Handler : IHttpHandler, IRequiresSessionState {
 
 		if (context.Session["theme"] == null) context.Session.Add("theme", Settings.DefaultTheme);
 
-		string url = context.Request.ServerVariables["URL"].ToLower();
 		DBLayer dbl = new DBLayer();
 		NameValueCollection qs = context.Request.QueryString;
 
@@ -105,6 +107,20 @@ partial class Handler : IHttpHandler, IRequiresSessionState {
 			if (ex.InnerException != null && ex.InnerException.GetType().ToString().Equals("System.Data.SqlClient.SqlException")) {
 				context.Response.Write("SQL Error Occurred: " + ex.InnerException.Message);
 			} else context.Response.Write(ex.ToString().Replace(Environment.NewLine, "<br />") + "<br />");
+		}
+	}
+
+	  ///////////////////////
+	 // private functions //
+	///////////////////////
+	private void login() {
+		DBLayer dbl = new DBLayer();
+		string cs = String.Format(Settings.LoginConnectionString, dbl.getServerDataSource(int.Parse(context.Request.Form["server"])), context.Request.Form["user"], context.Request.Form["password"]);
+		context.Response.Write(dbl.testConnectionString(cs));
+		if (!dbl.testConnectionString(cs)) context.Response.Write("Login faled, please try again.");
+		else {
+			context.Session["cs"] = cs;
+			context.Response.Redirect("~/?a=" + context.Session.SessionID);
 		}
 	}
 }

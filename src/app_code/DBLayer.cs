@@ -15,10 +15,11 @@ DBCC SHRINKDATABASE
 sp_estimate_data_compression_savings
 
 sys.dm_exec_sql_text
+sys.dm_os_performance_counters
 */
 
 public class DBLayer {
-	private string cs = HttpContext.Current.Session["cs"].ToString();
+	private string cs;
 	private SqlConnection con;
 	private SqlCommand com;
 
@@ -30,10 +31,12 @@ public class DBLayer {
 	 // Constructors //
 	//////////////////
 
-	public DBLayer() { }
+	public DBLayer() {
+		cs = (HttpContext.Current.Session != null && HttpContext.Current.Session["cs"] != null) ? HttpContext.Current.Session["cs"].ToString() : String.Empty;
+	}
 
 	// sp indicates if SHOW_PLAN is to be on
-	public DBLayer(bool sp) {
+	public DBLayer(bool sp) : this() { 
 		this.showPlan = sp;
 	}
 
@@ -55,6 +58,38 @@ public class DBLayer {
 	  ////////////////////
 	 // Public methods //
 	////////////////////
+	public bool testConnectionString(string s) {
+		bool success = true;
+		try {
+			using (con = new SqlConnection(s)) { con.Open(); }
+		} catch { success = false; }
+
+		return success;
+	}
+
+	public DataRowCollection getServers() {
+		using (con = new SqlConnection(Settings.ConnectionString)) { // default connection string necessary here
+			con.Open();
+			using (com = new SqlCommand("SELECT server_id, name FROM sys.servers", con)) {
+				SqlDataReader r = com.ExecuteReader();
+				return __sqlDataReaderToDataSet(ref r, 1).Tables[0].Rows;
+			}
+		}
+	}
+
+	public string getServerDataSource(int id) {
+		string ds = String.Empty;
+
+		using (con = new SqlConnection(Settings.ConnectionString)) {
+			con.Open();
+			using (com = new SqlCommand("SELECT data_source FROM sys.servers WHERE server_id = @i", con)) {
+				com.Parameters.AddWithValue("@i", id);
+				ds = com.ExecuteScalar().ToString();
+			}
+		}
+		return ds;
+	}
+
 	public string getServerVersion() { // alternatively: SELECT @@VERSION
 		using (con = __initConnection(false)) {
 			con.Open();
@@ -158,20 +193,20 @@ public class DBLayer {
 	}
 
 	public string getUsername() {
-		return executeQuery("master", "SELECT USER_NAME()").Tables[0].Rows[0][0].ToString();
+		return executeQuery("SELECT USER_NAME()").Tables[0].Rows[0][0].ToString();
 	}
 
 	public DataTable getProviders() {
-		return executeQuery("master", "EXEC sys.sp_enum_oledb_providers").Tables[0];
+		return executeQuery("EXEC sys.sp_enum_oledb_providers").Tables[0];
 	}
 
 	public DataTable getServerPrincipalTypes() {
-		return executeQuery("master", "SELECT DISTINCT(type) FROM sys.server_principals WHERE type != 'C' ORDER BY type ASC").Tables[0];
+		return executeQuery("SELECT DISTINCT(type) FROM sys.server_principals WHERE type != 'C' ORDER BY type ASC").Tables[0];
 	}
 
 	public DataTable getServerPrincipals() { // case insensitive under current configuration - perhaps should include a collation here
-		return executeQuery("master", "SELECT type, SUBSTRING(name, 1, 1) AS first, COUNT(SUBSTRING(name, 1, 1)) AS count " +
-										"FROM sys.server_principals WHERE type != 'C' GROUP BY SUBSTRING(name, 1, 1), type ORDER BY type ASC, first ASC").Tables[0];
+		return executeQuery("SELECT type, SUBSTRING(name, 1, 1) AS first, COUNT(SUBSTRING(name, 1, 1)) AS count " +
+								"FROM sys.server_principals WHERE type != 'C' GROUP BY SUBSTRING(name, 1, 1), type ORDER BY type ASC, first ASC").Tables[0];
 	}
 
 	public DataTable getServerPrincipals(string type, string letter) {
@@ -187,31 +222,31 @@ public class DBLayer {
 			p.AddWithValue("@letter", letter);
 		}
 
-		return executeQuery("master", "SELECT principal_id, name, is_disabled, create_date, modify_date, default_database_name " +
-										"FROM sys.server_principals " + where + " ORDER BY name ASC", p).Tables[0];
+		return executeQuery("SELECT principal_id, name, is_disabled, create_date, modify_date, default_database_name " +
+								"FROM sys.server_principals " + where + " ORDER BY name ASC", p).Tables[0];
 	}
 
 	public DataTable restoreLabelOnly(string f) {
 		SqlParameterCollection p = __getEmptyParameterCollection();
 		p.AddWithValue("@f", f);
-		return executeQuery("master", "RESTORE LABELONLY FROM DISK = @f", p).Tables[0];
+		return executeQuery("RESTORE LABELONLY FROM DISK = @f", p).Tables[0];
 	}
 
 	public DataTable restoreFileListOnly(string f) {
 		SqlParameterCollection p = __getEmptyParameterCollection();
 		p.AddWithValue("@f", f);
-		return executeQuery("master", "RESTORE FILELISTONLY FROM DISK = @f", p).Tables[0];
+		return executeQuery("RESTORE FILELISTONLY FROM DISK = @f", p).Tables[0];
 	}
 
 	/*
 	public DataTable restoreVerifyonly(string f) {
 		SqlParameterCollection p = __getEmptyParameterCollection();
 		p.AddWithValue("@f", f);
-		return executeQuery("master", "RESTORE VERIFYONLY FROM DISK = @f", p).Tables[0];
+		return executeQuery("RESTORE VERIFYONLY FROM DISK = @f", p).Tables[0];
 	}
 
 	public DataTable getServerPermissions() {
-		return executeQuery("master", "SELECT state_desc, permission_name, name, type_desc, is_disabled from sys.server_permissions AS permissions " +
+		return executeQuery("SELECT state_desc, permission_name, name, type_desc, is_disabled from sys.server_permissions AS permissions " +
 										"LEFT JOIN sys.server_principals AS principals ON permissions.grantee_principal_id = principals.principal_id").Tables[0];
 	}
 
@@ -225,35 +260,41 @@ public class DBLayer {
 	*/
 
 	public DataTable getConfiguration() {
-		return executeQuery("master", "SELECT name, value, value_in_use, minimum, maximum, description FROM sys.configurations ORDER BY name").Tables[0];
+		return executeQuery("SELECT name, value, value_in_use, minimum, maximum, description FROM sys.configurations ORDER BY name").Tables[0];
 	}
 
 	public DataSet getCharsets() {
-		return executeQuery("master", "SELECT id, name, description FROM sys.syscharsets WHERE type = 1001 ORDER BY name; " +
-										"SELECT sortorders.csid, sortorders.name, sortorders.description FROM sys.syscharsets AS sortorders " +
-										"LEFT OUTER JOIN (SELECT id, name FROM sys.syscharsets WHERE type = 1001)charsets ON sortorders.csid = charsets.id " +
-										"WHERE sortorders.type = 2001 ORDER BY charsets.name, sortorders.name");
+		return executeQuery("SELECT id, name, description FROM sys.syscharsets WHERE type = 1001 ORDER BY name; " +
+								"SELECT sortorders.csid, sortorders.name, sortorders.description FROM sys.syscharsets AS sortorders " +
+								"LEFT OUTER JOIN (SELECT id, name FROM sys.syscharsets WHERE type = 1001)charsets ON sortorders.csid = charsets.id " +
+								"WHERE sortorders.type = 2001 ORDER BY charsets.name, sortorders.name");
 	}
 
 	public DataTable getCollations() {
-		return executeQuery("master", "SELECT * FROM fn_helpcollations() ORDER BY name").Tables[0];
+		return executeQuery("SELECT * FROM fn_helpcollations() ORDER BY name").Tables[0];
 	}
 
 	public DataTable getProcesses() {
-		return executeQuery("master", "SELECT spid, waittime, hostname, dbs.name AS db, procs.loginame, procs.status, cmd FROM sys.sysprocesses AS procs " +
-										"LEFT OUTER JOIN sys.sysdatabases AS dbs ON procs.dbid = dbs.dbid").Tables[0];
+		return executeQuery("SELECT spid, waittime, hostname, dbs.name AS db, procs.loginame, procs.status, cmd FROM sys.sysprocesses AS procs " +
+								"LEFT OUTER JOIN sys.sysdatabases AS dbs ON procs.dbid = dbs.dbid").Tables[0];
 	}
 
 	public DataTable getOptimizations() {
-		return executeQuery("master", "SELECT * FROM sys.dm_exec_query_optimizer_info").Tables[0];
+		return executeQuery("SELECT * FROM sys.dm_exec_query_optimizer_info").Tables[0];
 	}
 
 	public DataRowCollection getTypes() {
-		return executeQuery("master", "SELECT name FROM sys.systypes").Tables[0].Rows;
+		return executeQuery("SELECT name FROM sys.systypes").Tables[0].Rows;
 	}
 
+	public DataSet executeQuery(string q) {
+		return executeQuery("master", q, null);
+	}
 	public DataSet executeQuery(string db, string q) {
 		return executeQuery(db, q, null);
+	}
+	public DataSet executeQuery(string q, SqlParameterCollection p) {
+		return executeQuery("master", q, p);
 	}
 	public DataSet executeQuery(string db, string q, SqlParameterCollection p) {
 		using (con = __initConnection(false)) {

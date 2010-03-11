@@ -4,6 +4,17 @@ a { color: #000000; }
 h3 { margin: 0; }
 .bold { font-weight: bold; }
 a:hover { text-decoration: underline; }
+div#login {
+	position: relative;
+	top: 50px;
+	width: 230px;
+	margin: 0px auto;
+	border: solid #afafaf 1px;
+	padding: 20px 5px;
+	text-align: center;
+}
+div#login table { margin: 0 auto; }
+div#login table td { vertical-align: middle; }
 div#navigation {
 	float: left;
 	padding-right: 5px;
@@ -44,7 +55,7 @@ select {
 	margin-bottom: 2px;
 	font-size: 0.8em;
 }
-input[type=text] { font-size: 0.8em; }
+input[type=text], input[type=password] { font-size: 0.8em; }
 img { border: none; }
 .loc {
 	font-weight: bold;
@@ -81,6 +92,7 @@ ul { padding-left: 0px; }
 	text-align: right;
 }
 input[type=submit], input[type=button] {
+	font-size: 0.95em;
 	font-weight: 600;
 	border: solid black 1px;
 	background: #efefef;
