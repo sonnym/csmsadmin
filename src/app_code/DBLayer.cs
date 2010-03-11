@@ -191,19 +191,25 @@ public class DBLayer {
 										"FROM sys.server_principals " + where + " ORDER BY name ASC", p).Tables[0];
 	}
 
-	public DataTable restoreFilelistonly(string f) {
+	public DataTable restoreLabelOnly(string f) {
 		SqlParameterCollection p = __getEmptyParameterCollection();
 		p.AddWithValue("@f", f);
-		return executeQuery("master", "SELECT FILELISTONLY FROM DISK = @f", p).Tables[0];
+		return executeQuery("master", "RESTORE LABELONLY FROM DISK = @f", p).Tables[0];
 	}
 
-	public DataTable restoreVerifyonly(string f) {
+	public DataTable restoreFileListOnly(string f) {
 		SqlParameterCollection p = __getEmptyParameterCollection();
 		p.AddWithValue("@f", f);
-		return executeQuery("master", "SELECT VERIFYONLY FROM DISK = @f", p).Tables[0];
+		return executeQuery("master", "RESTORE FILELISTONLY FROM DISK = @f", p).Tables[0];
 	}
 
 	/*
+	public DataTable restoreVerifyonly(string f) {
+		SqlParameterCollection p = __getEmptyParameterCollection();
+		p.AddWithValue("@f", f);
+		return executeQuery("master", "RESTORE VERIFYONLY FROM DISK = @f", p).Tables[0];
+	}
+
 	public DataTable getServerPermissions() {
 		return executeQuery("master", "SELECT state_desc, permission_name, name, type_desc, is_disabled from sys.server_permissions AS permissions " +
 										"LEFT JOIN sys.server_principals AS principals ON permissions.grantee_principal_id = principals.principal_id").Tables[0];
@@ -301,24 +307,23 @@ public class DBLayer {
 		}
 	}
 
-	public string restoreDatabase(string db, string f) {
-		using (con = __initConnection(false)) {
-			con.Open();
-			con.ChangeDatabase("master");
-			using (com = new SqlCommand("ALTER DATABASE " + db + " SET SINGLE_USER WITH ROLLBACK IMMEDIATE;" +
-										"RESTORE DATABASE @db FROM DISK = @f;" +
-										"ALTER DATABASE " + db + " SET MULTI_USER WITH ROLLBACK IMMEDIATE", con)) {
-				com.Parameters.AddWithValue("@db", db);
-				com.Parameters.AddWithValue("@f", f);
-				object temp = com.ExecuteScalar();
-				HttpContext.Current.Response.Write(temp.GetType().Name);
-				/*
-				SqlDataReader tmp = com.ExecuteReader();
-				HttpContext.Current.Response.Write(tmp.HasRows.ToString() + " " + tmp.RecordsAffected.ToString());
-				*/
-				return "";
+	public string restoreDatabase(string db, string f, bool resume) {
+		string result = String.Empty;
+
+		try {
+			using (con = __initConnection(false)) {
+				con.Open();
+				con.ChangeDatabase("master");
+				using (com = new SqlCommand("RESTORE DATABASE @db FROM DISK = @f" + ((resume) ? " WITH RESTART" : ""), con)) {
+					com.Parameters.AddWithValue("@db", db);
+					com.Parameters.AddWithValue("@f", f);
+					result = com.ExecuteScalar().ToString();
+				}
 			}
+		} catch (Exception ex) {
+			result = ex.ToString();
 		}
+		return result;
 	}
 
 	public bool createDatabase(string n) {

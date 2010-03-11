@@ -33,7 +33,7 @@
 							 "<td class=\"right\">" + DisplayLayer.getDataType(t.Rows[i]["DATA_TYPE"], t.Rows[i]["CHARACTER_MAXIMUM_LENGTH"], t.Rows[i]["NUMERIC_PRECISION"],
 																				t.Rows[i]["NUMERIC_SCALE"], t.Rows[i]["DATETIME_PRECISION"]) + "</td>" +
 							 "<td class=\"right\">" + t.Rows[i]["COLLATION_NAME"].ToString().ToLower() + "</td>" +
-							 "<td class=\"right\"><select style=\"width: 110px\" name=\"op_" + t.Rows[i]["COLUMN_NAME"] + "\" id=\"op_" + t.Rows[i]["COLUMN_NAME"] + "\" onchange=\"javascript:updateForm(this)\"><option value=\"\"></option>" +
+							 "<td class=\"right\"><select style=\"width: 110px\" name=\"op_" + t.Rows[i]["COLUMN_NAME"] + "\" id=\"op_" + t.Rows[i]["COLUMN_NAME"] + "\" onchange=\"updateSelectForm(this)\"><option value=\"\"></option>" +
 								"<option value=\"eq\">=</option>" +
 								"<option value=\"neq\">&lt;&gt;</option>" +
 								"<option value=\"neq\">!=</option>" +
