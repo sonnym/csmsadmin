@@ -8,14 +8,16 @@
 		DBLayer dbl = new DBLayer();
 
 		if (!String.IsNullOrEmpty(Request.Form["init"])) {
-			// get information regarting backup set
-			//if (Request.Form["r_execute"] != null) body.InnerHtml = dbl.restoreDatabase(Request.Form["db"], Request.Form["r_file"]);
+			getMetadata();
 			return;
-		}
+		} // else if (Request.Form["r_execute"] != null) body.InnerHtml = dbl.restoreDatabase(Request.Form["db"], Request.Form["r_file"]);
 
 		body.InnerHtml += "<input type=\"button\" value=\"Select a File\" onclick=\"openFileBrowser()\" /><br /><br />" +
 						   "<div id=\"filewrapper\"><span class=\"bold\">Currently selected file: </span><span id=\"filedisp\"></span><br /><br />" +
 						   "<form method=\"post\"><input type=\"hidden\" id=\"file\" name=\"file\" value=\"\" />" +
 						   "<input type=\"submit\" name=\"init\" value=\"Continue\" /></form></div>";
+	}
+
+	private void getMetadata() {
 	}
 </script>

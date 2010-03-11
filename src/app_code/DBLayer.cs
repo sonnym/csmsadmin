@@ -191,6 +191,18 @@ public class DBLayer {
 										"FROM sys.server_principals " + where + " ORDER BY name ASC", p).Tables[0];
 	}
 
+	public DataTable restoreFilelistonly(string f) {
+		SqlParameterCollection p = __getEmptyParameterCollection();
+		p.AddWithValue("@f", f);
+		return executeQuery("master", "SELECT FILELISTONLY FROM DISK = @f", p).Tables[0];
+	}
+
+	public DataTable restoreVerifyonly(string f) {
+		SqlParameterCollection p = __getEmptyParameterCollection();
+		p.AddWithValue("@f", f);
+		return executeQuery("master", "SELECT VERIFYONLY FROM DISK = @f", p).Tables[0];
+	}
+
 	/*
 	public DataTable getServerPermissions() {
 		return executeQuery("master", "SELECT state_desc, permission_name, name, type_desc, is_disabled from sys.server_permissions AS permissions " +
