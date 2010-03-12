@@ -81,6 +81,6 @@
 			qsb.Append(" "  + t.Rows[i]["COLUMN_NAME"] + " " + LookupTables.comparisonOperators(Request.Form["op_" + t.Rows[i]["COLUMN_NAME"]]) + " '" + Request.Form["ex_" + t.Rows[i]["COLUMN_NAME"]] + "'");
 		}
 
-		Response.Redirect("query.aspx?db=" + db + "&tbl=" + tbl + "&q=" + Server.UrlEncode(qsb.ToString()));
+		Response.Redirect("query.aspx?a=" + Session.SessionID + "&db=" + db + "&tbl=" + tbl + "&q=" + Server.UrlEncode(qsb.ToString()));
 	}
 </script>

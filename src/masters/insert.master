@@ -58,6 +58,6 @@
 															"NULL"));
 		}
 
-		Response.Redirect("query.aspx?db=" + db + "&tbl=" + tbl + "&q=" + HttpUtility.UrlEncode("INSERT INTO " + tbl + "(" + cols.ToString() + ") VALUES(" + vals.ToString() + ")"));
+		Response.Redirect("query.aspx?a=" + Session.SessionID + "&db=" + db + "&tbl=" + tbl + "&q=" + HttpUtility.UrlEncode("INSERT INTO " + tbl + "(" + cols.ToString() + ") VALUES(" + vals.ToString() + ")"));
 	}
 </script>

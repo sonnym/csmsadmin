@@ -31,7 +31,7 @@
 			return;
 		}
 		bool created = dbl.createDatabase(post["name"]);
-		if (created) Response.Redirect("struct.aspx?db=" + HttpUtility.UrlEncode(post["name"]) + "&tbl=");
+		if (created) Response.Redirect("struct.aspx?a=" + Session.SessionID + "&db=" + HttpUtility.UrlEncode(post["name"]) + "&tbl=");
 		else body.InnerHtml += "<span class=\"error\">Something failed</span>";
 	}
 
@@ -40,6 +40,6 @@
 			body.InnerHtml += "<span class=\"error\">You must supply a name for the new table.</span><br />" + DisplayLayer.getCreateNewTable(post["db"]);
 			return;
 		}
-		Response.Redirect("struct.aspx?db=" + post["db"] + "&tbl=" + HttpUtility.UrlEncode(post["name"]) + "&fn=create&fields=" + post["fields"]);
+		Response.Redirect("struct.aspx?a=" + Session.SessionID + "&db=" + post["db"] + "&tbl=" + HttpUtility.UrlEncode(post["name"]) + "&fn=create&fields=" + post["fields"]);
 	}
 </script>

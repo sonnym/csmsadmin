@@ -178,7 +178,7 @@
 			definitions.Add(definition);
 		}
 
-		if (dbl.createTable(db, tbl, string.Join(",", definitions.ToArray(typeof(string)) as string[]))) Response.Redirect("struct.aspx?db=" + db + "&tbl=" + tbl);
+		if (dbl.createTable(db, tbl, string.Join(",", definitions.ToArray(typeof(string)) as string[]))) Response.Redirect("struct.aspx?a=" + Session.SessionID + "&db=" + db + "&tbl=" + tbl);
 		//else Response.Redirect("query.aspx?db=" + db + "&q=" + HttpUtility.UrlEncode(dbl.LastQuery));
 	}
 </script>
