@@ -9,7 +9,7 @@
  <body>
   <div id="login">
    <h3>C&#9839MSAdmin Login</h3><br />
-   <form method="post">
+   <form action="default.aspx" method="post">
     <table>
      <tbody>
       <tr>
