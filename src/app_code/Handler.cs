@@ -17,24 +17,23 @@ partial class Handler : IHttpHandler, IRequiresSessionState {
 
 	private void pre(object sender, EventArgs e) {
 		if (context.Response.Cookies.Count > 0) context.Response.Cookies[0].HttpOnly = true; // only cookie is for session and is present at this point only if no session exists
-		string url = context.Request.ServerVariables["URL"].ToLower();
 
-		if (!String.IsNullOrEmpty(context.Request.Form["login"])) login();
-
-		if (context.Session["cs"] == null || context.Session.SessionID != context.Request.QueryString["a"]) {
-			if (Settings.DisableLoginPage) context.Session["cs"] = Settings.ConnectionString;
-			else {
-				p.MasterPageFile = "~/masters/login.master";
-				context.Session.Abandon();
-				return;
-			}
-		}
-
-		if (context.Session["theme"] == null) context.Session.Add("theme", Settings.DefaultTheme);
-
-		DBLayer dbl = new DBLayer();
 		NameValueCollection qs = context.Request.QueryString;
 
+		if (!String.IsNullOrEmpty(context.Request.Form["login"])) {
+			login(true);
+			return;
+		}
+
+		if (!Settings.DisableLoginPage && (context.Session["cs"] == null || context.Session.SessionID != context.Request.QueryString["a"])) {
+			p.MasterPageFile = "~/masters/login.master";
+			context.Session.Abandon();
+			return;
+		} else if (Settings.DisableLoginPage && context.Session["cs"] == null) login(false);
+
+		DBLayer dbl = new DBLayer();
+
+		string url = context.Request.ServerVariables["URL"].ToLower();
 		switch(url) {
 			case "/":
 				p.MasterPageFile = "~/masters/struct.master";
@@ -113,14 +112,19 @@ partial class Handler : IHttpHandler, IRequiresSessionState {
 	  ///////////////////////
 	 // private functions //
 	///////////////////////
-	private void login() {
+	private void login(bool useform) {
 		DBLayer dbl = new DBLayer();
-		string cs = String.Format(Settings.LoginConnectionString, dbl.getServerDataSource(int.Parse(context.Request.Form["server"])), context.Request.Form["user"], context.Request.Form["password"]);
-		context.Response.Write(dbl.testConnectionString(cs));
-		if (!dbl.testConnectionString(cs)) context.Response.Write("Login faled, please try again.");
-		else {
-			context.Session["cs"] = cs;
+		string cs = useform ?
+					String.Format(Settings.LoginConnectionString, dbl.getServerDataSource(int.Parse(context.Request.Form["server"])), context.Request.Form["user"], context.Request.Form["password"]) :
+					Settings.ConnectionString;
+
+		if (!useform || dbl.testConnectionString(cs)) {
+			context.Session.Clear();
+			context.Session.Add("cs", cs);
+			context.Session.Add("theme", Settings.DefaultTheme);
 			context.Response.Redirect("~/?a=" + context.Session.SessionID);
+		} else {
+			context.Response.Write("Login faled, please try again.");
 		}
 	}
 }
