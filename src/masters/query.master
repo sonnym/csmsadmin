@@ -16,7 +16,7 @@
 		   
 		if (Request.QueryString["q"] == null || Request.QueryString["q"].Length == 0) return;
 
-		body.InnerHtml += DisplayLayer.getQueryBox(db, tbl, q);
+		body.InnerHtml += DisplayLayer.getQueryBox(Session.SessionID, db, tbl, q);
 
 		DataSet result = dbl.executeQuery(db, q);
 

@@ -20,16 +20,16 @@ partial class Handler : IHttpHandler, IRequiresSessionState {
 
 		NameValueCollection qs = context.Request.QueryString;
 
-		if (!String.IsNullOrEmpty(context.Request.Form["login"])) {
+		// ensure user is logged in
+		if (Settings.DisableLoginPage && context.Session["cs"] == null) login(false);
+		else if (!String.IsNullOrEmpty(context.Request.Form["login"])) {
 			login(true);
 			return;
-		}
-
-		if (!Settings.DisableLoginPage && (context.Session["cs"] == null || context.Session.SessionID != context.Request.QueryString["a"])) {
-			p.MasterPageFile = "~/masters/login.master";
+		} else if (!Settings.DisableLoginPage && (context.Session["cs"] == null || context.Session.SessionID != qs["a"])) {
 			context.Session.Abandon();
+			p.MasterPageFile = "~/masters/login.master";
 			return;
-		} else if (Settings.DisableLoginPage && context.Session["cs"] == null) login(false);
+		}
 
 		DBLayer dbl = new DBLayer();
 
@@ -86,14 +86,14 @@ partial class Handler : IHttpHandler, IRequiresSessionState {
 				break;
 			default:
 				p.MasterPageFile = "~/masters/layout.master";
-				((HtmlGenericControl)p.Master.FindControl("body")).InnerHtml = DisplayLayer.getLocation(dbl.getServerName(), qs["db"], qs["tbl"]) +
-																			   DisplayLayer.getTopTabs(LookupTables.pages(url), qs["db"], qs["tbl"]) +
+				((HtmlGenericControl)p.Master.FindControl("body")).InnerHtml = DisplayLayer.getLocation(context.Session.SessionID, dbl.getServerName(), qs["db"], qs["tbl"]) +
+																			   DisplayLayer.getTopTabs(context.Session.SessionID, LookupTables.pages(url), qs["db"], qs["tbl"]) +
 																			   "<br />Invalid URL";
 				return;
 		}
 
-		((HtmlGenericControl)p.Master.Master.FindControl("body")).InnerHtml = DisplayLayer.getLocation(dbl.getServerName(), qs["db"], qs["tbl"]) +
-																			  DisplayLayer.getTopTabs(LookupTables.pages(url), qs["db"], qs["tbl"]);
+		((HtmlGenericControl)p.Master.Master.FindControl("body")).InnerHtml = DisplayLayer.getLocation(context.Session.SessionID, dbl.getServerName(), qs["db"], qs["tbl"]) +
+																			  DisplayLayer.getTopTabs(context.Session.SessionID, LookupTables.pages(url), qs["db"], qs["tbl"]);
 	}
 
 	public bool IsReusable {
@@ -115,16 +115,18 @@ partial class Handler : IHttpHandler, IRequiresSessionState {
 	private void login(bool useform) {
 		DBLayer dbl = new DBLayer();
 		string cs = useform ?
-					String.Format(Settings.LoginConnectionString, dbl.getServerDataSource(int.Parse(context.Request.Form["server"])), context.Request.Form["user"], context.Request.Form["password"]) :
-					Settings.ConnectionString;
-
+					 String.Format(Settings.LoginConnectionString, dbl.getServerDataSource(int.Parse(context.Request.Form["server"])), context.Request.Form["user"], context.Request.Form["password"]) :
+					 Settings.ConnectionString;
 		if (!useform || dbl.testConnectionString(cs)) {
 			context.Session.Clear();
 			context.Session.Add("cs", cs);
 			context.Session.Add("theme", Settings.DefaultTheme);
+
 			context.Response.Redirect("~/?a=" + context.Session.SessionID);
-		} else {
+		} 
+		else {
 			context.Response.Write("Login faled, please try again.");
+			p.MasterPageFile = "~/masters/login.master";
 		}
 	}
 }
