@@ -28,17 +28,16 @@
 			body.InnerHtml += "<form method=\"post\"><table><tbody><tr class=\"title\"><td>Name</td><td>Type</td><td>Collation</td><td>Null</td><td>&nbsp;</td></tr>";
 			for(int i = 0, l = t.Rows.Count; i < l; i++) {
 				body.InnerHtml += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd")  + "\">" +
-							 "<td>" +t.Rows[i]["COLUMN_NAME"] + "</td>" +
-							 "<td class=\"right\">" + DisplayLayer.getDataType(t.Rows[i]["DATA_TYPE"], t.Rows[i]["CHARACTER_MAXIMUM_LENGTH"], t.Rows[i]["NUMERIC_PRECISION"],
-																				t.Rows[i]["NUMERIC_SCALE"], t.Rows[i]["DATETIME_PRECISION"]) + "</td>" +
-							 "<td class=\"right\">" + t.Rows[i]["COLLATION_NAME"].ToString().ToLower() + "</td>" +
-							 "<td class=\"right\">" + ((t.Rows[i]["IS_NULLABLE"].ToString().ToLower().Trim().Equals("yes")) ?
-														"<input type=\"checkbox\" name=\"null_" + t.Rows[i]["COLUMN_NAME"] + "\" value=\"null\" />" : "") + "</td>" +
-							 "<td>" + ((!t.Rows[i].IsNull("CHARACTER_MAXIMUM_LENGTH") &&
-								(t.Rows[i]["CHARACTER_MAXIMUM_LENGTH"].ToString().Trim().ToLower().Equals("max") ||
-								 int.Parse(t.Rows[i]["CHARACTER_MAXIMUM_LENGTH"].ToString()) > 256)) ?
-									"<textarea name=\"ex_" + t.Rows[i]["COLUMN_NAME"] + "\" cols=\"41\" rows=\"5\">" + t.Rows[i]["COLUMN_DEFAULT"] + "</textarea>" :  
-									"<input name=\"ex_" + t.Rows[i]["COLUMN_NAME"] + "\" type=\"text\" value=\"" + t.Rows[i]["COLUMN_DEFAULT"]  + "\" size=\"40\" maxlength=\"" + t.Rows[i]["CHARACTER_MAXIMUM_LENGTH"] + "\" />")  + "</td></tr>";
+							 "<td>" +t.Rows[i]["name"] + "</td>" +
+							 "<td class=\"right\">" + DisplayLayer.getDataType(t.Rows[i]["type"], t.Rows[i]["max_length"], t.Rows[i]["precision"], t.Rows[i]["scale"]) + "</td>" +
+							 "<td class=\"right\">" + t.Rows[i]["collation_name"].ToString().ToLower() + "</td>" +
+							 "<td class=\"right\">" + ((t.Rows[i]["is_nullable"].ToString().ToLower().Trim().Equals("true")) ?
+														"<input type=\"checkbox\" name=\"null_" + t.Rows[i]["name"] + "\" value=\"null\" />" : "") + "</td>" +
+							 "<td>" +
+								((int.Parse(t.Rows[i]["max_length"].ToString()) != 0 && (int.Parse(t.Rows[i]["max_length"].ToString()) == -1 || int.Parse(t.Rows[i]["max_length"].ToString()) > 256)) ?
+									"<textarea name=\"ex_" + t.Rows[i]["name"] + "\" cols=\"41\" rows=\"5\">" + t.Rows[i]["COLUMN_DEFAULT"] + "</textarea>" :
+									"<input name=\"ex_" + t.Rows[i]["name"] + "\" type=\"text\" value=\"" + t.Rows[i]["COLUMN_DEFAULT"]  + "\" size=\"40\" maxlength=\"" + t.Rows[i]["max_length"] + "\" />")  + "</td>" +
+							"</tr>";
 			}
 			body.InnerHtml += "<tr><td class=\"right\" colspan=\"6\"><input type=\"submit\" value=\"Submit\" /></td></tr></tbody></table></form>";
 		}
@@ -50,12 +49,10 @@
 
 		for (int i = 0, l = t.Rows.Count; i < l; i++) {
 			if (t.Rows[i]["CONSTRAINT_NAME"].Equals(tbl + "$PrimaryKey")) continue; // Simple way of handling auto_increments, but unlikely to fit all cases
-			if (t.Rows[i]["COLUMN_DEFAULT"].Equals(Request.Form["ex_" + t.Rows[i]["COLUMN_NAME"]])) continue; // Simple way of handling defaults values wrapped in parentheses but also likely incomplete
+			if (t.Rows[i]["COLUMN_DEFAULT"].Equals(Request.Form["ex_" + t.Rows[i]["name"]])) continue; // Simple way of handling defaults values wrapped in parentheses but also likely incomplete
 
-			cols.Append(((cols.Length == 0) ? "" : ",") + t.Rows[i]["COLUMN_NAME"]);
-			vals.Append(((vals.Length == 0) ? "" : ",") + ((String.IsNullOrEmpty(Request.Form["null_" + t.Rows[i]["COLUMN_NAME"]])) ?
-															"'" + Request.Form["ex_" + t.Rows[i]["COLUMN_NAME"]] + "'" :
-															"NULL"));
+			cols.Append(((cols.Length == 0) ? "" : ",") + t.Rows[i]["name"]);
+			vals.Append(((vals.Length == 0) ? "" : ",") + ((String.IsNullOrEmpty(Request.Form["null_" + t.Rows[i]["name"]])) ?  "'" + Request.Form["ex_" + t.Rows[i]["name"]] + "'" : "NULL"));
 		}
 
 		Response.Redirect("query.aspx?a=" + Session.SessionID + "&db=" + db + "&tbl=" + tbl + "&q=" + HttpUtility.UrlEncode("INSERT INTO " + tbl + "(" + cols.ToString() + ") VALUES(" + vals.ToString() + ")"));

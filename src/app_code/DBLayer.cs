@@ -181,10 +181,12 @@ public class DBLayer {
 		using (con = __initConnection(false)) {
 			con.Open();
 			con.ChangeDatabase(db);
-			using (com = new SqlCommand("SELECT columns.COLUMN_NAME, COLUMN_DEFAULT, DATA_TYPE, IS_NULLABLE, CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, DATETIME_PRECISION, " +
-										"COLLATION_NAME, CONSTRAINT_NAME FROM information_schema.columns LEFT OUTER JOIN information_schema.key_column_usage ON columns.column_name = " +
-										"key_column_usage.column_name AND columns.table_catalog = key_column_usage.table_catalog AND columns.table_name = key_column_usage.table_name " +
-										"WHERE columns.table_name = @tbl", con)) {
+			// LEFT OUTER JOIN sys.objects AS objects ON columns.default_object_id = objects.object_id
+			using (com = new SqlCommand("SELECT columns.name, '' AS COLUMN_DEFAULT, types.name AS type, is_nullable, max_length, " +
+										"columns.scale, precision, collation_name, '' AS CONSTRAINT_NAME " +
+										"FROM sys.columns AS columns LEFT OUTER JOIN sys.objects ON columns.object_id = sys.objects.object_id " +
+										"LEFT OUTER JOIN sys.systypes AS types ON columns.system_type_id = types.xtype " +
+										"WHERE sys.objects.name = @tbl AND sys.objects.type = 'U'", con)) {
 				com.Parameters.AddWithValue("@tbl", tbl);
 				SqlDataReader r = com.ExecuteReader();
 				return __sqlDataReaderToDataSet(ref r, 1);

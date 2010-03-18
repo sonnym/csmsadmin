@@ -57,7 +57,7 @@ public class DisplayLayer {
 	}
 
 	public static string getQueryInput(string db, string tbl, string q) {
-		return "<form method=\"get\" action=\"query.aspx\"><input type=\"hidden\" name=\"db\" value=\"" + db + "\" /><input type=\"hidden\" name=\"tbl\" value=\"" + tbl + "\" /><textarea name=\"q\" id=\"query_input\">" + q + "</textarea><br /><input type=\"submit\" id=\"query_execute\" value=\"Execute\" /></form>";
+		return "<form method=\"get\"><input type=\"hidden\" name=\"db\" value=\"" + db + "\" /><input type=\"hidden\" name=\"tbl\" value=\"" + tbl + "\" /><textarea name=\"q\" id=\"query_input\">" + q + "</textarea><br /><input type=\"submit\" id=\"query_execute\" value=\"Execute\" /></form>";
 	}
 
 	public static string getBrowseTableNavigation(string auth, string db, string tbl, int rows, int page, int count) {
@@ -135,13 +135,26 @@ public class DisplayLayer {
 	 // etc //
 	/////////
 	public static string getDataType(object name, object charmaxlen, object numprecision, object numscale, object datetimeprecision) {
+			if (String.IsNullOrEmpty(name.ToString())) return "NULL";
+			  
+			return name.ToString() +
+					((charmaxlen == DBNull.Value) ? "" : // strings and binary
+						"(" + ((int.Parse(charmaxlen.ToString()) == -1) ? "MAX" : charmaxlen.ToString()) + ")") +
+					((numprecision == DBNull.Value) ? "" : // numbers
+						"(" + numprecision.ToString() + ((numscale == DBNull.Value || int.Parse(numscale.ToString()) == 0) ? "" : ", " + numscale.ToString()) + ")") +
+					((datetimeprecision == DBNull.Value) ? "" : // datetimes
+						"(" + datetimeprecision + ")");
+	}
+	public static string getDataType(object name, object maxlen, object precision, object scale) {
 		if (String.IsNullOrEmpty(name.ToString())) return "NULL";
 
-		return name.ToString() + ((charmaxlen == DBNull.Value) ? "" : // strings and binary
-									"(" + ((int.Parse(charmaxlen.ToString()) == -1) ? "MAX" : charmaxlen.ToString()) + ")") +
-								  ((numprecision == DBNull.Value) ? "" : // numbers
-									"(" + numprecision.ToString() + ((numscale == DBNull.Value || int.Parse(numscale.ToString()) == 0) ? "" : ", " + numscale.ToString()) + ")") +
-								  ((datetimeprecision == DBNull.Value) ? "" : // datetimes
-									"(" + datetimeprecision + ")");
+		string t = name.ToString();
+		if (int.Parse(precision.ToString()) > 0) { // numbers and datetime
+			t += "(" + precision.ToString() + ((int.Parse(scale.ToString()) == 0 || int.Parse(scale.ToString()) == 0) ? "" : ", " + scale.ToString()) + ")";
+		} else if (int.Parse(maxlen.ToString()) > 0) { // strings and binary (maxlen also exists for integers, hence reverse order from above)
+			t += "(" + ((int.Parse(maxlen.ToString()) == -1) ? "MAX" : maxlen.ToString()) + ")";
+		}
+
+		return t;
 	}
 }

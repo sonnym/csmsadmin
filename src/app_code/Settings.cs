@@ -5,7 +5,7 @@ public class Settings {
 	public static string ConnectionString = @"Server=.\SQLEXPRESS;Trusted_Connection=True;MultipleActiveResultSets=True;Timeout=60;";
 
 	// security options
-	public static bool DisableLoginPage = false;
+	public static bool DisableLoginPage = true;
 	public static string LoginConnectionString = "Server={0};Trusted_Connection=True;MultipleActiveResultSets=True;Timeout=60;User Id={1};Password={2};";
 
 	public static string DefaultServerBrowserPath = @"C:\";
