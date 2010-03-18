@@ -35,8 +35,8 @@
 														"<input type=\"checkbox\" name=\"null_" + t.Rows[i]["name"] + "\" value=\"null\" />" : "") + "</td>" +
 							 "<td>" +
 								((int.Parse(t.Rows[i]["max_length"].ToString()) != 0 && (int.Parse(t.Rows[i]["max_length"].ToString()) == -1 || int.Parse(t.Rows[i]["max_length"].ToString()) > 256)) ?
-									"<textarea name=\"ex_" + t.Rows[i]["name"] + "\" cols=\"41\" rows=\"5\">" + t.Rows[i]["COLUMN_DEFAULT"] + "</textarea>" :
-									"<input name=\"ex_" + t.Rows[i]["name"] + "\" type=\"text\" value=\"" + t.Rows[i]["COLUMN_DEFAULT"]  + "\" size=\"40\" maxlength=\"" + t.Rows[i]["max_length"] + "\" />")  + "</td>" +
+									"<textarea name=\"ex_" + t.Rows[i]["name"] + "\" cols=\"41\" rows=\"5\">" + t.Rows[i]["default"] + "</textarea>" :
+									"<input name=\"ex_" + t.Rows[i]["name"] + "\" type=\"text\" value=\"" + t.Rows[i]["default"]  + "\" size=\"40\" maxlength=\"" + t.Rows[i]["max_length"] + "\" />")  + "</td>" +
 							"</tr>";
 			}
 			body.InnerHtml += "<tr><td class=\"right\" colspan=\"6\"><input type=\"submit\" value=\"Submit\" /></td></tr></tbody></table></form>";
@@ -49,7 +49,7 @@
 
 		for (int i = 0, l = t.Rows.Count; i < l; i++) {
 			if (t.Rows[i]["CONSTRAINT_NAME"].Equals(tbl + "$PrimaryKey")) continue; // Simple way of handling auto_increments, but unlikely to fit all cases
-			if (t.Rows[i]["COLUMN_DEFAULT"].Equals(Request.Form["ex_" + t.Rows[i]["name"]])) continue; // Simple way of handling defaults values wrapped in parentheses but also likely incomplete
+			if (t.Rows[i]["default"].Equals(Request.Form["ex_" + t.Rows[i]["name"]])) continue; // Simple way of handling defaults values wrapped in parentheses but also likely incomplete
 
 			cols.Append(((cols.Length == 0) ? "" : ",") + t.Rows[i]["name"]);
 			vals.Append(((vals.Length == 0) ? "" : ",") + ((String.IsNullOrEmpty(Request.Form["null_" + t.Rows[i]["name"]])) ?  "'" + Request.Form["ex_" + t.Rows[i]["name"]] + "'" : "NULL"));

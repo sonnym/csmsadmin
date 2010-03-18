@@ -72,14 +72,14 @@
 				body.InnerHtml += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd")  + "\">" +
 							 "<td><input type=\"checkbox\" id=\"" + db + "_" + tbl + "_" + t.Rows[i]["name"] + "\"</td>" +
 							 "<td>" +t.Rows[i]["name"] + "</td>" +
-							 "<td class=\"right\">" + ((t.Rows[i]["COLUMN_DEFAULT"].ToString().StartsWith("(")) ?
-													    t.Rows[i]["COLUMN_DEFAULT"].ToString().Substring(1, t.Rows[i]["COLUMN_DEFAULT"].ToString().Length - 2) :
-														t.Rows[i]["COLUMN_DEFAULT"]) + "</td>" +
+							 "<td class=\"right\">" + ((t.Rows[i]["default"].ToString().StartsWith("(")) ?
+													    t.Rows[i]["default"].ToString().Substring(1, t.Rows[i]["default"].ToString().Length - 2) :
+														t.Rows[i]["default"]) + "</td>" +
 							 "<td class=\"right\">" + t.Rows[i]["is_nullable"].ToString().ToLower() + "</td>" +
 							 "<td class=\"right\">" + DisplayLayer.getDataType(t.Rows[i]["type"], t.Rows[i]["max_length"], t.Rows[i]["precision"],
 																				t.Rows[i]["scale"]) + "</td>" +
 							 "<td>" + t.Rows[i]["CONSTRAINT_NAME"] + "</td>" +
-							 "<td>" + t.Rows[i]["COLLATION_NAME"].ToString().ToLower() + "</td>" +
+							 "<td>" + t.Rows[i]["collation_name"].ToString().ToLower() + "</td>" +
 							 "<td><a href=\"query.aspx?a=" + Session.SessionID + "&db=" + db + "&tbl=" + tbl + "&q=" + HttpUtility.UrlEncode("SELECT COUNT(*) AS Cardinality, " + t.Rows[i]["name"] + 
 								" FROM " + tbl + " GROUP BY " + t.Rows[i]["name"] + " ORDER BY " + t.Rows[i]["name"]) + "\"><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/browse.png\" /></a></td>" +
 							 "<td><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/edit.png\" /></td>" +
