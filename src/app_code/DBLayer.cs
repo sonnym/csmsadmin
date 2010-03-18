@@ -183,7 +183,7 @@ public class DBLayer {
 			con.ChangeDatabase(db);
 			// LEFT OUTER JOIN sys.objects AS objects ON columns.default_object_id = objects.object_id
 			using (com = new SqlCommand("SELECT columns.name, defaults.definition AS [default], types.name AS type, is_nullable, max_length, columns.scale, precision, collation_name, " +
-										"'' AS CONSTRAINT_NAME FROM sys.columns AS columns LEFT OUTER JOIN sys.objects ON columns.object_id = sys.objects.object_id " +
+										"is_identity FROM sys.columns AS columns LEFT OUTER JOIN sys.objects ON columns.object_id = sys.objects.object_id " +
 										"LEFT OUTER JOIN sys.systypes AS types ON columns.system_type_id = types.xtype " +
 										"LEFT OUTER JOIN sys.default_constraints AS defaults ON columns.default_object_id = defaults.object_id " +
 										"WHERE sys.objects.name = @tbl AND sys.objects.type = 'U'", con)) {

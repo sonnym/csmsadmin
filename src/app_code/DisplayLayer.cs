@@ -157,4 +157,10 @@ public class DisplayLayer {
 
 		return t;
 	}
+
+	public static string stripDefaults(string d) {
+		if (String.IsNullOrEmpty(d)) return d;
+		while (d[0].Equals('(') && d[d.Length - 1].Equals(')')) d = d.Substring(1, d.Length -2);
+		return d;
+	}
 }
