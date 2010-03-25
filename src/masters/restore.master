@@ -12,30 +12,79 @@
 		if (!String.IsNullOrEmpty(Request.Form["init"])) {
 			getMetadata();
 			return;
-		} else if (!String.IsNullOrEmpty(Request.QueryString["fn"]) && Request.QueryString["fn"].Equals("restore")) restore();
+		} else if (!String.IsNullOrEmpty(Request.QueryString["fn"]) && Request.QueryString["fn"].Equals("rh")) restoreHeader();
+		else if (!String.IsNullOrEmpty(Request.QueryString["fn"]) && Request.QueryString["fn"].Equals("rfl")) restoreFileList();
+		else if (!String.IsNullOrEmpty(Request.QueryString["fn"]) && Request.QueryString["fn"].Equals("rdb")) restoreDatabase();
 
-		body.InnerHtml += "<input type=\"button\" value=\"Select a File\" onclick=\"openFileBrowser()\" /><br /><br />" +
+		body.InnerHtml += "<div class=\"container\"><span class=\"con_title\">Select a File</span><br />" +
+						   "<input type=\"button\" value=\"Browse Server\" onclick=\"openFileBrowser()\" /><br /><br />" +
 						   "<div id=\"filewrapper\"><span class=\"bold\">Currently selected file: </span><span id=\"filedisp\"></span><br /><br />" +
 						   "<form method=\"post\"><input type=\"hidden\" id=\"file\" name=\"file\" value=\"\" />" +
-						   "<input type=\"submit\" name=\"init\" value=\"Continue\" /></form></div>";
+						   "<input type=\"submit\" name=\"init\" value=\"Continue\" /></form></div>" +
+						  "</div>";
 	}
 
 	private void getMetadata() {
 		string file = HttpUtility.UrlDecode(Request.Form["file"]);
 		DataRow label = dbl.restoreLabelOnly(file).Rows[0];
-		body.InnerHtml += "File: " + file + "<br />" +
+		body.InnerHtml += "<div class=\"container\"><span class=\"con_title\">File Information</span><br />" +
+						  "File: " + file + "<br />" +
 						  "Media Name: " + ((label["MediaName"] == DBNull.Value) ? "n/a" : label["MediaName"]) + "<br />" +
 						  "Created On: " + label["MediaDate"] + "<br />" +
 						  "Created With: " + label["SoftwareName"] + "<br />" +
 						  "Media Families: " + label["FamilyCount"] + "<br /><br />" +
+						  "</div>" +
+						  "<div class=\"container\" id=\"restoreHeader\" style=\"display: none\"><span class=\"con_title\">Header</span><table></table></div>" +
+						  "<div class=\"container\" id=\"restoreFileList\" style=\"display: none\"><span class=\"con_title\">File List</span><table><tbody></tbody></table></div>" +
+						  "<div class=\"container\"><span class=\"con_title\">Actions</span><br />" +
 						  "<input type=\"hidden\" id=\"file\" value=\"" + file + "\" />" +
-						  "<input type=\"button\" value=\"Get Headers\" />&nbsp;&nbsp;" +
-						  "<input type=\"button\" value=\"Get File List\" /><br /><br />" +
+						  "<input type=\"button\" value=\"Get Header\" onclick=\"restoreHeaderOnly()\" />&nbsp;&nbsp;" +
+						  "<input type=\"button\" value=\"Get File List\" onclick=\"restoreFileListOnly()\" /><br /><br />" +
 						  "Database Name: <input type=\"text\" id=\"dbname\" value=\"\" /><br /><br />" +
-						  "<input type=\"button\" value=\"Restore Database\" onclick=\"restoreDatabase()\" />";
+						  "<input type=\"button\" value=\"Restore Database\" onclick=\"restoreDatabase()\" />" +
+						  "</div>";
 	}
 
-	private void restore() {
+	private void restoreHeader() {
+		Page.Visible = false;
+		Response.Expires = -1;
+
+		DataRow header = dbl.restoreHeaderOnly(HttpUtility.UrlDecode(Request.QueryString["f"]));
+
+		StringBuilder json = new StringBuilder();
+		json.Append("{ \"errors\": { \"warnings\": [], \"failures\": [] }, \"payload\": [ ");
+		json.Append(" { \"dbn\": \"" + Utilities.jsonEncode(header["DatabaseName"].ToString()) + "\" }");
+		json.Append(", { \"dbv\": \"" + Utilities.jsonEncode(header["DatabaseVersion"].ToString()) + "\" }");
+		json.Append(", { \"bs\": \"" + Utilities.jsonEncode(header["BackupSize"].ToString()) + "\" }");
+		json.Append(", { \"cl\": \"" + Utilities.jsonEncode(header["CompatibilityLevel"].ToString()) + "\" }");
+		json.Append(", { \"col\": \"" + Utilities.jsonEncode(header["Collation"].ToString()) + "\" }");
+		json.Append(", { \"iro\": \"" + Utilities.jsonEncode(header["IsReadOnly"].ToString()) + "\" }");
+		json.Append(", { \"id\": \"" + Utilities.jsonEncode(header["IsDamaged"].ToString()) + "\" }");
+		json.Append("] }");
+		Response.Write(json.ToString());
+	}
+
+	private void restoreFileList() {
+		Page.Visible = false;
+		Response.Expires = -1;
+
+		DataTable fl = dbl.restoreFileListOnly(HttpUtility.UrlDecode(Request.QueryString["f"]));
+
+		StringBuilder json = new StringBuilder();
+		json.Append("{ \"errors\": { \"warnings\": [], \"failures\": [] }, \"payload\": [ ");
+
+		for (int i = 0, l = fl.Rows.Count; i < l; i++) json.Append(((i > 0) ? ", " : "") + "{ " +
+																	"\"fid\": \"" + fl.Rows[i]["FileId"].ToString() + "\", " +
+																	"\"ln\": \"" + Utilities.jsonEncode(fl.Rows[i]["LogicalName"].ToString()) + "\", " +
+																	"\"pn\": \"" + Utilities.jsonEncode(fl.Rows[i]["PhysicalName"].ToString()) + "\", " +
+																	"\"t\": \"" + LookupTables.backupFileType(fl.Rows[i]["Type"].ToString()) + "\"" +
+																	" }");
+
+		json.Append("] }");
+		Response.Write(json.ToString());
+	}
+
+	private void restoreDatabase() {
 		Page.Visible = false;
 		Response.Expires = -1;
 

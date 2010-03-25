@@ -181,7 +181,6 @@ public class DBLayer {
 		using (con = __initConnection(false)) {
 			con.Open();
 			con.ChangeDatabase(db);
-			// LEFT OUTER JOIN sys.objects AS objects ON columns.default_object_id = objects.object_id
 			using (com = new SqlCommand("SELECT columns.name, defaults.definition AS [default], types.name AS type, is_nullable, max_length, columns.scale, precision, collation_name, " +
 										"is_identity FROM sys.columns AS columns LEFT OUTER JOIN sys.objects ON columns.object_id = sys.objects.object_id " +
 										"LEFT OUTER JOIN sys.systypes AS types ON columns.system_type_id = types.xtype " +
@@ -234,6 +233,12 @@ public class DBLayer {
 		return executeQuery("RESTORE LABELONLY FROM DISK = @f", p).Tables[0];
 	}
 
+	public DataRow restoreHeaderOnly(string f) {
+		SqlParameterCollection p = __getEmptyParameterCollection();
+		p.AddWithValue("@f", f);
+		return executeQuery("RESTORE HEADERONLY FROM DISK = @f", p).Tables[0].Rows[0];
+	}
+
 	public DataTable restoreFileListOnly(string f) {
 		SqlParameterCollection p = __getEmptyParameterCollection();
 		p.AddWithValue("@f", f);
@@ -241,7 +246,7 @@ public class DBLayer {
 	}
 
 	/*
-	public DataTable restoreVerifyonly(string f) {
+	public DataTable restoreVerifyonly(string f) { // returns boolen scalar?
 		SqlParameterCollection p = __getEmptyParameterCollection();
 		p.AddWithValue("@f", f);
 		return executeQuery("RESTORE VERIFYONLY FROM DISK = @f", p).Tables[0];

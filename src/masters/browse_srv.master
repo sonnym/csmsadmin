@@ -53,21 +53,9 @@
 		json.Append("{ \"errors\": { \"warnings\": [], \"failures\": [] }, \"payload\": [ ");
 		for (int i = 0, l = contents.Count; i < l; i++) {
 			string[] item = (string[])contents[i];
-			json.Append(((i > 0) ? "," : "") + "{ \"dn\": \"" + jsonEncode(item[0]) + "\", \"t\": " + item[1] + ", \"fn\": \"" + jsonEncode(item[2].Replace(@"\", @"\\")) + "\" }");
+			json.Append(((i > 0) ? "," : "") + "{ \"dn\": \"" + Utilities.jsonEncode(item[0]) + "\", \"t\": " + item[1] + ", \"fn\": \"" + Utilities.jsonEncode(item[2].Replace(@"\", @"\\")) + "\" }");
 		}
 		json.Append("] }");
 		Response.Write(json.ToString());
-	}
-
-	public static string jsonEncode(string s) {
-		string str = (string) s;
-		str = str.Replace("\\","\\\\");
-		str = str.Replace("\"","\\\"");
-		str = str.Replace("\r","\\r");
-		str = str.Replace("\f","\\f");
-		str = str.Replace("\n","\\n");
-		str = str.Replace("\t","\\t");
-		str = str.Replace("\b","\\b");
-		return str;
 	}
 </script>

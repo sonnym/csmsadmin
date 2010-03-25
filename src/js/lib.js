@@ -1,3 +1,15 @@
+function getSelectedValue(sel) {
+	return sel.childNodes[sel.selectedIndex].value;
+}
+  /////////////
+ // display //
+/////////////
+function switchTheme() {
+	document.theme.submit();
+}
+  ////////////////
+ // navigation //
+////////////////
 function checkNav(sel) {
 	var qs = new Querystring();
 	if (qs.contains('q')) qs.remove('q');
@@ -9,22 +21,22 @@ function checkNav(sel) {
 
 	window.parent.location = "default.aspx?" + qs.toString();
 }
-function switchTheme() {
-	document.theme.submit();
-}
+  ////////////
+ // select //
+////////////
 function updateSelectForm(o) {
 	if (o.id.substring(0, 2) == "op" && getSelectedValue(o) != "") document.getElementById("use_" + o.id.substring(3)).checked = true
 	else if (o.id.substring(0, 2) == "ex" && getSelectedValue(document.getElementById("op_" + o.id.substring(3))) != "") document.getElementById("use_" + o.id.substring(3)).checked = true;
 	else document.getElementById("use_" + o.id.substring(3)).checked = false;
 }
-function getSelectedValue(sel) {
-	return sel.childNodes[sel.selectedIndex].value;
-}
+  /////////////
+ // restore //
+/////////////
 var fbwin;
 function openFileBrowser() {
 	var qs = new Querystring();
 	if (!fbwin || fbwin.closed) {
-		fbwin = window.open("browse_srv.aspx?a=" + qs.get("a") + "&n=0", "_blank", "location=0,scrollbars=1,status=0,toolbar=0,left=0,top=0,width=400,height=400");
+		fbwin = window.open("browse_srv.aspx?a=" + qs.get("a") + "&n=0", "_blank", "location=0,scrollbars=1,status=0,toolbar=0,left=0,top=0,width=400,height=" + $(window).height());
 	} else fbwin.focus();
 }
 function updateRestorePath(val) {
@@ -48,9 +60,40 @@ function setRestorePath(v) {
 	window.opener.$('#filewrapper').css('display', 'block');
 	window.close();
 }
+function restoreHeaderOnly() {
+	var qs = new Querystring();
+	var url = 'restore.aspx?a=' + qs.get('a') + '&fn=rh&f=' + escape($('#file').val());
+	$.ajax( {url: url, dataType: 'json',
+		success: function(data) {
+			$('#restoreHeader').css({ 'display': 'block' });
+			$('#restoreHeader > :last').append('<span>Database Name: ' + data.payload[0].dbn + '</span><br />');
+			$('#restoreHeader > :last').append('<span>Database Version: ' + data.payload[0].dbv + '</span><br />');
+			$('#restoreHeader > :last').append('<span>Backup Size: ' + data.payload[0].bs + '</span><br />');
+			$('#restoreHeader > :last').append('<span>Compatibility Level: ' + data.payload[0].cl + '</span><br />');
+			$('#restoreHeader > :last').append('<span>Collation: ' + data.payload[0].col + '</span><br />');
+			$('#restoreHeader > :last').append('<span>Read Only: ' + data.payload[0].iro + '</span><br />');
+			$('#restoreHeader > :last').append('<span>Damaged: ' + data.payload[0].id + '</span>');
+		}
+	});
+}
+function restoreFileListOnly() {
+	var qs = new Querystring();
+	var url = 'restore.aspx?a=' + qs.get('a') + '&fn=rfl&f=' + escape($('#file').val());
+	$.ajax( {url: url, dataType: 'json',
+		success: function(data) {
+			$('#restoreFileList').css({ 'display': 'block' });
+			$('#restoreFileList > table:last > tbody:last').empty();
+			$('#restoreFileList > table:last > tbody:last').append('<tr class="title"><td /><td>Logical Name</td><td>Physical Name</td><td>New Logical Name</td><td>New Physical Name</td></tr>');
+			for (var i = 0, l = data.payload.length; i < l; i++) $('#restoreFileList > table:last > tbody:last').append('<tr class="' + ((i % 2 == 0) ? "even" : "odd") + '">' +
+																	'<td><input type="checkbox" name="f_' + data.payload[i].fid  + '" /></td><td>' + data.payload[i].ln + '</td>' +
+																	'<td>' + data.payload[i].pn + '</td><td><input type="text" name="fn_' + data.payload[i].fid + '" /></td>' +
+																	'<td><input type="text" name="pn_' + data.payload[i].fid + '" /></td></tr>');
+		}
+	});
+}
 function restoreDatabase() {
 	var qs = new Querystring();
-	var url = 'restore.aspx?a=' + qs.get('a') + '&fn=restore&f=' + escape($('#file').val()) + '&dbname=' + escape($('#dbname').val());
+	var url = 'restore.aspx?a=' + qs.get('a') + '&fn=rdb&f=' + escape($('#file').val()) + '&dbname=' + escape($('#dbname').val());
 	$.ajax( {url: url, dataType: 'json',
 		success: function(data) {
 		}

@@ -51,4 +51,13 @@ public class LookupTables {
 			default:  return null;
 		}
 	}
+
+	public static string backupFileType(string s) {
+		switch (s.ToCharArray()[0]) {
+			case 'L': return "Microsoft SQL Server log file";
+			case 'D': return "SQL Server data file";
+			case 'F': return "Full Text Catalog";
+			default:  return null;
+		}
+	}
 }

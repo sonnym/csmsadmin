@@ -87,6 +87,21 @@ ul { padding-left: 0px; }
 	border: solid thin black;
 	background: #efefef;
 }
+div.container {
+	margin-top: 24px;
+	border: solid 1px black;
+	padding: 4px;
+}
+div.container span.con_title {
+	position: relative;
+	height: 16px;
+	padding: 2px;
+	top: -12px;
+	left: 4px;
+	font-weight: bold;
+	background: white;
+	border: solid 2px black;
+}
 .right_container {
 	width: 100%;
 	text-align: right;
