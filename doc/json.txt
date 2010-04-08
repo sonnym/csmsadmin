@@ -1,0 +1,52 @@
+GENERAL STRUCTURE
+=================
+{
+	"errors": {
+		"warnings": [
+		],
+		"failures": [
+		] 
+	},
+	"payload": [
+	] 
+}
+
+PAYLOADS
+========
+Restore Header Only
+-------------------
+"payload": [
+	{
+		"dbn": database name
+	},
+	{
+		"dbv": database version
+	},
+	{
+		"bs": backup size
+	},
+	{
+		"cl": compatibility level
+	},
+	{
+		"col": collation
+	},
+	{
+		"iro": is read only
+	},
+	{
+		"id": is damaged
+	}
+] 
+
+Restore File List Only
+----------------------
+"payload": [
+	{
+		"fid": file id,
+		"ln": logical name,
+		"pn": physical name,
+		"t": type
+	}
+	... , { } ... { n }
+] 

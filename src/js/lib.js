@@ -65,14 +65,16 @@ function restoreHeaderOnly() {
 	var url = 'restore.aspx?a=' + qs.get('a') + '&fn=rh&f=' + escape($('#file').val());
 	$.ajax( {url: url, dataType: 'json',
 		success: function(data) {
+			if ($('#restoreHeader :not(:first)')) $('#restoreHeader :not(:first)').remove();
+
 			$('#restoreHeader').css({ 'display': 'block' });
-			$('#restoreHeader > :last').append('<span>Database Name: ' + data.payload[0].dbn + '</span><br />');
-			$('#restoreHeader > :last').append('<span>Database Version: ' + data.payload[0].dbv + '</span><br />');
-			$('#restoreHeader > :last').append('<span>Backup Size: ' + data.payload[0].bs + '</span><br />');
-			$('#restoreHeader > :last').append('<span>Compatibility Level: ' + data.payload[0].cl + '</span><br />');
-			$('#restoreHeader > :last').append('<span>Collation: ' + data.payload[0].col + '</span><br />');
-			$('#restoreHeader > :last').append('<span>Read Only: ' + data.payload[0].iro + '</span><br />');
-			$('#restoreHeader > :last').append('<span>Damaged: ' + data.payload[0].id + '</span>');
+			$('#restoreHeader').append('<br /><span>Database Name: ' + data.payload[0].dbn + '</span><br />');
+			$('#restoreHeader').append('<span>Database Version: ' + data.payload[0].dbv + '</span><br />');
+			$('#restoreHeader').append('<span>Backup Size: ' + data.payload[0].bs + '</span><br />');
+			$('#restoreHeader').append('<span>Compatibility Level: ' + data.payload[0].cl + '</span><br />');
+			$('#restoreHeader').append('<span>Collation: ' + data.payload[0].col + '</span><br />');
+			$('#restoreHeader').append('<span>Read Only: ' + data.payload[0].iro + '</span><br />');
+			$('#restoreHeader').append('<span>Damaged: ' + data.payload[0].id + '</span>');
 		}
 	});
 }
@@ -88,12 +90,27 @@ function restoreFileListOnly() {
 																	'<td><input type="checkbox" name="f_' + data.payload[i].fid  + '" /></td><td>' + data.payload[i].ln + '</td>' +
 																	'<td>' + data.payload[i].pn + '</td><td><input type="text" name="fn_' + data.payload[i].fid + '" /></td>' +
 																	'<td><input type="text" name="pn_' + data.payload[i].fid + '" /></td></tr>');
+			$('#restoreFileList > table:last > tbody:last').append('<tr class="' + ((data.payload.length % 2 == 0) ? 'even' : 'odd') + '">' +
+																	'<td colspan="5">Physical Name Path: <input type="text" name="pp" size="75" /></td></tr>');
 		}
 	});
 }
 function restoreDatabase() {
 	var qs = new Querystring();
-	var url = 'restore.aspx?a=' + qs.get('a') + '&fn=rdb&f=' + escape($('#file').val()) + '&dbname=' + escape($('#dbname').val());
+
+	var rows = $('#restoreFileList > table:last > tbody:last > tr.odd, tr.even');
+	var q = '', ids = '';
+	for (var i = 0, l = rows.length - 2; i < l; i++) if (rows[i].children[0].children[0].checked) {
+		var id = rows[i].children[0].children[0].name.substring(2);
+		var ln = rows[i].children[3].children[0].value; // logical name
+		var pn = rows[i].children[4].children[0].value; // physical name
+
+		ids += ((q.length > 0) ? '%2c' /*,*/ : '') + id;
+		if (ln != '') q += "&" + 'ln_' + id + '=' + escape(ln);
+		if (pn != '') q += "&" + 'pn_' + id + '=' + escape(pn);
+	}
+
+	var url = '?a=' + qs.get('a') + '&fn=rdb&f=' + escape($('#file').val()) + '&dbname=' + escape($('#dbname').val()) + "&ids=" + ids + q;
 	$.ajax( {url: url, dataType: 'json',
 		success: function(data) {
 		}

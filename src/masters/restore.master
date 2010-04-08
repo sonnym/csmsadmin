@@ -34,7 +34,7 @@
 						  "Created With: " + label["SoftwareName"] + "<br />" +
 						  "Media Families: " + label["FamilyCount"] + "<br /><br />" +
 						  "</div>" +
-						  "<div class=\"container\" id=\"restoreHeader\" style=\"display: none\"><span class=\"con_title\">Header</span><table></table></div>" +
+						  "<div class=\"container\" id=\"restoreHeader\" style=\"display: none\"><span class=\"con_title\">Header</span></div>" +
 						  "<div class=\"container\" id=\"restoreFileList\" style=\"display: none\"><span class=\"con_title\">File List</span><table><tbody></tbody></table></div>" +
 						  "<div class=\"container\"><span class=\"con_title\">Actions</span><br />" +
 						  "<input type=\"hidden\" id=\"file\" value=\"" + file + "\" />" +

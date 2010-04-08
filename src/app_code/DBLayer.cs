@@ -246,12 +246,6 @@ public class DBLayer {
 	}
 
 	/*
-	public DataTable restoreVerifyonly(string f) { // returns boolen scalar?
-		SqlParameterCollection p = __getEmptyParameterCollection();
-		p.AddWithValue("@f", f);
-		return executeQuery("RESTORE VERIFYONLY FROM DISK = @f", p).Tables[0];
-	}
-
 	public DataTable getServerPermissions() {
 		return executeQuery("SELECT state_desc, permission_name, name, type_desc, is_disabled from sys.server_permissions AS permissions " +
 										"LEFT JOIN sys.server_principals AS principals ON permissions.grantee_principal_id = principals.principal_id").Tables[0];

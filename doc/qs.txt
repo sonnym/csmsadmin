@@ -1,0 +1,18 @@
+RESERVED QUERY STRING PARAMETERS
+================================
+a   -> authentication token
+db  -> database name
+tbl -> table name
+sp  -> show plan {0, 1}
+e   -> edit query {0, 1}
+q   -> sql query
+fn  -> function
+n   -> display navigation {0, 1}
+t   -> permissions type filter
+l   -> permissions letter filter
+d   -> directory
+f   -> file
+r   -> retry restore {0, 1}
+ids -> ids of files in backup
+ln_# -> logical name
+pn_# -> physical name
