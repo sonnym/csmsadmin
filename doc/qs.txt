@@ -12,7 +12,6 @@ t   -> permissions type filter
 l   -> permissions letter filter
 d   -> directory
 f   -> file
-r   -> retry restore {0, 1}
+r   -> resume restore database {0, 1}
 ids -> ids of files in backup
-ln_# -> logical name
 pn_# -> physical name

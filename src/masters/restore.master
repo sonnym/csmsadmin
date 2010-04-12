@@ -88,7 +88,22 @@
 		Page.Visible = false;
 		Response.Expires = -1;
 
+		string wth = String.Empty;
+		string fname = HttpUtility.UrlDecode(Request.QueryString["f"]);
+		string[] chckd = HttpUtility.UrlDecode(Request.QueryString["ids"]).Split(new char[] {','});
 		bool resume = !String.IsNullOrEmpty(Request.QueryString["r"]) && Request.QueryString["r"].Equals("1");
-		Response.Write(dbl.restoreDatabase(Request.QueryString["dbname"], Request.QueryString["f"], resume));
+
+		if (chckd.Length > 0) {
+			DataTable fl = dbl.restoreFileListOnly(fname);
+			for (int i = 0, l = fl.Rows.Count; i < l; i++) {
+				DataRow r = fl.Rows[i];
+				if (String.IsNullOrEmpty(HttpUtility.UrlDecode(Request.QueryString["pn_" + r["FileId"]]))) continue;
+					
+				if (wth.Length > 0) wth += ", ";
+				wth += "MOVE " + r["LogicalName"] + " TO " + HttpUtility.UrlDecode(Request.QueryString["pn_" + r["FileId"]]);
+			}
+		}
+
+		Response.Write("RESTORE DATABASE " + HttpUtility.UrlDecode(Request.QueryString["dbname"]) + " FROM DISK = '" + fname + "' " + ((wth.Length > 0) ? "WITH " + wth : ""));
 	}
 </script>

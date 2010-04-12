@@ -85,13 +85,13 @@ function restoreFileListOnly() {
 		success: function(data) {
 			$('#restoreFileList').css({ 'display': 'block' });
 			$('#restoreFileList > table:last > tbody:last').empty();
-			$('#restoreFileList > table:last > tbody:last').append('<tr class="title"><td /><td>Logical Name</td><td>Physical Name</td><td>New Logical Name</td><td>New Physical Name</td></tr>');
+			$('#restoreFileList > table:last > tbody:last').append('<tr class="title"><td /><td>Logical Name</td><td>Physical Name</td><td>New Physical Name</td></tr>');
 			for (var i = 0, l = data.payload.length; i < l; i++) $('#restoreFileList > table:last > tbody:last').append('<tr class="' + ((i % 2 == 0) ? "even" : "odd") + '">' +
 																	'<td><input type="checkbox" name="f_' + data.payload[i].fid  + '" /></td><td>' + data.payload[i].ln + '</td>' +
-																	'<td>' + data.payload[i].pn + '</td><td><input type="text" name="fn_' + data.payload[i].fid + '" /></td>' +
-																	'<td><input type="text" name="pn_' + data.payload[i].fid + '" /></td></tr>');
+																	'<td>' + data.payload[i].pn + '</td>' +
+																	'<td><input type="text" id="pn_' + data.payload[i].fid + '" /></td></tr>');
 			$('#restoreFileList > table:last > tbody:last').append('<tr class="' + ((data.payload.length % 2 == 0) ? 'even' : 'odd') + '">' +
-																	'<td colspan="5">Physical Name Path: <input type="text" name="pp" size="75" /></td></tr>');
+																	'<td colspan="4">Physical Name Path: <input type="text" id="pn" size="75" /></td></tr>');
 		}
 	});
 }
@@ -101,13 +101,12 @@ function restoreDatabase() {
 	var rows = $('#restoreFileList > table:last > tbody:last > tr.odd, tr.even');
 	var q = '', ids = '';
 	for (var i = 0, l = rows.length - 2; i < l; i++) if (rows[i].children[0].children[0].checked) {
-		var id = rows[i].children[0].children[0].name.substring(2);
-		var ln = rows[i].children[3].children[0].value; // logical name
-		var pn = rows[i].children[4].children[0].value; // physical name
+		var pn = $('#pn').val();
+		if (pn.length > 0) q += '&pn=' + escape(pn);
 
-		ids += ((q.length > 0) ? '%2c' /*,*/ : '') + id;
-		if (ln != '') q += "&" + 'ln_' + id + '=' + escape(ln);
-		if (pn != '') q += "&" + 'pn_' + id + '=' + escape(pn);
+		var id = rows[i].children[0].children[0].name.substring(2);
+		ids += ((ids.length > 0) ? '%2c' /*,*/ : '') + id;
+		q += "&" + 'pn_' + id + '=' + escape($('#pn_' + id).val());
 	}
 
 	var url = '?a=' + qs.get('a') + '&fn=rdb&f=' + escape($('#file').val()) + '&dbname=' + escape($('#dbname').val()) + "&ids=" + ids + q;
