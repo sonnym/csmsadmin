@@ -30,9 +30,26 @@
 
 	private void db_struct() {
 		ArrayList tbls = dbl.getTableNames(db);
+		DataTable procedures = dbl.getStoredProcedures(db);
+		DataTable views = dbl.getViews(db);
+
+		bool are_tbls = tbls != null && tbls.Count > 0;
+		bool are_procedures = procedures != null && procedures.Rows.Count > 0;
+		bool are_views = views != null && views.Rows.Count > 0;
+
+		if (!are_tbls && !are_procedures && !are_views) {
+			body.InnerHtml += "Database is empty";
+			return;
+		}
+
+		body.InnerHtml += "<a name=\"top\" />";
+		if (are_tbls) body.InnerHtml += "<a href=\"#tables\">Tables</a>";
+		if (are_procedures) body.InnerHtml += "&nbsp;<a href=\"#procedures\">Stored Procedures</a>";
+		if (are_views) body.InnerHtml += "&nbsp;<a href=\"#views\">Views</a>";
+
 		if (tbls != null) {
-			body.InnerHtml += "<table><tbody><tr class=\"title\"><td>&nbsp;</td><td>Name</td><td colspan=\"6\">Actions</td><td>Rows</td><td>Size</td></tr>";
-			for (int i = 0; i < tbls.Count; i++) {
+			body.InnerHtml += "<a name=\"tables\" /><table><tbody><tr class=\"title\"><td>&nbsp;</td><td>Name</td><td colspan=\"6\">Actions</td><td>Rows</td><td>Size</td></tr>";
+			for (int i = 0, l = tbls.Count; i < l; i++) {
 				string tbl = tbls[i].ToString();
 				Dictionary<string, string> size = dbl.getTableSize(db, tbl);
 				body.InnerHtml += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd")  + "\">" +
@@ -49,17 +66,28 @@
 			body.InnerHtml += "<tbody></table>";
 		}
 
-		DataTable procedures = dbl.getStoredProcedures(db);
 		if (procedures.Rows.Count > 0) {
-			body.InnerHtml += "<br /><table><tbody><tr class=\"title\"><td /><td>Name</td><td>Type</td><td>Return Type</td><td colspan=\"2\" /></tr>";
+			body.InnerHtml += "<br /><a href=\"#top\">Top</a><a name=\"procedures\" /><table><tbody><tr class=\"title\"><td /><td>Name</td><td>Type</td><td>Return Type</td><td colspan=\"2\" /></tr>";
 			for (int i = 0, len = procedures.Rows.Count; i < len; i++)
 				body.InnerHtml += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd") + "\">" +
 									"<td><input type=\"checkbox\" id=\"" + db + "_" + HttpUtility.HtmlEncode(procedures.Rows[i][0].ToString()) + "\"</td>" +
-									"<td>" + procedures.Rows[i][0] + "</td><td>" + procedures.Rows[i][1] + "</td>" +
+									"<td>" + procedures.Rows[i][0] + "</td>" +
+									"<td>" + procedures.Rows[i][1] + "</td>" +
 									"<td class=\"right\">" + DisplayLayer.getDataType(procedures.Rows[i]["DATA_TYPE"], procedures.Rows[i]["CHARACTER_MAXIMUM_LENGTH"], procedures.Rows[i]["NUMERIC_PRECISION"],
 																						procedures.Rows[i]["NUMERIC_SCALE"], procedures.Rows[i]["DATETIME_PRECISION"]) + "</td>" +
 									"<td><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/edit.png\" /></td>" +
 									"<td><a href=\"query.aspx?a=" + Session.SessionID + "&db=" + db + "&q=" + HttpUtility.UrlEncode("DROP PROCEDURE " + procedures.Rows[i][0]) + "\"<img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/drop.png\" /></td></tr>";
+			body.InnerHtml += "</tbody></table>";
+		}
+
+		if (views.Rows.Count > 0) {
+			body.InnerHtml += "<br /><a href=\"#top\">Top</a><a name=\"views\" /><table><tbody><tr class=\"title\"><td /><td>Name</td><td colspan=\"2\" /></tr>";
+			for (int i = 0, len = views.Rows.Count; i < len; i++)
+				body.InnerHtml += "<tr class=\"" + ((i % 2 == 0) ? "even" : "odd") + "\">" +
+									"<td><input type=\"checkbox\" id=\"" + db + "_" + HttpUtility.HtmlEncode(views.Rows[i][0].ToString()) + "\"</td>" +
+									"<td>" + views.Rows[i][1] + "</td>" +
+									"<td><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/edit.png\" /></td>" +
+									"<td><a href=\"query.aspx?a=" + Session.SessionID + "&db=" + db + "&q=" + HttpUtility.UrlEncode("DROP VIEW " + views.Rows[i][0]) + "\"<img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/drop.png\" /></td></tr>";
 			body.InnerHtml += "</tbody></table>";
 		}
 	}

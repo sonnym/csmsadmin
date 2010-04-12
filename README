@@ -10,6 +10,11 @@ csmsadmin should currently work in most sane IIS environments as its own applica
 
 One note about security is necessary at this point: csmsadmin, at present, is not designed to be autonomously secure; the current design expects the user to place it within a secure area defined by .NET. It also allows the user to enter arbitrary queries, so access should not be given to any untrusted users.
 
+II.I LINUX
+In order to run C#MSAdmin with mod_mono and apache, it is necessary to first adjust the src/app_code/Settings.cs to contain the desired values for connection strings, and then to compile the source.  This latter step is necessary because mono (as of 2.4.2.3) requires custom HTTP Handlers to be binaries.  The following command has worked with limited testing:
+
+gmcs -t:library -optimize -warnaserror --fatal -r:System.Web.dll,System.Data.dll src/app_code/* -out:src/bin/csmsadmin.dll
+
 III. PROJECT STATUS
 csmsadmin is currently in its infantile stages. As such, expect to find bugs and incomplete features. If you do find any, please report them to the project bug tracker at http://github.com/sonnym/csmsadmin/issues .
 

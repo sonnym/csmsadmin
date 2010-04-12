@@ -147,6 +147,10 @@ public class DBLayer {
 								"WHERE objects.type IN ('P', 'FN') AND objects.is_ms_shipped = 0").Tables[0];
 	}
 
+	public DataTable getViews(string db) {
+		return executeQuery(db, "SELECT object_id, name FROM sys.views").Tables[0];
+	}
+
 	public Dictionary<string, string> getTableSize(string db, string tbl) {
 		using (con = __initConnection(false)) {
 			con.Open();
