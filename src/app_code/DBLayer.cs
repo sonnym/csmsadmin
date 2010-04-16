@@ -205,6 +205,8 @@ public class DBLayer {
 		return executeQuery("EXEC sys.sp_enum_oledb_providers").Tables[0];
 	}
 
+	// server permissions
+
 	public DataTable getServerPrincipalTypes() {
 		return executeQuery("SELECT DISTINCT(type) FROM sys.server_principals WHERE type != 'C' ORDER BY type ASC").Tables[0];
 	}
@@ -231,6 +233,49 @@ public class DBLayer {
 								"FROM sys.server_principals " + where + " ORDER BY name ASC", p).Tables[0];
 	}
 
+	// database permissions
+
+	public DataTable getDatabasePrincipalTypes(string db) {
+		return executeQuery(db, "SELECT DISTINCT(type) FROM sys.database_principals WHERE type != 'C' ORDER BY type ASC").Tables[0];
+	}
+
+	public DataTable getDatabasePrincipals(string db) {
+		return executeQuery(db, "SELECT type, SUBSTRING(name, 1, 1) AS first, COUNT(SUBSTRING(NAME, 1, 1)) AS count " +
+									"FROM sys.database_principals WHERE type != 'C' GROUP BY SUBSTRING(name, 1, 1), type ORDER BY type ASC, first ASC").Tables[0];
+	}
+	
+	public DataTable getDatabasePrincipals(string db, string type, string letter) {
+		string where = String.Empty;
+		SqlParameterCollection p = __getEmptyParameterCollection();
+
+		if (!String.IsNullOrEmpty(type)) {
+			where += "WHERE type = @type ";
+			p.AddWithValue("@type", type);
+		}
+		if (!String.IsNullOrEmpty(letter)) {
+			where += (String.IsNullOrEmpty(where) ? "WHERE " : "AND ") + "SUBSTRING(name, 1, 1) = @letter ";
+			p.AddWithValue("@letter", letter);
+		}
+
+		return executeQuery(db, "SELECT principal_id, name, create_date, modify_date FROM sys.database_principals " + where + " ORDER BY name ASC", p).Tables[0];
+	}
+
+	/*
+	public DataTable getServerPermissions() {
+		return executeQuery("SELECT state_desc, permission_name, name, type_desc, is_disabled from sys.server_permissions AS permissions " +
+										"LEFT JOIN sys.server_principals AS principals ON permissions.grantee_principal_id = principals.principal_id").Tables[0];
+	}
+
+	public DataTable getDatabasePermissions(string db, strying type, string letter) {
+		return executeQuery(db, " SELECT permissions.state_desc, permission_name, schemas.name AS [schema], objects.name AS object, principals.name AS principal " +
+									"FROM sys.database_permissions AS permissions " +
+									"JOIN sys.objects AS objects ON permissions.major_id = objects.object_id " +
+									"JOIN sys.schemas AS schemas ON objects.schema_id = schemas.schema_id " +
+									"JOIN sys.database_principals AS principals ON permissions.grantee_principal_id = principals.principal_id").Tables[0];
+	}
+	*/
+
+	// restore functions
 	public DataTable restoreLabelOnly(string f) {
 		SqlParameterCollection p = __getEmptyParameterCollection();
 		p.AddWithValue("@f", f);
@@ -249,21 +294,26 @@ public class DBLayer {
 		return executeQuery("RESTORE FILELISTONLY FROM DISK = @f", p).Tables[0];
 	}
 
-	/*
-	public DataTable getServerPermissions() {
-		return executeQuery("SELECT state_desc, permission_name, name, type_desc, is_disabled from sys.server_permissions AS permissions " +
-										"LEFT JOIN sys.server_principals AS principals ON permissions.grantee_principal_id = principals.principal_id").Tables[0];
+	public string restoreDatabase(string db, string f, bool resume) {
+		string result = String.Empty;
+
+		try {
+			using (con = __initConnection(false)) {
+				con.Open();
+				con.ChangeDatabase("master");
+				using (com = new SqlCommand("RESTORE DATABASE @db FROM DISK = @f" + ((resume) ? " WITH RESTART" : ""), con)) {
+					com.Parameters.AddWithValue("@db", db);
+					com.Parameters.AddWithValue("@f", f);
+					result = com.ExecuteScalar().ToString();
+				}
+			}
+		} catch (Exception ex) {
+			result = ex.ToString();
+		}
+		return result;
 	}
 
-	public DataTable getDatabasePermissions(string db) {
-		return executeQuery(db, " SELECT permissions.state_desc, permission_name, schemas.name AS [schema], objects.name AS object, principals.name AS principal " +
-									"FROM sys.database_permissions AS permissions " +
-									"JOIN sys.objects AS objects ON permissions.major_id = objects.object_id " +
-									"JOIN sys.schemas AS schemas ON objects.schema_id = schemas.schema_id " +
-									"JOIN sys.database_principals AS principals ON permissions.grantee_principal_id = principals.principal_id").Tables[0];
-	}
-	*/
-
+	// configuration and statistics
 	public DataTable getConfiguration() {
 		return executeQuery("SELECT name, value, value_in_use, minimum, maximum, description FROM sys.configurations ORDER BY name").Tables[0];
 	}
@@ -351,25 +401,6 @@ public class DBLayer {
 				return int.Parse(o.ToString());
 			}
 		}
-	}
-
-	public string restoreDatabase(string db, string f, bool resume) {
-		string result = String.Empty;
-
-		try {
-			using (con = __initConnection(false)) {
-				con.Open();
-				con.ChangeDatabase("master");
-				using (com = new SqlCommand("RESTORE DATABASE @db FROM DISK = @f" + ((resume) ? " WITH RESTART" : ""), con)) {
-					com.Parameters.AddWithValue("@db", db);
-					com.Parameters.AddWithValue("@f", f);
-					result = com.ExecuteScalar().ToString();
-				}
-			}
-		} catch (Exception ex) {
-			result = ex.ToString();
-		}
-		return result;
 	}
 
 	public bool createDatabase(string n) {

@@ -24,6 +24,7 @@ public class LookupTables {
 	public static string pages(string s) {
 		switch(s) {
 			case "/browse.aspx":         return "Browse";
+			case "/backup.aspx":         return "Backup";
 			case "/charsets.aspx":       return "Charsets";
 			case "/configuration.aspx":  return "Configuration";
 			case "/insert.aspx":         return "Insert";
