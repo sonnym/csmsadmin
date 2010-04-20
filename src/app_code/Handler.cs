@@ -21,10 +21,13 @@ partial class Handler : IHttpHandler, IRequiresSessionState {
 		NameValueCollection qs = context.Request.QueryString;
 
 		// ensure user is logged in
-		if (Settings.DisableLoginPage && context.Session["cs"] == null) login(false);
-		else if (!String.IsNullOrEmpty(context.Request.Form["login"])) {
+		if (Settings.DisableLoginPage && context.Session["cs"] == null) {
+			login(false);
+		} else if (!String.IsNullOrEmpty(context.Request.Form["login"])) {
 			login(true);
 			return;
+		} else if (!String.IsNullOrEmpty(context.Request.Form["loginacs"])) {
+			login(context.Request.Form["cs"]);
 		} else if (!Settings.DisableLoginPage && (context.Session["cs"] == null || context.Session.SessionID != qs["a"])) {
 			context.Session.Abandon();
 			p.MasterPageFile = "~/masters/login.master";
@@ -115,6 +118,13 @@ partial class Handler : IHttpHandler, IRequiresSessionState {
 	  ///////////////////////
 	 // private functions //
 	///////////////////////
+	private void login(string cs) {
+		context.Session.Clear();
+		context.Session.Add("cs", cs);
+		context.Session.Add("theme", Settings.DefaultTheme);
+
+		context.Response.Redirect("~/?a=" + context.Session.SessionID);
+	}
 	private void login(bool useform) {
 		DBLayer dbl = new DBLayer();
 		string cs = useform ?

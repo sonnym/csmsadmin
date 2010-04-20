@@ -9,42 +9,73 @@
  <body>
   <div id="login">
    <h3>C&#9839MSAdmin Login</h3><br />
-   <form action="default.aspx" method="post">
-    <table>
-     <tbody>
-      <tr>
-       <td>
-	    <span>Server:</span>
-       </td>
-       <td>
-        <%=DisplayLayer.getServerSelect("server")%>
-       </td>
-      </tr>
-      <tr>
-       <td>
-        Login:
-       </td>
-       <td>
-        <input type="text" name="user" value="" />
-       </td>
-      </tr>
-      <tr>
-       <td>
-        Password: 
-       </td>
-       <td>
-        <input type="password" name="password" value="" /><br />
-       </td>
-      </tr>
-      <tr>
-       <td colspan="2">
-        <br />
-        <input type="submit" name="login" value="Login" />
-       </td>
-      </tr>
-     </tbody>
-    </table>
-   </form>
+   <% if (!String.IsNullOrEmpty(Settings.ConnectionString)) { %>
+    <form action="default.aspx" method="post">
+     <table>
+      <tbody>
+       <tr>
+        <td>
+         <span>Server:</span>
+        </td>
+        <td>
+         <%=DisplayLayer.getServerSelect("server")%>
+        </td>
+       </tr>
+       <tr>
+        <td>
+         Login:
+        </td>
+        <td>
+         <input type="text" name="user" value="" />
+        </td>
+       </tr>
+       <tr>
+        <td>
+         Password: 
+        </td>
+        <td>
+         <input type="password" name="password" value="" /><br />
+        </td>
+       </tr>
+       <tr>
+        <td colspan="2">
+         <input type="submit" name="login" value="Login" />
+        </td>
+       </tr>
+      </tbody>
+     </table>
+    </form>
+   <% } if (!String.IsNullOrEmpty(Settings.ConnectionString) && Settings.AllowArbitraryConnectionsStrings) { %>
+    <div id="loginor">
+     - OR -
+    </div>
+   <% } if (Settings.AllowArbitraryConnectionsStrings) { %>
+    <form action="default.aspx" method="post">
+     <table>
+      <tbody>
+       <tr>
+        <td>
+         Connection String:
+        </td>
+        <td>
+         <input type="text" name="cs" value="" />
+        </td>
+       </tr>
+       <tr>
+        <td colspan="2">
+         <input type="submit" name="loginacs" value="Submit" />
+        </td>
+       </tr>
+      </tbody>
+     </table>
+    </form>
+   <% } if (String.IsNullOrEmpty(Settings.ConnectionString) && !Settings.AllowArbitraryConnectionsStrings) { %>
+	<div>
+     There is no way to login.
+	 <br />
+	 Please contact a server administrator.
+	</div>
+   <% } %>
   </div>
  </body>
 </html>

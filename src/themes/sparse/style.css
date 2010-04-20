@@ -7,11 +7,15 @@ a:hover { text-decoration: underline; }
 div#login {
 	position: relative;
 	top: 50px;
-	width: 230px;
+	width: 275px;
 	margin: 0px auto;
 	border: solid #afafaf 1px;
 	padding: 20px 5px;
 	text-align: center;
+}
+div#loginor {
+	margin: 10px auto;
+	font-weight: bold;
 }
 div#login table { margin: 0 auto; }
 div#login table td { vertical-align: middle; }
