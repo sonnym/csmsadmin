@@ -10,7 +10,8 @@
 		body = (HtmlGenericControl)this.Master.FindControl("body");
 		string db = Request.QueryString["db"];
 
-		if (!String.IsNullOrEmpty(db)) {
+		if (!String.IsNullOrEmpty(Request.QueryString["pid"])) principal_edit(int.Parse(Request.QueryString["pid"]));
+		else if (!String.IsNullOrEmpty(db)) {
 			if (String.IsNullOrEmpty(Request.QueryString["t"]) && String.IsNullOrEmpty(Request.QueryString["l"])) db_principals_summary();
 			else db_principals_drilldown();
 		}
@@ -44,11 +45,13 @@
 		if (principals.Rows.Count > 0) {
 			body.InnerHtml += "<table><tbody><tr class=\"title\">";
 			foreach (DataColumn c in principals.Columns) body.InnerHtml += "<td>" + c.ColumnName + "</td>";
+			body.InnerHtml += "<td />";
 			body.InnerHtml += "</tr>";
 
 			foreach (DataRow r in principals.Rows) {
 				body.InnerHtml += "<tr>";
 				foreach (DataColumn c in principals.Columns) body.InnerHtml += "<td>" + r[c.ColumnName] + "</td>";
+				body.InnerHtml += "<td><a href=\"permissions.aspx?a=" + Session.SessionID + "&pid=" + r["principal_id"].ToString() + "\"><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/edit.png\" /></a></td>";
 				body.InnerHtml += "</tr>";
 			}
 			body.InnerHtml += "</tbody></table>";
@@ -82,14 +85,19 @@
 		if (principals.Rows.Count > 0) {
 			body.InnerHtml += "<table><tbody><tr class=\"title\">";
 			foreach (DataColumn c in principals.Columns) body.InnerHtml += "<td>" + c.ColumnName + "</td>";
-			body.InnerHtml += "</tr>";
+			body.InnerHtml += "<td /></tr>";
 
 			foreach (DataRow r in principals.Rows) {
 				body.InnerHtml += "<tr>";
 				foreach (DataColumn c in principals.Columns) body.InnerHtml += "<td>" + r[c.ColumnName] + "</td>";
+				body.InnerHtml += "<td><a href=\"permissions.aspx?a=" + Session.SessionID + "&db=" + HttpUtility.UrlEncode(Request.QueryString["db"]) + "&pid=" + r["principal_id"].ToString() + "\"><img src=\"themes/" + HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString()) + "/img/edit.png\" /></a></td>";
 				body.InnerHtml += "</tr>";
 			}
 			body.InnerHtml += "</tbody></table>";
 		} else body.InnerHtml += "<span>No principals found for this query.</span>";
+	}
+
+	// principals
+	private void principal_edit(int pid) {
 	}
 </script>

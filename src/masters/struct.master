@@ -36,13 +36,15 @@
 		bool are_tbls = tbls != null && tbls.Count > 0;
 		bool are_procedures = procedures != null && procedures.Rows.Count > 0;
 		bool are_views = views != null && views.Rows.Count > 0;
+		bool db_empty = !(are_tbls || are_procedures || are_views);
 
-		if (!are_tbls && !are_procedures && !are_views) {
+		if (db_empty) {
 			body.InnerHtml += "Database is empty";
 			return;
 		}
 
 		body.InnerHtml += "<a name=\"top\" />";
+		if (!db_empty) body.InnerHtml += "Go To: ";
 		if (are_tbls) body.InnerHtml += "<a href=\"#tables\">Tables</a>";
 		if (are_procedures) body.InnerHtml += "&nbsp;<a href=\"#procedures\">Stored Procedures</a>";
 		if (are_views) body.InnerHtml += "&nbsp;<a href=\"#views\">Views</a>";

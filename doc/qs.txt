@@ -10,6 +10,7 @@ fn  -> function
 n   -> display navigation {0, 1}
 t   -> permissions type filter
 l   -> permissions letter filter
+pid -> permissions principal id
 d   -> directory
 f   -> file
 r   -> resume restore database {0, 1}

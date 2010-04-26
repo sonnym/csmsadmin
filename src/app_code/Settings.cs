@@ -2,7 +2,8 @@ public class Settings {
 	public static string Version = "0.4.1";
 
 	// master connection string - required to access database before login unless AllowArbitraryConnectionStrings is true below
-	public static string ConnectionString = @"";
+	// public static string ConnectionString = "";
+	public static string ConnectionString = @"Server=.\SQLEXPRESS;Trusted_Connection=True;MultipleActiveResultSets=True;Timeout=60;";
 
 	// security options
 	public static bool DisableLoginPage = false;
