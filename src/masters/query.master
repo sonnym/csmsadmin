@@ -12,7 +12,7 @@
 		string db = Request.QueryString["db"]; string tbl = Request.QueryString["tbl"];
 		string q = Server.UrlDecode(Request.QueryString["q"]);
 
-		body.InnerHtml += DisplayLayer.getQueryInput(db, tbl, q);
+		body.InnerHtml += DisplayLayer.getQueryInput(Session.SessionID, db, tbl, q);
 		   
 		if (Request.QueryString["q"] == null || Request.QueryString["q"].Length == 0) return;
 

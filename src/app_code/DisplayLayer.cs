@@ -56,8 +56,8 @@ public class DisplayLayer {
 				" [ <a href=\"query.aspx?a=" + auth + "&e=1&db=" + db + "&tbl=" + tbl + "&q=" + HttpContext.Current.Server.UrlEncode(q) + "\">Edit</a> ]</div></div>";
 	}
 
-	public static string getQueryInput(string db, string tbl, string q) {
-		return "<form method=\"get\"><input type=\"hidden\" name=\"db\" value=\"" + db + "\" /><input type=\"hidden\" name=\"tbl\" value=\"" + tbl + "\" /><textarea name=\"q\" id=\"query_input\">" + q + "</textarea><br /><input type=\"submit\" id=\"query_execute\" value=\"Execute\" /></form>";
+	public static string getQueryInput(string auth, string db, string tbl, string q) {
+		return "<form method=\"get\"><input type=\"hidden\" name=\"db\" value=\"" + db + "\" /><input type=\"hidden\" name=\"tbl\" value=\"" + tbl + "\" /><input type=\"hidden\" name=\"a\" value=\"" + auth + "\" /><textarea name=\"q\" id=\"query_input\">" + q + "</textarea><br /><input type=\"submit\" id=\"query_execute\" value=\"Execute\" /></form>";
 	}
 
 	public static string getBrowseTableNavigation(string auth, string db, string tbl, int rows, int page, int count) {
