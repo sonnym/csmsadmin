@@ -3,12 +3,12 @@
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Web" %>
 <script runat="server">
-	private DBLayer dbl = new DBLayer();
 	private HtmlGenericControl body;
+	private DBLayer dbl = new DBLayer();
+	private string db = HttpContext.Current.Request.QueryString["db"];
 
 	protected override void OnLoad(EventArgs e) {
 		body = (HtmlGenericControl)this.Master.FindControl("body");
-		string db = Request.QueryString["db"];
 
 		if (!String.IsNullOrEmpty(Request.QueryString["pid"])) principal_edit(int.Parse(Request.QueryString["pid"]));
 		else if (!String.IsNullOrEmpty(db)) {
@@ -99,5 +99,30 @@
 
 	// principals
 	private void principal_edit(int pid) {
+		string principal = String.Empty;
+		DataTable permissions;
+
+		if (String.IsNullOrEmpty(db)) {
+			principal = dbl.getPrincipalName(pid);
+			permissions = dbl.getServerPermissions(pid);
+		} else {
+			principal = dbl.getPrincipalName(db, pid);
+			permissions = dbl.getDatabasePermissions(db, pid);
+		}
+
+		body.InnerHtml += "<span class=\"bold\">" + principal + "</span>";
+
+		if (permissions.Rows.Count > 0) {
+			body.InnerHtml += "<table><tbody><tr class=\"title\">";
+			foreach (DataColumn c in permissions.Columns) body.InnerHtml += "<td>" + c.ColumnName + "</td>";
+			body.InnerHtml += "</tr>";
+
+			foreach (DataRow r in permissions.Rows) {
+				body.InnerHtml += "<tr>";
+				foreach (DataColumn c in permissions.Columns) body.InnerHtml += "<td>" + r[c.ColumnName] + "</td>";
+				body.InnerHtml += "</tr>";
+			}
+			body.InnerHtml += "</tbody></table>";
+		}
 	}
 </script>

@@ -206,7 +206,6 @@ public class DBLayer {
 	}
 
 	// server permissions
-
 	public DataTable getServerPrincipalTypes() {
 		return executeQuery("SELECT DISTINCT(type) FROM sys.server_principals WHERE type != 'C' ORDER BY type ASC").Tables[0];
 	}
@@ -233,8 +232,11 @@ public class DBLayer {
 								"FROM sys.server_principals " + where + " ORDER BY name ASC", p).Tables[0];
 	}
 
-	// database permissions
+	public DataTable getServerPermissions(int pid) {
+		return executeQuery("SELECT type, state FROM sys.server_permissions WHERE grantee_principal_id = " + pid).Tables[0];
+	}
 
+	// database permissions
 	public DataTable getDatabasePrincipalTypes(string db) {
 		return executeQuery(db, "SELECT DISTINCT(type) FROM sys.database_principals WHERE type != 'C' ORDER BY type ASC").Tables[0];
 	}
@@ -260,20 +262,43 @@ public class DBLayer {
 		return executeQuery(db, "SELECT principal_id, name, create_date, modify_date FROM sys.database_principals " + where + " ORDER BY name ASC", p).Tables[0];
 	}
 
-	/*
-	public DataTable getServerPermissions() {
-		return executeQuery("SELECT state_desc, permission_name, name, type_desc, is_disabled from sys.server_permissions AS permissions " +
-										"LEFT JOIN sys.server_principals AS principals ON permissions.grantee_principal_id = principals.principal_id").Tables[0];
+	public DataTable getDatabasePermissions(string db, int pid) {
+		return executeQuery(db, "SELECT type, state FROM sys.database_permissions WHERE grantee_principal_id = " + pid).Tables[0];
 	}
 
-	public DataTable getDatabasePermissions(string db, strying type, string letter) {
-		return executeQuery(db, " SELECT permissions.state_desc, permission_name, schemas.name AS [schema], objects.name AS object, principals.name AS principal " +
-									"FROM sys.database_permissions AS permissions " +
-									"JOIN sys.objects AS objects ON permissions.major_id = objects.object_id " +
-									"JOIN sys.schemas AS schemas ON objects.schema_id = schemas.schema_id " +
-									"JOIN sys.database_principals AS principals ON permissions.grantee_principal_id = principals.principal_id").Tables[0];
+	// principal functions
+	public string getPrincipalName(string db, int pid) {
+		string result = String.Empty;
+
+		try {
+			using (con = __initConnection(false)) {
+				con.Open();
+				con.ChangeDatabase(db);
+				using (com = new SqlCommand("SELECT name FROM sys.database_principals WHERE principal_id = @pid")) {
+					com.Parameters.AddWithValue("@pid", pid);
+					result = com.ExecuteScalar().ToString();
+				}
+			}
+		} catch { }
+
+		return result;
 	}
-	*/
+	public string getPrincipalName(int pid) {
+		string result = String.Empty;
+
+		try {
+			using (con = __initConnection(false)) {
+				con.Open();
+				con.ChangeDatabase("master");
+				using (com = new SqlCommand("SELECT name FROM sys.server_principals WHERE principal_id = @pid")) {
+					com.Parameters.AddWithValue("@pid", pid);
+					result = com.ExecuteScalar().ToString();
+				}
+			}
+		} catch { }
+
+		return result;
+	}
 
 	// restore functions
 	public DataTable restoreLabelOnly(string f) {
