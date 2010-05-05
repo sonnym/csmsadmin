@@ -99,13 +99,16 @@
 
 	// principals
 	private void principal_edit(int pid) {
+		char type;
 		string principal = String.Empty;
 		DataTable permissions;
 
 		if (String.IsNullOrEmpty(db)) {
+			type = 's';
 			principal = dbl.getPrincipalName(pid);
 			permissions = dbl.getServerPermissions(pid);
 		} else {
+			type = 'd';
 			principal = dbl.getPrincipalName(db, pid);
 			permissions = dbl.getDatabasePermissions(db, pid);
 		}
@@ -113,14 +116,13 @@
 		body.InnerHtml += "<span class=\"bold\">" + principal + "</span>";
 
 		if (permissions.Rows.Count > 0) {
-			body.InnerHtml += "<table><tbody><tr class=\"title\">";
-			foreach (DataColumn c in permissions.Columns) body.InnerHtml += "<td>" + c.ColumnName + "</td>";
-			body.InnerHtml += "</tr>";
+			body.InnerHtml += "<table><tbody><tr class=\"title\"><td>type</td><td>state</td></tr>";
 
 			foreach (DataRow r in permissions.Rows) {
-				body.InnerHtml += "<tr>";
-				foreach (DataColumn c in permissions.Columns) body.InnerHtml += "<td>" + r[c.ColumnName] + "</td>";
-				body.InnerHtml += "</tr>";
+				body.InnerHtml += "<tr>" +
+									"<td>" + ((type == 's') ? LookupTables.serverPermissionType(r["type"].ToString()) : LookupTables.databasePermissionType(r["type"].ToString())) + "</td>" +
+									"<td>" + LookupTables.permissionState(r["state"].ToString()) + "</td>" +
+								  "</tr>";
 			}
 			body.InnerHtml += "</tbody></table>";
 		}
