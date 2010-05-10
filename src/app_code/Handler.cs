@@ -12,6 +12,7 @@ partial class Handler : IHttpHandler, IRequiresSessionState {
 	public Handler() {
 		p = new Page();
 		p.AppRelativeVirtualPath = "~";
+		p.MasterPageFile = "~/masters/layout.master";
 		p.PreInit += this.pre;
 	}
 
@@ -34,72 +35,66 @@ partial class Handler : IHttpHandler, IRequiresSessionState {
 			return;
 		}
 
-		DBLayer dbl = new DBLayer();
+		CSMSAdmin.Page renderer = new CSMSAdmin.Structure();
 
 		string url = context.Request.ServerVariables["URL"].ToLower();
 		switch(url) {
 			case "/":
-				p.MasterPageFile = "~/masters/struct.master";
+			case "/default.aspx":
+			case "/struct.aspx":
+				renderer = new CSMSAdmin.Structure();
 				break;
 			case "/backup.aspx":
-				p.MasterPageFile = "~/masters/backup.master";
+				renderer = new CSMSAdmin.Backup();
 				break;
 			case "/browse.aspx":
-				p.MasterPageFile = "~/masters/browse.master";
+				renderer = new CSMSAdmin.Browse();
 				break;
 			case "/browse_srv.aspx":
-				p.MasterPageFile = "~/masters/browse_srv.master";
+				renderer = new CSMSAdmin.ServerBrowser();
 				return;
 			case "/charsets.aspx":
-				p.MasterPageFile = "~/masters/charsets.master";
+				renderer = new CSMSAdmin.Charsets();
 				break;
 			case "/configuration.aspx":
-				p.MasterPageFile = "~/masters/configuration.master";
-				break;
-			case "/default.aspx":
-				p.MasterPageFile = "~/masters/struct.master";
+				renderer = new CSMSAdmin.Configuration();
 				break;
 			case "/insert.aspx":
-				p.MasterPageFile = "~/masters/insert.master";
+				renderer = new CSMSAdmin.Insert();
 				break;
 			case "/operations.aspx":
-				p.MasterPageFile = "~/masters/operations.master";
+				renderer = new CSMSAdmin.Operations();
 				break;
 			case "/permissions.aspx":
-				p.MasterPageFile = "~/masters/permissions.master";
+				renderer = new CSMSAdmin.Permissions();
 				break;
 			case "/processes.aspx":
-				p.MasterPageFile = "~/masters/processes.master";
+				renderer = new CSMSAdmin.Processes();
 				break;
 			case "/providers.aspx":
-				p.MasterPageFile = "~/masters/providers.master";
+				renderer = new CSMSAdmin.Providers();
 				break;
 			case "/query.aspx":
-				p.MasterPageFile = "~/masters/query.master";
+				renderer = new CSMSAdmin.Query();
 				break;
 			case "/restore.aspx":
-				p.MasterPageFile = "~/masters/restore.master";
+				renderer = new CSMSAdmin.Restore();
 				break;
 			case "/select.aspx":
-				p.MasterPageFile = "~/masters/select.master";
+				renderer = new CSMSAdmin.Select();
 				break;
 			case "/status.aspx":
-				p.MasterPageFile = "~/masters/status.master";
-				break;
-			case "/struct.aspx":
-				p.MasterPageFile = "~/masters/struct.master";
-				if (!String.IsNullOrEmpty(qs["fn"]) && qs["fn"].Equals("create")) return;
+				renderer = new CSMSAdmin.Status();
 				break;
 			default:
-				p.MasterPageFile = "~/masters/layout.master";
+				DBLayer dbl = new DBLayer();
 				((HtmlGenericControl)p.Master.FindControl("body")).InnerHtml = DisplayLayer.getLocation(context.Session.SessionID, dbl.getServerName(), qs["db"], qs["tbl"]) +
 																			   DisplayLayer.getTopTabs(context.Session.SessionID, LookupTables.pages(url), qs["db"], qs["tbl"]) +
 																			   "<br />Invalid URL";
 				return;
 		}
 
-		((HtmlGenericControl)p.Master.Master.FindControl("body")).InnerHtml = DisplayLayer.getLocation(context.Session.SessionID, dbl.getServerName(), qs["db"], qs["tbl"]) +
-																			  DisplayLayer.getTopTabs(context.Session.SessionID, LookupTables.pages(url), qs["db"], qs["tbl"]);
+		((HtmlGenericControl)p.Master.FindControl("body")).InnerHtml = renderer.Render();
 	}
 
 	public bool IsReusable {
