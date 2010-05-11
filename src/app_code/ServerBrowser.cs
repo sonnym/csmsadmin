@@ -8,9 +8,9 @@ namespace CSMSAdmin {
 	public class ServerBrowser : CSMSAdmin.Page {
 	
 		public override string Render() {
-			if (!String.IsNullOrEmpty(request.QueryString["d"])) {
+			if (!String.IsNullOrEmpty(qs["d"])) {
 				processDirectory();
-				return body;
+				return String.Empty;
 			}
 
 			string request_dir;
@@ -49,8 +49,7 @@ namespace CSMSAdmin {
 		}
 
 		private void processDirectory() {
-			page.Visible = false;
-			response.Expires = -1;
+			isAJAX = true;
 
 			ArrayList contents = FileSystemLayer.getFolderContents(HttpUtility.UrlDecode(request.QueryString["d"]));
 

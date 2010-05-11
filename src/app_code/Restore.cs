@@ -48,8 +48,7 @@ namespace CSMSAdmin {
 		}
 
 		private void restoreHeader() {
-			page.Visible = false;
-			response.Expires = -1;
+			isAJAX = true;
 
 			DataRow header = dbl.restoreHeaderOnly(HttpUtility.UrlDecode(request.QueryString["f"]));
 
@@ -67,8 +66,7 @@ namespace CSMSAdmin {
 		}
 
 		private void restoreFileList() {
-			page.Visible = false;
-			response.Expires = -1;
+			isAJAX = true;
 
 			DataTable fl = dbl.restoreFileListOnly(HttpUtility.UrlDecode(request.QueryString["f"]));
 
@@ -87,8 +85,7 @@ namespace CSMSAdmin {
 		}
 
 		private void restoreDatabase() {
-			page.Visible = false;
-			response.Expires = -1;
+			isAJAX = true;
 
 			string wth = String.Empty;
 			string fname = HttpUtility.UrlDecode(request.QueryString["f"]);

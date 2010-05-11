@@ -3,11 +3,11 @@ using System.Collections.Specialized;
 using System.Web;
 using System.Web.SessionState;
 using System.Web.UI;
-using System.Web.UI.HtmlControls;
 
 partial class Handler : IHttpHandler, IRequiresSessionState {
 	private Page p;
 	private HttpContext context = HttpContext.Current;
+	private CSMSAdmin.Page renderer;
 
 	public Handler() {
 		p = new Page();
@@ -35,66 +35,7 @@ partial class Handler : IHttpHandler, IRequiresSessionState {
 			return;
 		}
 
-		CSMSAdmin.Page renderer = new CSMSAdmin.Structure();
-
-		string url = context.Request.ServerVariables["URL"].ToLower();
-		switch(url) {
-			case "/":
-			case "/default.aspx":
-			case "/struct.aspx":
-				renderer = new CSMSAdmin.Structure();
-				break;
-			case "/backup.aspx":
-				renderer = new CSMSAdmin.Backup();
-				break;
-			case "/browse.aspx":
-				renderer = new CSMSAdmin.Browse();
-				break;
-			case "/browse_srv.aspx":
-				renderer = new CSMSAdmin.ServerBrowser();
-				return;
-			case "/charsets.aspx":
-				renderer = new CSMSAdmin.Charsets();
-				break;
-			case "/configuration.aspx":
-				renderer = new CSMSAdmin.Configuration();
-				break;
-			case "/insert.aspx":
-				renderer = new CSMSAdmin.Insert();
-				break;
-			case "/operations.aspx":
-				renderer = new CSMSAdmin.Operations();
-				break;
-			case "/permissions.aspx":
-				renderer = new CSMSAdmin.Permissions();
-				break;
-			case "/processes.aspx":
-				renderer = new CSMSAdmin.Processes();
-				break;
-			case "/providers.aspx":
-				renderer = new CSMSAdmin.Providers();
-				break;
-			case "/query.aspx":
-				renderer = new CSMSAdmin.Query();
-				break;
-			case "/restore.aspx":
-				renderer = new CSMSAdmin.Restore();
-				break;
-			case "/select.aspx":
-				renderer = new CSMSAdmin.Select();
-				break;
-			case "/status.aspx":
-				renderer = new CSMSAdmin.Status();
-				break;
-			default:
-				DBLayer dbl = new DBLayer();
-				((HtmlGenericControl)p.Master.FindControl("body")).InnerHtml = DisplayLayer.getLocation(context.Session.SessionID, dbl.getServerName(), qs["db"], qs["tbl"]) +
-																			   DisplayLayer.getTopTabs(context.Session.SessionID, LookupTables.pages(url), qs["db"], qs["tbl"]) +
-																			   "<br />Invalid URL";
-				return;
-		}
-
-		((HtmlGenericControl)p.Master.FindControl("body")).InnerHtml = renderer.Render();
+		renderer = new CSMSAdmin.Page(ref p);
 	}
 
 	public bool IsReusable {
