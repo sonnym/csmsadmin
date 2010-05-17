@@ -98,33 +98,46 @@ namespace CSMSAdmin {
 
 		// principals
 		private void principal_edit(int pid) {
-			char type;
 			string principal = String.Empty;
+			string[] permissionTypesAbbr, permissionTypesFull;
 			DataTable permissions;
 
 			if (String.IsNullOrEmpty(db)) {
-				type = 's';
 				principal = dbl.getPrincipalName(pid);
 				permissions = dbl.getServerPermissions(pid);
+				permissionTypesAbbr = Constants.serverPermissionTypeAbbr;
+				permissionTypesFull = Constants.serverPermissionType;
 			} else {
-				type = 'd';
 				principal = dbl.getPrincipalName(db, pid);
 				permissions = dbl.getDatabasePermissions(db, pid);
+				permissionTypesAbbr = Constants.databasePermissionTypeAbbr;
+				permissionTypesFull = Constants.databasePermissionType;
 			}
 
-			body += "<span class=\"bold\">" + principal + "</span>";
+			string[] states = Constants.permissionStates;
+			string[] stateAbbrs = Constants.permissionStateAbbrs;
+			int stateCount = states.Length;
 
-			if (permissions.Rows.Count > 0) {
-				body += "<table><tbody><tr class=\"title\"><td>type</td><td>state</td></tr>";
+			body += "<span class=\"bold\">" + principal + "</span><table><tbody><tr class=\"title\">";
+			for (int i = 0, l = stateCount; i < l; i++) body += "<td>" + states[i] + "</td>";
+			body += "<td>Type</td></tr>";
 
-				foreach (DataRow r in permissions.Rows) {
-					body += "<tr>" +
-								"<td>" + ((type == 's') ? LookupTables.serverPermissionType(r["type"].ToString()) : LookupTables.databasePermissionType(r["type"].ToString())) + "</td>" +
-								"<td>" + LookupTables.permissionState(r["state"].ToString()) + "</td>" +
-							  "</tr>";
+			for (int i = 0, l = permissionTypesAbbr.Length; i < l; i++) {
+				string state = String.Empty;
+				DataRow[] permission = permissions.Select("type = '" + permissionTypesAbbr[i] + "'");
+
+				for (int j = 0, s = stateCount; j < s; j++) {
+					state += "<td><input type=\"radio\" name=\"" + permissionTypesAbbr[i] + "\" value=\"" + stateAbbrs[j] + "\" " +
+								((permission.Length > 0 && String.Compare(permission[0]["state"].ToString().Trim(), stateAbbrs[j]) == 0) ? "checked=\"checked\"" : "") +
+								"/></td>";
 				}
-				body += "</tbody></table>";
+
+				body += "<tr>" +
+							state +
+							"<td>" + permissionTypesFull[i] + "</td>" +
+						 "</tr>";
 			}
+			body += "</tbody></table>";
 		}
 	}
 }

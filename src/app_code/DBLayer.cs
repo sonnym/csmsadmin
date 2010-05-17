@@ -517,4 +517,19 @@ public class DBLayer {
 		}
 
 	}
+
+	/*
+	private object[][] __dataTableToArray(DataTable t) {
+		int cols = t.Columns.Count;
+		int rows = t.Rows.Count;
+		object[][] result = new object[rows][];
+
+		for (int i = 0; i < rows; i++) for (int j = 0; j < cols; j++) {
+			if (j == 0) result[i] = new object[cols];
+			result[i][j] = t.Rows[i][j];
+		}
+
+		return result;
+	}
+	*/
 }
