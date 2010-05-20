@@ -3,16 +3,20 @@ using System.Data;
 using System.Web;
 
 namespace CSMSAdmin {
+	delegate string LookupTable(string s);
+
 	public class Permissions : CSMSAdmin.Page {
 
+		private string submitValue = "Submit";
+
 		public override string Render() {
-			if (!String.IsNullOrEmpty(qs["pid"])) principal_edit(int.Parse(qs["pid"]));
-			else if (!String.IsNullOrEmpty(db)) {
+			if (!String.IsNullOrEmpty(qs["pid"]) && String.IsNullOrEmpty(post["submit"])) principal_edit(int.Parse(qs["pid"]));
+			else if (!String.IsNullOrEmpty(db) && String.IsNullOrEmpty(post["submit"])) {
 				if (String.IsNullOrEmpty(qs["t"]) && String.IsNullOrEmpty(qs["l"])) db_principals_summary();
 				else db_principals_drilldown();
 			}
 			else if (!String.IsNullOrEmpty(qs["t"]) || !String.IsNullOrEmpty(qs["l"])) srv_principals_drilldown();
-			else if (!String.IsNullOrEmpty(post["submit"])) updatePermissions();
+			else if (!String.IsNullOrEmpty(post["submit"])) updatePermissions(int.Parse(qs["pid"]));
 			else srv_principals_summary();
 
 			base.Render();
@@ -20,7 +24,6 @@ namespace CSMSAdmin {
 		}
 
 		// server level
-
 		private void srv_principals_summary() {
 			DataTable types = dbl.getServerPrincipalTypes();
 			DataTable principals = dbl.getServerPrincipals();
@@ -59,7 +62,6 @@ namespace CSMSAdmin {
 		}
 
 		// database level
-
 		private void db_principals_summary() {
 			string db = qs["db"];
 			DataTable types = dbl.getDatabasePrincipalTypes(db);
@@ -119,7 +121,7 @@ namespace CSMSAdmin {
 			string[] stateAbbrs = Constants.permissionStateAbbrs;
 			int stateCount = states.Length;
 
-			body += "<span class=\"bold\">" + principal + "</span><form method=\"post\"><table><tbody><tr class=\"title\">";
+			body += "<span class=\"bold\">Editing " + principal + "</span><form method=\"post\"><table><tbody><tr class=\"title\">";
 			for (int i = 0, l = stateCount; i < l; i++) body += "<td>" + states[i] + "</td>";
 			body += "<td>Type</td></tr>";
 
@@ -138,11 +140,47 @@ namespace CSMSAdmin {
 							"<td>" + permissionTypesFull[i] + "</td>" +
 						 "</tr>";
 			}
-			body += "<tr><td colspan=\"5\" class=\"right\"><input type=\"submit\" name=\"submit\" value=\"Submit\" /><input type=\"hidden\" name=\"pid\" value=\"" + pid + "\" /></td></tr></tbody></form></form>";
+			body += "<tr><td colspan=\"5\" class=\"right\"><input type=\"submit\" name=\"submit\" value=\"" + submitValue + "\" /></td></tr></tbody></form></form>";
 		}
 
-		//
-		private void updatePermissions() {
+		// updating
+		private void updatePermissions(int pid) {
+			string principal = String.Empty, grant = String.Empty, deny = String.Empty, revoke = String.Empty, grantwgrant = String.Empty;
+			LookupTable permissionLT;
+
+			if (String.IsNullOrEmpty(db)) {
+				principal = dbl.getPrincipalName(pid);
+				permissionLT = new LookupTable(LookupTables.serverPermissionType);
+			} else {
+				principal = dbl.getPrincipalName(db, pid);
+				permissionLT = new LookupTable(LookupTables.databasePermissionType);
+			}
+
+			for (int i = 0; i < post.Count; i++) {
+				if (String.Compare(post[i], submitValue) == 0) continue;
+
+				switch(post[i]) {
+					case "G":
+						grant += ((grant.Length > 0) ? ", " : "") + permissionLT(post.GetKey(i));
+						break;
+					case "D":
+						deny += ((deny.Length > 0) ? ", " : "") + permissionLT(post.GetKey(i));
+						break;
+					case "R":
+						revoke += ((revoke.Length > 0) ? ", " : "") + permissionLT(post.GetKey(i));
+						break;
+					case "W":
+						grantwgrant += ((grantwgrant.Length > 0) ? ", " : "") + permissionLT(post.GetKey(i));
+						break;
+				}
+			}
+
+			if (grant.Length > 0) dbl.executeQuery(db, "GRANT " + grant + " TO " + principal);
+			if (deny.Length > 0) dbl.executeQuery(db, "DENY " + deny + " TO " + principal); // there is no way this will work
+			if (revoke.Length > 0) dbl.executeQuery(db, "REVOKE " + revoke + " FROM " + principal);
+			if (grantwgrant.Length > 0) dbl.executeQuery(db, "GRANT " + grantwgrant + " TO " + principal + " WITH GRANT OPTION");
+
+			principal_edit(pid);
 		}
 	}
 }

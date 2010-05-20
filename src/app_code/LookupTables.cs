@@ -73,7 +73,6 @@ namespace CSMSAdmin {
 			}
 		}
 
-		/*
 		public static string serverPermissionType(string s) {
 			switch(s.Trim()) {
 				case "DBO":  return "ADMINISTER BULK OPERATIONS";
@@ -179,6 +178,5 @@ namespace CSMSAdmin {
 				default:     return null;
 			}
 		}
-		*/
 	}
 }
