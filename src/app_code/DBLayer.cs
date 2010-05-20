@@ -274,7 +274,7 @@ public class DBLayer {
 			using (con = __initConnection(false)) {
 				con.Open();
 				con.ChangeDatabase(db);
-				using (com = new SqlCommand("SELECT name FROM sys.database_principals WHERE principal_id = @pid")) {
+				using (com = new SqlCommand("SELECT name FROM sys.database_principals WHERE principal_id = @pid", con)) {
 					com.Parameters.AddWithValue("@pid", pid);
 					result = com.ExecuteScalar().ToString();
 				}
@@ -290,7 +290,7 @@ public class DBLayer {
 			using (con = __initConnection(false)) {
 				con.Open();
 				con.ChangeDatabase("master");
-				using (com = new SqlCommand("SELECT name FROM sys.server_principals WHERE principal_id = @pid")) {
+				using (com = new SqlCommand("SELECT name FROM sys.server_principals WHERE principal_id = @pid", con)) {
 					com.Parameters.AddWithValue("@pid", pid);
 					result = com.ExecuteScalar().ToString();
 				}
