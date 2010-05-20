@@ -3,13 +3,13 @@
 <html>
  <head>
   <meta charset="utf-8">
-  <link rel="stylesheet" href="themes/<%=Settings.DefaultTheme%>/style.css" type="text/css" media="all" />
-  <title>C&#9839MSAdmin <%=Settings.Version%> - The C&#9839 MSSQL Server Administration Project</title>
+  <link rel="stylesheet" href="themes/<%=CSMSAdmin.Settings.DefaultTheme%>/style.css" type="text/css" media="all" />
+  <title>C&#9839MSAdmin <%=CSMSAdmin.Settings.Version%> - The C&#9839 MSSQL Server Administration Project</title>
  </head>
  <body>
   <div id="login">
    <h3>C&#9839MSAdmin Login</h3><br />
-   <% if (!String.IsNullOrEmpty(Settings.ConnectionString)) { %>
+   <% if (!String.IsNullOrEmpty(CSMSAdmin.Settings.ConnectionString)) { %>
     <form action="default.aspx" method="post">
      <table>
       <tbody>
@@ -18,7 +18,7 @@
          <span>Server:</span>
         </td>
         <td>
-         <%=DisplayLayer.getServerSelect("server")%>
+         <%=CSMSAdmin.DisplayLayer.getServerSelect("server")%>
         </td>
        </tr>
        <tr>
@@ -45,11 +45,11 @@
       </tbody>
      </table>
     </form>
-   <% } if (!String.IsNullOrEmpty(Settings.ConnectionString) && Settings.AllowArbitraryConnectionsStrings) { %>
+   <% } if (!String.IsNullOrEmpty(CSMSAdmin.Settings.ConnectionString) && CSMSAdmin.Settings.AllowArbitraryConnectionsStrings) { %>
     <div id="loginor">
      - OR -
     </div>
-   <% } if (Settings.AllowArbitraryConnectionsStrings) { %>
+   <% } if (CSMSAdmin.Settings.AllowArbitraryConnectionsStrings) { %>
     <form action="default.aspx" method="post">
      <table>
       <tbody>
@@ -69,7 +69,7 @@
       </tbody>
      </table>
     </form>
-   <% } if (String.IsNullOrEmpty(Settings.ConnectionString) && !Settings.AllowArbitraryConnectionsStrings) { %>
+   <% } if (String.IsNullOrEmpty(CSMSAdmin.Settings.ConnectionString) && !CSMSAdmin.Settings.AllowArbitraryConnectionsStrings) { %>
 	<div>
      There is no way to login.
 	 <br />

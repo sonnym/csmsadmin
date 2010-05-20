@@ -3,7 +3,8 @@ using System.Collections;
 using System.IO;
 using System.Web;
 
-public class FileSystemLayer {
+namespace CSMSAdmin {
+	public class FileSystemLayer {
 	public FileSystemLayer() { }
 
 	public static string[] getThemes() {
@@ -17,13 +18,14 @@ public class FileSystemLayer {
 		DirectoryInfo d_info = new DirectoryInfo(dir);
 		if (!d_info.Exists) d_info = new DirectoryInfo(HttpContext.Current.Server.MapPath("~"));
 
-		ArrayList contents = new ArrayList();
+			ArrayList contents = new ArrayList();
 
-		if (!d_info.ToString().Equals(d_info.Root.ToString())) contents.Add(new string[] { "..", "0", d_info.Parent.FullName });
+			if (!d_info.ToString().Equals(d_info.Root.ToString())) contents.Add(new string[] { "..", "0", d_info.Parent.FullName });
 
-		foreach (DirectoryInfo d in d_info.GetDirectories()) contents.Add(new string[] { d.Name, "0", d.FullName });
-		foreach (FileInfo f in d_info.GetFiles()) contents.Add(new string[] { f.Name, "1", f.FullName });
+			foreach (DirectoryInfo d in d_info.GetDirectories()) contents.Add(new string[] { d.Name, "0", d.FullName });
+			foreach (FileInfo f in d_info.GetFiles()) contents.Add(new string[] { f.Name, "1", f.FullName });
 
-		return contents;
+			return contents;
+		}
 	}
 }

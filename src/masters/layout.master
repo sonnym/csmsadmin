@@ -1,13 +1,13 @@
 <%@ Master Language="C#" %>
 <script runat="server">
-	private DBLayer dbl = new DBLayer();
+	private CSMSAdmin.DBLayer dbl = new CSMSAdmin.DBLayer();
 	private NameValueCollection qs = HttpContext.Current.Request.QueryString;
 </script>
 <!DOCTYPE HTML>
 <html>
  <head>
   <meta charset="utf-8">
-  <title>C&#9839MSAdmin <%=Settings.Version%> - The C&#9839 MSSQL Server Administration Project</title>
+  <title>C&#9839MSAdmin <%=CSMSAdmin.Settings.Version%> - The C&#9839 MSSQL Server Administration Project</title>
   <link rel="stylesheet" href="themes/<%=HttpUtility.UrlEncode(HttpContext.Current.Session["theme"].ToString())%>/style.css" type="text/css" media="all" />
   <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" />
   <script type="text/javascript" src="js/querystring.js"></script>
@@ -63,12 +63,12 @@
 		ArrayList dbs = dbl.getDatabaseNames();
 		if (dbs == null) return;
 
-		Response.Write(DisplayLayer.getNavigationSelect("db", dbs, qs["db"]) + "<br />");
+		Response.Write(CSMSAdmin.DisplayLayer.getNavigationSelect("db", dbs, qs["db"]) + "<br />");
 
 		if (String.IsNullOrEmpty(db)) foreach (string s in dbs) Response.Write("<a href=\"default.aspx?a=" + Session.SessionID + "&db=" + s + "\" class=\"nav\">" + s + "</a><br />");
 		else {
 			ArrayList tbls = dbl.getTableNames(db);
-			Response.Write(DisplayLayer.getNavigationSelect("tbl", tbls, qs["tbl"]) + "<br />");
+			Response.Write(CSMSAdmin.DisplayLayer.getNavigationSelect("tbl", tbls, qs["tbl"]) + "<br />");
 			if (tbls != null) foreach (string tbl in tbls) Response.Write("<a href=\"struct.aspx?a=" + Session.SessionID + "&db=" + db +  "&tbl=" + tbl + "\" class=\"nav\">" + tbl + "</a><br />");
 			else Response.Write("<a href=\"operations.aspx?a=" + Session.SessionID + "&db=" + qs["db"] + "\">No tables</a>");
 		}

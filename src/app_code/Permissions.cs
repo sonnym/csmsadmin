@@ -12,6 +12,7 @@ namespace CSMSAdmin {
 				else db_principals_drilldown();
 			}
 			else if (!String.IsNullOrEmpty(qs["t"]) || !String.IsNullOrEmpty(qs["l"])) srv_principals_drilldown();
+			else if (!String.IsNullOrEmpty(post["submit"])) updatePermissions();
 			else srv_principals_summary();
 
 			base.Render();
@@ -118,7 +119,7 @@ namespace CSMSAdmin {
 			string[] stateAbbrs = Constants.permissionStateAbbrs;
 			int stateCount = states.Length;
 
-			body += "<span class=\"bold\">" + principal + "</span><table><tbody><tr class=\"title\">";
+			body += "<span class=\"bold\">" + principal + "</span><form method=\"post\"><table><tbody><tr class=\"title\">";
 			for (int i = 0, l = stateCount; i < l; i++) body += "<td>" + states[i] + "</td>";
 			body += "<td>Type</td></tr>";
 
@@ -137,7 +138,11 @@ namespace CSMSAdmin {
 							"<td>" + permissionTypesFull[i] + "</td>" +
 						 "</tr>";
 			}
-			body += "</tbody></table>";
+			body += "<tr><td colspan=\"5\" class=\"right\"><input type=\"submit\" name=\"submit\" value=\"Submit\" /><input type=\"hidden\" name=\"pid\" value=\"" + pid + "\" /></td></tr></tbody></form></form>";
+		}
+
+		//
+		private void updatePermissions() {
 		}
 	}
 }
