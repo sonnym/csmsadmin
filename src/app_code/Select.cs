@@ -74,7 +74,11 @@ namespace CSMSAdmin {
 				if (qsb.Length == 0) qsb.Append("SELECT * FROM " + tbl + " WHERE " + ((!String.IsNullOrEmpty(post["where"])) ? post["where"] + " AND" : ""));
 				else qsb.Append(" AND");
 
-				qsb.Append(" "  + t.Rows[i]["name"] + " " + LookupTables.comparisonOperators(post["op_" + t.Rows[i]["name"]]) + " '" + post["ex_" + t.Rows[i]["name"]] + "'");
+				if (t.Rows[i]["type"].ToString() == "datetime") {
+					qsb.Append(" "  + t.Rows[i]["name"] + " " + LookupTables.comparisonOperators(post["op_" + t.Rows[i]["name"]]) + " CAST('" + post["ex_" + t.Rows[i]["name"]] + "' AS datetime)");
+				} else {
+					qsb.Append(" "  + t.Rows[i]["name"] + " " + LookupTables.comparisonOperators(post["op_" + t.Rows[i]["name"]]) + " '" + post["ex_" + t.Rows[i]["name"]] + "'");
+				}
 			}
 
 			response.Redirect("query.aspx?a=" + session.SessionID + "&db=" + db + "&tbl=" + tbl + "&q=" + HttpUtility.UrlEncode(qsb.ToString()));
