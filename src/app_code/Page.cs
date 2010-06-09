@@ -22,9 +22,11 @@ namespace CSMSAdmin {
 			post = request.Form;
 			db = qs["db"];
 			tbl = qs["tbl"];
-			url = request.ServerVariables["URL"].ToLower();
 			session = HttpContext.Current.Session;
 			page = HttpContext.Current.Handler as System.Web.UI.Page;
+
+			url = request.ServerVariables["URL"];
+			url = url.Substring(url.LastIndexOf('/'), url.Length - url.LastIndexOf('/')).ToLower();
 		}
 
 		public Page(ref System.Web.UI.Page p) : this() {

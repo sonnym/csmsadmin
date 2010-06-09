@@ -5,7 +5,7 @@ using System.Web;
 namespace CSMSAdmin {
 	public class Query : CSMSAdmin.Page {
 		public override string Render() {
-			bool show_plan = qs["sp"] != null && String.Compare(qs["sp"], "1") == 0;
+			//bool show_plan = qs["sp"] != null && String.Compare(qs["sp"], "1") == 0;
 			string q = HttpUtility.UrlDecode(qs["q"]);
 
 			body += DisplayLayer.getQueryInput(session.SessionID, db, tbl, q);

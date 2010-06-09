@@ -90,7 +90,7 @@ namespace CSMSAdmin {
 			string wth = String.Empty;
 			string fname = HttpUtility.UrlDecode(request.QueryString["f"]);
 			string[] chckd = HttpUtility.UrlDecode(request.QueryString["ids"]).Split(new char[] {','});
-			bool resume = !String.IsNullOrEmpty(request.QueryString["r"]) && request.QueryString["r"].Equals("1");
+			//bool resume = !String.IsNullOrEmpty(request.QueryString["r"]) && request.QueryString["r"].Equals("1");
 
 			if (chckd.Length > 0) {
 				DataTable fl = dbl.restoreFileListOnly(fname);

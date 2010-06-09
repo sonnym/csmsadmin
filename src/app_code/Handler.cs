@@ -37,6 +37,7 @@ namespace CSMSAdmin {
 			}
 
 			renderer = new CSMSAdmin.Page(ref p);
+			renderer.Render();
 		}
 
 		public bool IsReusable {
@@ -60,7 +61,7 @@ namespace CSMSAdmin {
 			context.Session.Add("cs", cs);
 			context.Session.Add("theme", Settings.DefaultTheme);
 
-			context.Response.Redirect("~/?a=" + context.Session.SessionID);
+			context.Response.Redirect("~/default.aspx?a=" + context.Session.SessionID);
 		}
 		private void login(bool useform) {
 			DBLayer dbl = new DBLayer();
@@ -72,7 +73,7 @@ namespace CSMSAdmin {
 				context.Session.Add("cs", cs);
 				context.Session.Add("theme", Settings.DefaultTheme);
 
-				context.Response.Redirect("~/?a=" + context.Session.SessionID);
+				context.Response.Redirect("~/default.aspx?a=" + context.Session.SessionID);
 			} 
 			else {
 				context.Response.Write("Login faled, please try again.");
